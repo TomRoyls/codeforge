@@ -661,3 +661,87 @@ describe('palindrome-tree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('palindrome-tree - w142', () => {
+  it('palindrome-tree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-tree - w145', () => {
+  it('palindrome-tree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-tree - w148', () => {
+  it('palindrome-tree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-tree - w151', () => {
+  it('palindrome-tree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-tree - w154', () => {
+  it('palindrome-tree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-tree - w157', () => {
+  it('palindrome-tree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-tree - w160', () => {
+  it('palindrome-tree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-tree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

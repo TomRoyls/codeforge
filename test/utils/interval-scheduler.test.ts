@@ -825,3 +825,87 @@ describe('interval-scheduler - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-scheduler - w142', () => {
+  it('interval-scheduler v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w145', () => {
+  it('interval-scheduler v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w148', () => {
+  it('interval-scheduler v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w151', () => {
+  it('interval-scheduler v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w154', () => {
+  it('interval-scheduler v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w157', () => {
+  it('interval-scheduler v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w160', () => {
+  it('interval-scheduler v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

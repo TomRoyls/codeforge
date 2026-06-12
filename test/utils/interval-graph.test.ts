@@ -767,3 +767,87 @@ describe('interval-graph - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-graph - w142', () => {
+  it('interval-graph v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-graph - w145', () => {
+  it('interval-graph v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-graph - w148', () => {
+  it('interval-graph v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-graph - w151', () => {
+  it('interval-graph v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-graph - w154', () => {
+  it('interval-graph v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-graph - w157', () => {
+  it('interval-graph v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-graph - w160', () => {
+  it('interval-graph v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

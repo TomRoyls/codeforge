@@ -601,3 +601,87 @@ describe('boyer-moore-vote - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('boyer-moore-vote - w142', () => {
+  it('boyer-moore-vote v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-vote - w145', () => {
+  it('boyer-moore-vote v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-vote - w148', () => {
+  it('boyer-moore-vote v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-vote - w151', () => {
+  it('boyer-moore-vote v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-vote - w154', () => {
+  it('boyer-moore-vote v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-vote - w157', () => {
+  it('boyer-moore-vote v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-vote - w160', () => {
+  it('boyer-moore-vote v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-vote v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

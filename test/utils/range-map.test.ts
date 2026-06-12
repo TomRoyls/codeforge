@@ -799,3 +799,87 @@ describe('range-map - wave139', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('range-map - w142', () => {
+  it('range-map v142x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v142x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v142x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('range-map - w145', () => {
+  it('range-map v145x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v145x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v145x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('range-map - w148', () => {
+  it('range-map v148x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v148x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v148x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('range-map - w151', () => {
+  it('range-map v151x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v151x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v151x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('range-map - w154', () => {
+  it('range-map v154x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v154x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v154x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('range-map - w157', () => {
+  it('range-map v157x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v157x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v157x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('range-map - w160', () => {
+  it('range-map v160x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v160x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map v160x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

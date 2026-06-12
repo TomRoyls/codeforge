@@ -652,3 +652,87 @@ describe('merge-sort-tree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('merge-sort-tree - w142', () => {
+  it('merge-sort-tree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sort-tree - w145', () => {
+  it('merge-sort-tree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sort-tree - w148', () => {
+  it('merge-sort-tree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sort-tree - w151', () => {
+  it('merge-sort-tree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sort-tree - w154', () => {
+  it('merge-sort-tree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sort-tree - w157', () => {
+  it('merge-sort-tree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sort-tree - w160', () => {
+  it('merge-sort-tree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sort-tree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

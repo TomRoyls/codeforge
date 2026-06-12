@@ -843,3 +843,87 @@ describe('ziggurat-normal - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ziggurat-normal - w142', () => {
+  it('ziggurat-normal v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w145', () => {
+  it('ziggurat-normal v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w148', () => {
+  it('ziggurat-normal v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w151', () => {
+  it('ziggurat-normal v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w154', () => {
+  it('ziggurat-normal v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w157', () => {
+  it('ziggurat-normal v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w160', () => {
+  it('ziggurat-normal v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

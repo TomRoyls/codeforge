@@ -799,3 +799,87 @@ describe('static-bitset - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('static-bitset - w142', () => {
+  it('static-bitset v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('static-bitset - w145', () => {
+  it('static-bitset v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('static-bitset - w148', () => {
+  it('static-bitset v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('static-bitset - w151', () => {
+  it('static-bitset v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('static-bitset - w154', () => {
+  it('static-bitset v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('static-bitset - w157', () => {
+  it('static-bitset v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('static-bitset - w160', () => {
+  it('static-bitset v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

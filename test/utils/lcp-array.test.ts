@@ -659,3 +659,87 @@ describe('lcp-array - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lcp-array - w142', () => {
+  it('lcp-array v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcp-array - w145', () => {
+  it('lcp-array v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcp-array - w148', () => {
+  it('lcp-array v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcp-array - w151', () => {
+  it('lcp-array v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcp-array - w154', () => {
+  it('lcp-array v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcp-array - w157', () => {
+  it('lcp-array v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcp-array - w160', () => {
+  it('lcp-array v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

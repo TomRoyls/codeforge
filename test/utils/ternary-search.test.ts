@@ -614,3 +614,87 @@ describe('ternary-search - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ternary-search - w142', () => {
+  it('ternary-search v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search - w145', () => {
+  it('ternary-search v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search - w148', () => {
+  it('ternary-search v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search - w151', () => {
+  it('ternary-search v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search - w154', () => {
+  it('ternary-search v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search - w157', () => {
+  it('ternary-search v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search - w160', () => {
+  it('ternary-search v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

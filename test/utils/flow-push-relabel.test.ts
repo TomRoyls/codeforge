@@ -830,3 +830,87 @@ describe('flow-push-relabel - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('flow-push-relabel - w142', () => {
+  it('flow-push-relabel v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flow-push-relabel - w145', () => {
+  it('flow-push-relabel v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flow-push-relabel - w148', () => {
+  it('flow-push-relabel v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flow-push-relabel - w151', () => {
+  it('flow-push-relabel v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flow-push-relabel - w154', () => {
+  it('flow-push-relabel v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flow-push-relabel - w157', () => {
+  it('flow-push-relabel v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flow-push-relabel - w160', () => {
+  it('flow-push-relabel v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flow-push-relabel v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

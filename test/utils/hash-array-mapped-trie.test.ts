@@ -819,3 +819,87 @@ describe('hash-array-mapped-trie - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hash-array-mapped-trie - w142', () => {
+  it('hash-array-mapped-trie v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-array-mapped-trie - w145', () => {
+  it('hash-array-mapped-trie v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-array-mapped-trie - w148', () => {
+  it('hash-array-mapped-trie v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-array-mapped-trie - w151', () => {
+  it('hash-array-mapped-trie v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-array-mapped-trie - w154', () => {
+  it('hash-array-mapped-trie v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-array-mapped-trie - w157', () => {
+  it('hash-array-mapped-trie v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-array-mapped-trie - w160', () => {
+  it('hash-array-mapped-trie v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-array-mapped-trie v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

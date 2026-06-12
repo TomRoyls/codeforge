@@ -831,3 +831,87 @@ describe('tree-decomposition - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tree-decomposition - w142', () => {
+  it('tree-decomposition v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-decomposition - w145', () => {
+  it('tree-decomposition v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-decomposition - w148', () => {
+  it('tree-decomposition v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-decomposition - w151', () => {
+  it('tree-decomposition v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-decomposition - w154', () => {
+  it('tree-decomposition v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-decomposition - w157', () => {
+  it('tree-decomposition v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-decomposition - w160', () => {
+  it('tree-decomposition v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-decomposition v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

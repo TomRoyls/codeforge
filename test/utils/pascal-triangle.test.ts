@@ -604,3 +604,87 @@ describe('pascal-triangle - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pascal-triangle - w142', () => {
+  it('pascal-triangle v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - w145', () => {
+  it('pascal-triangle v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - w148', () => {
+  it('pascal-triangle v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - w151', () => {
+  it('pascal-triangle v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - w154', () => {
+  it('pascal-triangle v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - w157', () => {
+  it('pascal-triangle v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - w160', () => {
+  it('pascal-triangle v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

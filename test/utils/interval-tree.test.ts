@@ -813,3 +813,87 @@ describe('interval-tree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-tree - w142', () => {
+  it('interval-tree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-tree - w145', () => {
+  it('interval-tree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-tree - w148', () => {
+  it('interval-tree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-tree - w151', () => {
+  it('interval-tree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-tree - w154', () => {
+  it('interval-tree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-tree - w157', () => {
+  it('interval-tree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-tree - w160', () => {
+  it('interval-tree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

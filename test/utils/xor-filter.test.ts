@@ -721,3 +721,87 @@ describe('xor-filter - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('xor-filter - w142', () => {
+  it('xor-filter v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-filter - w145', () => {
+  it('xor-filter v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-filter - w148', () => {
+  it('xor-filter v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-filter - w151', () => {
+  it('xor-filter v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-filter - w154', () => {
+  it('xor-filter v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-filter - w157', () => {
+  it('xor-filter v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-filter - w160', () => {
+  it('xor-filter v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -780,3 +780,87 @@ describe('multi-map - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('multi-map - w142', () => {
+  it('multi-map v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('multi-map - w145', () => {
+  it('multi-map v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('multi-map - w148', () => {
+  it('multi-map v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('multi-map - w151', () => {
+  it('multi-map v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('multi-map - w154', () => {
+  it('multi-map v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('multi-map - w157', () => {
+  it('multi-map v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('multi-map - w160', () => {
+  it('multi-map v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('multi-map v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

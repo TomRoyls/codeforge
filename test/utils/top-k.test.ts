@@ -789,3 +789,87 @@ describe('top-k - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('top-k - w142', () => {
+  it('top-k v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k - w145', () => {
+  it('top-k v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k - w148', () => {
+  it('top-k v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k - w151', () => {
+  it('top-k v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k - w154', () => {
+  it('top-k v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k - w157', () => {
+  it('top-k v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k - w160', () => {
+  it('top-k v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

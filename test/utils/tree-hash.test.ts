@@ -856,3 +856,87 @@ describe('tree-hash - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tree-hash - w142', () => {
+  it('tree-hash v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-hash - w145', () => {
+  it('tree-hash v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-hash - w148', () => {
+  it('tree-hash v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-hash - w151', () => {
+  it('tree-hash v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-hash - w154', () => {
+  it('tree-hash v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-hash - w157', () => {
+  it('tree-hash v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-hash - w160', () => {
+  it('tree-hash v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

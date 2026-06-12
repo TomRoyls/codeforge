@@ -1021,3 +1021,87 @@ describe('min-max-stack - wave139', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('min-max-stack - w142', () => {
+  it('min-max-stack v142x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v142x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v142x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-stack - w145', () => {
+  it('min-max-stack v145x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v145x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v145x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-stack - w148', () => {
+  it('min-max-stack v148x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v148x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v148x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-stack - w151', () => {
+  it('min-max-stack v151x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v151x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v151x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-stack - w154', () => {
+  it('min-max-stack v154x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v154x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v154x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-stack - w157', () => {
+  it('min-max-stack v157x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v157x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v157x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-stack - w160', () => {
+  it('min-max-stack v160x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v160x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack v160x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

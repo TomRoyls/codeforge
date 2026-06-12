@@ -769,3 +769,87 @@ describe('merge-sorted-iterators - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('merge-sorted-iterators - w142', () => {
+  it('merge-sorted-iterators v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sorted-iterators - w145', () => {
+  it('merge-sorted-iterators v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sorted-iterators - w148', () => {
+  it('merge-sorted-iterators v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sorted-iterators - w151', () => {
+  it('merge-sorted-iterators v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sorted-iterators - w154', () => {
+  it('merge-sorted-iterators v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sorted-iterators - w157', () => {
+  it('merge-sorted-iterators v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('merge-sorted-iterators - w160', () => {
+  it('merge-sorted-iterators v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

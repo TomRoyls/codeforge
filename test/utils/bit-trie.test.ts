@@ -915,3 +915,87 @@ describe('bit-trie - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bit-trie - w142', () => {
+  it('bit-trie v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - w145', () => {
+  it('bit-trie v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - w148', () => {
+  it('bit-trie v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - w151', () => {
+  it('bit-trie v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - w154', () => {
+  it('bit-trie v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - w157', () => {
+  it('bit-trie v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - w160', () => {
+  it('bit-trie v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

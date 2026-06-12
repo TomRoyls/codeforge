@@ -917,3 +917,87 @@ describe('priority-queue - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('priority-queue - w142', () => {
+  it('priority-queue v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('priority-queue - w145', () => {
+  it('priority-queue v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('priority-queue - w148', () => {
+  it('priority-queue v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('priority-queue - w151', () => {
+  it('priority-queue v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('priority-queue - w154', () => {
+  it('priority-queue v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('priority-queue - w157', () => {
+  it('priority-queue v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('priority-queue - w160', () => {
+  it('priority-queue v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

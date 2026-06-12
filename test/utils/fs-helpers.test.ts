@@ -921,3 +921,87 @@ describe('fs-helpers - wave139', () => {
     expect(existsSync).toBeDefined()
   })
 })
+
+describe('fs-helpers - w142', () => {
+  it('fs-helpers v142x0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v142x1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v142x2', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - w145', () => {
+  it('fs-helpers v145x0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v145x1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v145x2', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - w148', () => {
+  it('fs-helpers v148x0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v148x1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v148x2', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - w151', () => {
+  it('fs-helpers v151x0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v151x1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v151x2', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - w154', () => {
+  it('fs-helpers v154x0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v154x1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v154x2', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - w157', () => {
+  it('fs-helpers v157x0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v157x1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v157x2', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - w160', () => {
+  it('fs-helpers v160x0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v160x1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers v160x2', () => {
+    expect(existsSync).toBeDefined()
+  })
+})

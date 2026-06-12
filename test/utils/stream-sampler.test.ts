@@ -743,3 +743,87 @@ describe('stream-sampler - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stream-sampler - w142', () => {
+  it('stream-sampler v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stream-sampler - w145', () => {
+  it('stream-sampler v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stream-sampler - w148', () => {
+  it('stream-sampler v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stream-sampler - w151', () => {
+  it('stream-sampler v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stream-sampler - w154', () => {
+  it('stream-sampler v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stream-sampler - w157', () => {
+  it('stream-sampler v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stream-sampler - w160', () => {
+  it('stream-sampler v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

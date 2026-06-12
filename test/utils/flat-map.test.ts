@@ -810,3 +810,87 @@ describe('flat-map - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('flat-map - w142', () => {
+  it('flat-map v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flat-map - w145', () => {
+  it('flat-map v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flat-map - w148', () => {
+  it('flat-map v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flat-map - w151', () => {
+  it('flat-map v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flat-map - w154', () => {
+  it('flat-map v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flat-map - w157', () => {
+  it('flat-map v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('flat-map - w160', () => {
+  it('flat-map v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('flat-map v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

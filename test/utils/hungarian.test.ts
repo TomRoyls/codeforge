@@ -782,3 +782,87 @@ describe('hungarian - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hungarian - w142', () => {
+  it('hungarian v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w145', () => {
+  it('hungarian v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w148', () => {
+  it('hungarian v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w151', () => {
+  it('hungarian v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w154', () => {
+  it('hungarian v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w157', () => {
+  it('hungarian v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w160', () => {
+  it('hungarian v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

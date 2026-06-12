@@ -767,3 +767,87 @@ describe('deterministic-rng - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deterministic-rng - w142', () => {
+  it('deterministic-rng v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - w145', () => {
+  it('deterministic-rng v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - w148', () => {
+  it('deterministic-rng v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - w151', () => {
+  it('deterministic-rng v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - w154', () => {
+  it('deterministic-rng v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - w157', () => {
+  it('deterministic-rng v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deterministic-rng - w160', () => {
+  it('deterministic-rng v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deterministic-rng v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

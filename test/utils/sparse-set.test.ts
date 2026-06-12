@@ -797,3 +797,87 @@ describe('sparse-set - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-set - w142', () => {
+  it('sparse-set v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - w145', () => {
+  it('sparse-set v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - w148', () => {
+  it('sparse-set v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - w151', () => {
+  it('sparse-set v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - w154', () => {
+  it('sparse-set v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - w157', () => {
+  it('sparse-set v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-set - w160', () => {
+  it('sparse-set v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

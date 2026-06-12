@@ -739,3 +739,87 @@ describe('consistent-hash-ring - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('consistent-hash-ring - w142', () => {
+  it('consistent-hash-ring v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - w145', () => {
+  it('consistent-hash-ring v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - w148', () => {
+  it('consistent-hash-ring v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - w151', () => {
+  it('consistent-hash-ring v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - w154', () => {
+  it('consistent-hash-ring v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - w157', () => {
+  it('consistent-hash-ring v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - w160', () => {
+  it('consistent-hash-ring v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

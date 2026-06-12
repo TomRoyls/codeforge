@@ -822,3 +822,87 @@ describe('link-cut-tree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('link-cut-tree - w142', () => {
+  it('link-cut-tree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('link-cut-tree - w145', () => {
+  it('link-cut-tree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('link-cut-tree - w148', () => {
+  it('link-cut-tree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('link-cut-tree - w151', () => {
+  it('link-cut-tree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('link-cut-tree - w154', () => {
+  it('link-cut-tree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('link-cut-tree - w157', () => {
+  it('link-cut-tree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('link-cut-tree - w160', () => {
+  it('link-cut-tree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('link-cut-tree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

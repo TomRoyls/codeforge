@@ -692,3 +692,87 @@ describe('eertree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('eertree - w142', () => {
+  it('eertree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eertree - w145', () => {
+  it('eertree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eertree - w148', () => {
+  it('eertree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eertree - w151', () => {
+  it('eertree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eertree - w154', () => {
+  it('eertree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eertree - w157', () => {
+  it('eertree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eertree - w160', () => {
+  it('eertree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

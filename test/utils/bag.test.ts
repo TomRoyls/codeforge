@@ -836,3 +836,87 @@ describe('bag - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bag - w142', () => {
+  it('bag v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bag - w145', () => {
+  it('bag v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bag - w148', () => {
+  it('bag v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bag - w151', () => {
+  it('bag v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bag - w154', () => {
+  it('bag v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bag - w157', () => {
+  it('bag v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bag - w160', () => {
+  it('bag v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

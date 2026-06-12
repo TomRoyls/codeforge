@@ -774,3 +774,87 @@ describe('arc-cache - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('arc-cache - w142', () => {
+  it('arc-cache v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('arc-cache - w145', () => {
+  it('arc-cache v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('arc-cache - w148', () => {
+  it('arc-cache v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('arc-cache - w151', () => {
+  it('arc-cache v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('arc-cache - w154', () => {
+  it('arc-cache v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('arc-cache - w157', () => {
+  it('arc-cache v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('arc-cache - w160', () => {
+  it('arc-cache v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('arc-cache v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

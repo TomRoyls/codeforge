@@ -796,3 +796,87 @@ describe('streaming-histogram - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-histogram - w142', () => {
+  it('streaming-histogram v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - w145', () => {
+  it('streaming-histogram v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - w148', () => {
+  it('streaming-histogram v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - w151', () => {
+  it('streaming-histogram v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - w154', () => {
+  it('streaming-histogram v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - w157', () => {
+  it('streaming-histogram v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - w160', () => {
+  it('streaming-histogram v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

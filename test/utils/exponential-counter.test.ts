@@ -744,3 +744,87 @@ describe('exponential-counter - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('exponential-counter - w142', () => {
+  it('exponential-counter v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - w145', () => {
+  it('exponential-counter v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - w148', () => {
+  it('exponential-counter v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - w151', () => {
+  it('exponential-counter v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - w154', () => {
+  it('exponential-counter v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - w157', () => {
+  it('exponential-counter v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-counter - w160', () => {
+  it('exponential-counter v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

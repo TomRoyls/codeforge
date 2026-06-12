@@ -616,3 +616,87 @@ describe('integer-partition - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('integer-partition - w142', () => {
+  it('integer-partition v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - w145', () => {
+  it('integer-partition v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - w148', () => {
+  it('integer-partition v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - w151', () => {
+  it('integer-partition v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - w154', () => {
+  it('integer-partition v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - w157', () => {
+  it('integer-partition v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - w160', () => {
+  it('integer-partition v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

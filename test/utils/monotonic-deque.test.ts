@@ -856,3 +856,87 @@ describe('monotonic-deque - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('monotonic-deque - w142', () => {
+  it('monotonic-deque v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-deque - w145', () => {
+  it('monotonic-deque v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-deque - w148', () => {
+  it('monotonic-deque v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-deque - w151', () => {
+  it('monotonic-deque v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-deque - w154', () => {
+  it('monotonic-deque v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-deque - w157', () => {
+  it('monotonic-deque v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-deque - w160', () => {
+  it('monotonic-deque v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-deque v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

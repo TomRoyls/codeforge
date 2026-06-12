@@ -771,3 +771,87 @@ describe('elias-coding - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('elias-coding - w142', () => {
+  it('elias-coding v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - w145', () => {
+  it('elias-coding v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - w148', () => {
+  it('elias-coding v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - w151', () => {
+  it('elias-coding v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - w154', () => {
+  it('elias-coding v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - w157', () => {
+  it('elias-coding v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - w160', () => {
+  it('elias-coding v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

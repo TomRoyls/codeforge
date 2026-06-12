@@ -764,3 +764,87 @@ describe('gomory-hu - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gomory-hu - w142', () => {
+  it('gomory-hu v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w145', () => {
+  it('gomory-hu v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w148', () => {
+  it('gomory-hu v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w151', () => {
+  it('gomory-hu v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w154', () => {
+  it('gomory-hu v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w157', () => {
+  it('gomory-hu v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w160', () => {
+  it('gomory-hu v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

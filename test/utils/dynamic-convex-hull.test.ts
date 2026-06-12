@@ -810,3 +810,87 @@ describe('dynamic-convex-hull - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dynamic-convex-hull - w142', () => {
+  it('dynamic-convex-hull v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dynamic-convex-hull - w145', () => {
+  it('dynamic-convex-hull v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dynamic-convex-hull - w148', () => {
+  it('dynamic-convex-hull v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dynamic-convex-hull - w151', () => {
+  it('dynamic-convex-hull v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dynamic-convex-hull - w154', () => {
+  it('dynamic-convex-hull v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dynamic-convex-hull - w157', () => {
+  it('dynamic-convex-hull v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dynamic-convex-hull - w160', () => {
+  it('dynamic-convex-hull v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

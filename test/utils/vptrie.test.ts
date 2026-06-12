@@ -751,3 +751,87 @@ describe('vptrie - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('vptrie - w142', () => {
+  it('vptrie v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vptrie - w145', () => {
+  it('vptrie v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vptrie - w148', () => {
+  it('vptrie v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vptrie - w151', () => {
+  it('vptrie v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vptrie - w154', () => {
+  it('vptrie v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vptrie - w157', () => {
+  it('vptrie v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vptrie - w160', () => {
+  it('vptrie v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

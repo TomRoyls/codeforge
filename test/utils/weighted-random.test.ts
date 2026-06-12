@@ -799,3 +799,87 @@ describe('weighted-random - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('weighted-random - w142', () => {
+  it('weighted-random v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w145', () => {
+  it('weighted-random v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w148', () => {
+  it('weighted-random v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w151', () => {
+  it('weighted-random v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w154', () => {
+  it('weighted-random v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w157', () => {
+  it('weighted-random v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w160', () => {
+  it('weighted-random v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

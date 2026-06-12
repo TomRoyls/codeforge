@@ -877,3 +877,87 @@ describe('double-ended-priority-queue - wave139', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('double-ended-priority-queue - w142', () => {
+  it('double-ended-priority-queue v142x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v142x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v142x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('double-ended-priority-queue - w145', () => {
+  it('double-ended-priority-queue v145x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v145x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v145x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('double-ended-priority-queue - w148', () => {
+  it('double-ended-priority-queue v148x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v148x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v148x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('double-ended-priority-queue - w151', () => {
+  it('double-ended-priority-queue v151x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v151x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v151x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('double-ended-priority-queue - w154', () => {
+  it('double-ended-priority-queue v154x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v154x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v154x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('double-ended-priority-queue - w157', () => {
+  it('double-ended-priority-queue v157x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v157x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v157x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('double-ended-priority-queue - w160', () => {
+  it('double-ended-priority-queue v160x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v160x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue v160x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

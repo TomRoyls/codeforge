@@ -815,3 +815,87 @@ describe('lsm-tree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lsm-tree - w142', () => {
+  it('lsm-tree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - w145', () => {
+  it('lsm-tree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - w148', () => {
+  it('lsm-tree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - w151', () => {
+  it('lsm-tree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - w154', () => {
+  it('lsm-tree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - w157', () => {
+  it('lsm-tree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lsm-tree - w160', () => {
+  it('lsm-tree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

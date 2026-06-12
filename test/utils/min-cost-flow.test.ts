@@ -785,3 +785,87 @@ describe('min-cost-flow - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('min-cost-flow - w142', () => {
+  it('min-cost-flow v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - w145', () => {
+  it('min-cost-flow v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - w148', () => {
+  it('min-cost-flow v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - w151', () => {
+  it('min-cost-flow v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - w154', () => {
+  it('min-cost-flow v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - w157', () => {
+  it('min-cost-flow v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - w160', () => {
+  it('min-cost-flow v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

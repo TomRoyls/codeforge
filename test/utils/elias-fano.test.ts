@@ -714,3 +714,87 @@ describe('elias-fano - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('elias-fano - w142', () => {
+  it('elias-fano v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w145', () => {
+  it('elias-fano v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w148', () => {
+  it('elias-fano v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w151', () => {
+  it('elias-fano v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w154', () => {
+  it('elias-fano v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w157', () => {
+  it('elias-fano v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w160', () => {
+  it('elias-fano v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

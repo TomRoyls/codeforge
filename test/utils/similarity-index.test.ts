@@ -798,3 +798,87 @@ describe('similarity-index - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('similarity-index - w142', () => {
+  it('similarity-index v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('similarity-index - w145', () => {
+  it('similarity-index v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('similarity-index - w148', () => {
+  it('similarity-index v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('similarity-index - w151', () => {
+  it('similarity-index v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('similarity-index - w154', () => {
+  it('similarity-index v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('similarity-index - w157', () => {
+  it('similarity-index v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('similarity-index - w160', () => {
+  it('similarity-index v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

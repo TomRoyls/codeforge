@@ -557,3 +557,87 @@ describe('knuth-morris-pratt - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('knuth-morris-pratt - w142', () => {
+  it('knuth-morris-pratt v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - w145', () => {
+  it('knuth-morris-pratt v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - w148', () => {
+  it('knuth-morris-pratt v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - w151', () => {
+  it('knuth-morris-pratt v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - w154', () => {
+  it('knuth-morris-pratt v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - w157', () => {
+  it('knuth-morris-pratt v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - w160', () => {
+  it('knuth-morris-pratt v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

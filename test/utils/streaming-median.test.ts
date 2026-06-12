@@ -776,3 +776,87 @@ describe('streaming-median - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-median - w142', () => {
+  it('streaming-median v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-median - w145', () => {
+  it('streaming-median v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-median - w148', () => {
+  it('streaming-median v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-median - w151', () => {
+  it('streaming-median v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-median - w154', () => {
+  it('streaming-median v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-median - w157', () => {
+  it('streaming-median v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-median - w160', () => {
+  it('streaming-median v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

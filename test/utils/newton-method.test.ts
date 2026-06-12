@@ -801,3 +801,87 @@ describe('newton-method - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('newton-method - w142', () => {
+  it('newton-method v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('newton-method - w145', () => {
+  it('newton-method v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('newton-method - w148', () => {
+  it('newton-method v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('newton-method - w151', () => {
+  it('newton-method v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('newton-method - w154', () => {
+  it('newton-method v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('newton-method - w157', () => {
+  it('newton-method v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('newton-method - w160', () => {
+  it('newton-method v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

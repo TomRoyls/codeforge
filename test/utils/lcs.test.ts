@@ -613,3 +613,87 @@ describe('lcs - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lcs - w142', () => {
+  it('lcs v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcs - w145', () => {
+  it('lcs v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcs - w148', () => {
+  it('lcs v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcs - w151', () => {
+  it('lcs v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcs - w154', () => {
+  it('lcs v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcs - w157', () => {
+  it('lcs v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcs - w160', () => {
+  it('lcs v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

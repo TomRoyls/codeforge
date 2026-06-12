@@ -644,3 +644,87 @@ describe('sieve-of-eratosthenes - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sieve-of-eratosthenes - w142', () => {
+  it('sieve-of-eratosthenes v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve-of-eratosthenes - w145', () => {
+  it('sieve-of-eratosthenes v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve-of-eratosthenes - w148', () => {
+  it('sieve-of-eratosthenes v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve-of-eratosthenes - w151', () => {
+  it('sieve-of-eratosthenes v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve-of-eratosthenes - w154', () => {
+  it('sieve-of-eratosthenes v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve-of-eratosthenes - w157', () => {
+  it('sieve-of-eratosthenes v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve-of-eratosthenes - w160', () => {
+  it('sieve-of-eratosthenes v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

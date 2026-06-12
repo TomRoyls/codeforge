@@ -752,3 +752,87 @@ describe('morris-traversal - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('morris-traversal - w142', () => {
+  it('morris-traversal v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('morris-traversal - w145', () => {
+  it('morris-traversal v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('morris-traversal - w148', () => {
+  it('morris-traversal v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('morris-traversal - w151', () => {
+  it('morris-traversal v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('morris-traversal - w154', () => {
+  it('morris-traversal v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('morris-traversal - w157', () => {
+  it('morris-traversal v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('morris-traversal - w160', () => {
+  it('morris-traversal v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

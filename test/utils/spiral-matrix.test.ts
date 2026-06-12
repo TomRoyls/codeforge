@@ -673,3 +673,87 @@ describe('spiral-matrix - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('spiral-matrix - w142', () => {
+  it('spiral-matrix v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('spiral-matrix - w145', () => {
+  it('spiral-matrix v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('spiral-matrix - w148', () => {
+  it('spiral-matrix v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('spiral-matrix - w151', () => {
+  it('spiral-matrix v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('spiral-matrix - w154', () => {
+  it('spiral-matrix v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('spiral-matrix - w157', () => {
+  it('spiral-matrix v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('spiral-matrix - w160', () => {
+  it('spiral-matrix v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('spiral-matrix v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

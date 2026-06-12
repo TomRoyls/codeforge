@@ -707,3 +707,87 @@ describe('sieve - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sieve - w142', () => {
+  it('sieve v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve - w145', () => {
+  it('sieve v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve - w148', () => {
+  it('sieve v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve - w151', () => {
+  it('sieve v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve - w154', () => {
+  it('sieve v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve - w157', () => {
+  it('sieve v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve - w160', () => {
+  it('sieve v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

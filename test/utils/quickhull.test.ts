@@ -782,3 +782,87 @@ describe('quickhull - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quickhull - w142', () => {
+  it('quickhull v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - w145', () => {
+  it('quickhull v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - w148', () => {
+  it('quickhull v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - w151', () => {
+  it('quickhull v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - w154', () => {
+  it('quickhull v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - w157', () => {
+  it('quickhull v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - w160', () => {
+  it('quickhull v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

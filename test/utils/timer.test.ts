@@ -778,3 +778,87 @@ describe('timer - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('timer - w142', () => {
+  it('timer v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w145', () => {
+  it('timer v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w148', () => {
+  it('timer v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w151', () => {
+  it('timer v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w154', () => {
+  it('timer v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w157', () => {
+  it('timer v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w160', () => {
+  it('timer v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

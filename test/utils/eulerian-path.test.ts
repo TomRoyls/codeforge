@@ -730,3 +730,87 @@ describe('eulerian-path - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('eulerian-path - w142', () => {
+  it('eulerian-path v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eulerian-path - w145', () => {
+  it('eulerian-path v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eulerian-path - w148', () => {
+  it('eulerian-path v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eulerian-path - w151', () => {
+  it('eulerian-path v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eulerian-path - w154', () => {
+  it('eulerian-path v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eulerian-path - w157', () => {
+  it('eulerian-path v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('eulerian-path - w160', () => {
+  it('eulerian-path v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eulerian-path v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

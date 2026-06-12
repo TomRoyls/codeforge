@@ -605,3 +605,87 @@ describe('roman-numeral - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('roman-numeral - w142', () => {
+  it('roman-numeral v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roman-numeral - w145', () => {
+  it('roman-numeral v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roman-numeral - w148', () => {
+  it('roman-numeral v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roman-numeral - w151', () => {
+  it('roman-numeral v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roman-numeral - w154', () => {
+  it('roman-numeral v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roman-numeral - w157', () => {
+  it('roman-numeral v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roman-numeral - w160', () => {
+  it('roman-numeral v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

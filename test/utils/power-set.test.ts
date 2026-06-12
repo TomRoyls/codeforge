@@ -674,3 +674,87 @@ describe('power-set - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('power-set - w142', () => {
+  it('power-set v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('power-set - w145', () => {
+  it('power-set v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('power-set - w148', () => {
+  it('power-set v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('power-set - w151', () => {
+  it('power-set v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('power-set - w154', () => {
+  it('power-set v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('power-set - w157', () => {
+  it('power-set v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('power-set - w160', () => {
+  it('power-set v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

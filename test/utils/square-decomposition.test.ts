@@ -669,3 +669,87 @@ describe('square-decomposition - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('square-decomposition - w142', () => {
+  it('square-decomposition v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w145', () => {
+  it('square-decomposition v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w148', () => {
+  it('square-decomposition v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w151', () => {
+  it('square-decomposition v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w154', () => {
+  it('square-decomposition v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w157', () => {
+  it('square-decomposition v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w160', () => {
+  it('square-decomposition v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

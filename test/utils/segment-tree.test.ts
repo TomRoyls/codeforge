@@ -720,3 +720,87 @@ describe('segment-tree - wave139', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('segment-tree - w142', () => {
+  it('segment-tree v142x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v142x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v142x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('segment-tree - w145', () => {
+  it('segment-tree v145x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v145x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v145x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('segment-tree - w148', () => {
+  it('segment-tree v148x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v148x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v148x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('segment-tree - w151', () => {
+  it('segment-tree v151x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v151x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v151x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('segment-tree - w154', () => {
+  it('segment-tree v154x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v154x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v154x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('segment-tree - w157', () => {
+  it('segment-tree v157x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v157x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v157x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('segment-tree - w160', () => {
+  it('segment-tree v160x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v160x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree v160x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

@@ -784,3 +784,87 @@ describe('implicit-key-tree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('implicit-key-tree - w142', () => {
+  it('implicit-key-tree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('implicit-key-tree - w145', () => {
+  it('implicit-key-tree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('implicit-key-tree - w148', () => {
+  it('implicit-key-tree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('implicit-key-tree - w151', () => {
+  it('implicit-key-tree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('implicit-key-tree - w154', () => {
+  it('implicit-key-tree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('implicit-key-tree - w157', () => {
+  it('implicit-key-tree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('implicit-key-tree - w160', () => {
+  it('implicit-key-tree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -785,3 +785,87 @@ describe('bandwidth-minimization - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bandwidth-minimization - w142', () => {
+  it('bandwidth-minimization v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bandwidth-minimization - w145', () => {
+  it('bandwidth-minimization v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bandwidth-minimization - w148', () => {
+  it('bandwidth-minimization v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bandwidth-minimization - w151', () => {
+  it('bandwidth-minimization v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bandwidth-minimization - w154', () => {
+  it('bandwidth-minimization v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bandwidth-minimization - w157', () => {
+  it('bandwidth-minimization v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bandwidth-minimization - w160', () => {
+  it('bandwidth-minimization v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

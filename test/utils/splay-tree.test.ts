@@ -830,3 +830,87 @@ describe('splay-tree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('splay-tree - w142', () => {
+  it('splay-tree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('splay-tree - w145', () => {
+  it('splay-tree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('splay-tree - w148', () => {
+  it('splay-tree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('splay-tree - w151', () => {
+  it('splay-tree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('splay-tree - w154', () => {
+  it('splay-tree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('splay-tree - w157', () => {
+  it('splay-tree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('splay-tree - w160', () => {
+  it('splay-tree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

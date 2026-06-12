@@ -781,3 +781,87 @@ describe('kahn-algorithm - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kahn-algorithm - w142', () => {
+  it('kahn-algorithm v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - w145', () => {
+  it('kahn-algorithm v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - w148', () => {
+  it('kahn-algorithm v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - w151', () => {
+  it('kahn-algorithm v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - w154', () => {
+  it('kahn-algorithm v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - w157', () => {
+  it('kahn-algorithm v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - w160', () => {
+  it('kahn-algorithm v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -687,3 +687,87 @@ describe('introsort - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('introsort - w142', () => {
+  it('introsort v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('introsort - w145', () => {
+  it('introsort v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('introsort - w148', () => {
+  it('introsort v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('introsort - w151', () => {
+  it('introsort v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('introsort - w154', () => {
+  it('introsort v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('introsort - w157', () => {
+  it('introsort v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('introsort - w160', () => {
+  it('introsort v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

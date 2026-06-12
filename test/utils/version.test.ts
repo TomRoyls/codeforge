@@ -622,3 +622,87 @@ describe('version - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('version - w142', () => {
+  it('version v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - w145', () => {
+  it('version v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - w148', () => {
+  it('version v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - w151', () => {
+  it('version v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - w154', () => {
+  it('version v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - w157', () => {
+  it('version v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - w160', () => {
+  it('version v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

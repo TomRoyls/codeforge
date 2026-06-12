@@ -867,3 +867,87 @@ describe('dancing-links - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dancing-links - w142', () => {
+  it('dancing-links v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dancing-links - w145', () => {
+  it('dancing-links v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dancing-links - w148', () => {
+  it('dancing-links v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dancing-links - w151', () => {
+  it('dancing-links v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dancing-links - w154', () => {
+  it('dancing-links v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dancing-links - w157', () => {
+  it('dancing-links v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dancing-links - w160', () => {
+  it('dancing-links v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

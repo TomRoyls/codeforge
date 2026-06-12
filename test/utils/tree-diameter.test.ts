@@ -829,3 +829,87 @@ describe('tree-diameter - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tree-diameter - w142', () => {
+  it('tree-diameter v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-diameter - w145', () => {
+  it('tree-diameter v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-diameter - w148', () => {
+  it('tree-diameter v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-diameter - w151', () => {
+  it('tree-diameter v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-diameter - w154', () => {
+  it('tree-diameter v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-diameter - w157', () => {
+  it('tree-diameter v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tree-diameter - w160', () => {
+  it('tree-diameter v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

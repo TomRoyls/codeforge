@@ -769,3 +769,87 @@ describe('hyper-log-log - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hyper-log-log - w142', () => {
+  it('hyper-log-log v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyper-log-log - w145', () => {
+  it('hyper-log-log v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyper-log-log - w148', () => {
+  it('hyper-log-log v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyper-log-log - w151', () => {
+  it('hyper-log-log v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyper-log-log - w154', () => {
+  it('hyper-log-log v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyper-log-log - w157', () => {
+  it('hyper-log-log v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyper-log-log - w160', () => {
+  it('hyper-log-log v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

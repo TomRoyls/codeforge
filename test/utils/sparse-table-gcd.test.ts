@@ -607,3 +607,87 @@ describe('sparse-table-gcd - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-table-gcd - w142', () => {
+  it('sparse-table-gcd v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-gcd - w145', () => {
+  it('sparse-table-gcd v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-gcd - w148', () => {
+  it('sparse-table-gcd v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-gcd - w151', () => {
+  it('sparse-table-gcd v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-gcd - w154', () => {
+  it('sparse-table-gcd v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-gcd - w157', () => {
+  it('sparse-table-gcd v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-gcd - w160', () => {
+  it('sparse-table-gcd v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

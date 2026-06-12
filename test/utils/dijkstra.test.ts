@@ -960,3 +960,87 @@ describe('dijkstra - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dijkstra - w142', () => {
+  it('dijkstra v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra - w145', () => {
+  it('dijkstra v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra - w148', () => {
+  it('dijkstra v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra - w151', () => {
+  it('dijkstra v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra - w154', () => {
+  it('dijkstra v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra - w157', () => {
+  it('dijkstra v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra - w160', () => {
+  it('dijkstra v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

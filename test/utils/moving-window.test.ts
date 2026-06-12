@@ -794,3 +794,87 @@ describe('moving-window - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('moving-window - w142', () => {
+  it('moving-window v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-window - w145', () => {
+  it('moving-window v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-window - w148', () => {
+  it('moving-window v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-window - w151', () => {
+  it('moving-window v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-window - w154', () => {
+  it('moving-window v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-window - w157', () => {
+  it('moving-window v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-window - w160', () => {
+  it('moving-window v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

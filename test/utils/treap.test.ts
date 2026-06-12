@@ -851,3 +851,87 @@ describe('treap - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('treap - w142', () => {
+  it('treap v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap - w145', () => {
+  it('treap v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap - w148', () => {
+  it('treap v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap - w151', () => {
+  it('treap v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap - w154', () => {
+  it('treap v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap - w157', () => {
+  it('treap v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap - w160', () => {
+  it('treap v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

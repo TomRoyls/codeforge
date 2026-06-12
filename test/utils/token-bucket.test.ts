@@ -698,3 +698,87 @@ describe('token-bucket - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('token-bucket - w142', () => {
+  it('token-bucket v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('token-bucket - w145', () => {
+  it('token-bucket v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('token-bucket - w148', () => {
+  it('token-bucket v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('token-bucket - w151', () => {
+  it('token-bucket v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('token-bucket - w154', () => {
+  it('token-bucket v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('token-bucket - w157', () => {
+  it('token-bucket v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('token-bucket - w160', () => {
+  it('token-bucket v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

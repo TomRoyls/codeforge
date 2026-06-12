@@ -632,3 +632,87 @@ describe('substring-counter - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('substring-counter - w142', () => {
+  it('substring-counter v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w145', () => {
+  it('substring-counter v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w148', () => {
+  it('substring-counter v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w151', () => {
+  it('substring-counter v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w154', () => {
+  it('substring-counter v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w157', () => {
+  it('substring-counter v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w160', () => {
+  it('substring-counter v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

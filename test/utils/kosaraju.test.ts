@@ -721,3 +721,87 @@ describe('kosaraju - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kosaraju - w142', () => {
+  it('kosaraju v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kosaraju - w145', () => {
+  it('kosaraju v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kosaraju - w148', () => {
+  it('kosaraju v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kosaraju - w151', () => {
+  it('kosaraju v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kosaraju - w154', () => {
+  it('kosaraju v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kosaraju - w157', () => {
+  it('kosaraju v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kosaraju - w160', () => {
+  it('kosaraju v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kosaraju v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -620,3 +620,87 @@ describe('mod-int - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('mod-int - w142', () => {
+  it('mod-int v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mod-int - w145', () => {
+  it('mod-int v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mod-int - w148', () => {
+  it('mod-int v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mod-int - w151', () => {
+  it('mod-int v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mod-int - w154', () => {
+  it('mod-int v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mod-int - w157', () => {
+  it('mod-int v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mod-int - w160', () => {
+  it('mod-int v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

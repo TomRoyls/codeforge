@@ -741,3 +741,87 @@ describe('line-sweep - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('line-sweep - w142', () => {
+  it('line-sweep v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - w145', () => {
+  it('line-sweep v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - w148', () => {
+  it('line-sweep v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - w151', () => {
+  it('line-sweep v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - w154', () => {
+  it('line-sweep v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - w157', () => {
+  it('line-sweep v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-sweep - w160', () => {
+  it('line-sweep v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-sweep v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

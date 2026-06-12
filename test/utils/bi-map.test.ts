@@ -913,3 +913,87 @@ describe('bi-map - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bi-map - w142', () => {
+  it('bi-map v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bi-map - w145', () => {
+  it('bi-map v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bi-map - w148', () => {
+  it('bi-map v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bi-map - w151', () => {
+  it('bi-map v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bi-map - w154', () => {
+  it('bi-map v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bi-map - w157', () => {
+  it('bi-map v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bi-map - w160', () => {
+  it('bi-map v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bi-map v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

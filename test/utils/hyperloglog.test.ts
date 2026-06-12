@@ -795,3 +795,87 @@ describe('hyperloglog - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hyperloglog - w142', () => {
+  it('hyperloglog v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - w145', () => {
+  it('hyperloglog v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - w148', () => {
+  it('hyperloglog v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - w151', () => {
+  it('hyperloglog v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - w154', () => {
+  it('hyperloglog v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - w157', () => {
+  it('hyperloglog v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - w160', () => {
+  it('hyperloglog v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

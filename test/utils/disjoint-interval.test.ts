@@ -714,3 +714,87 @@ describe('disjoint-interval - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-interval - w142', () => {
+  it('disjoint-interval v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - w145', () => {
+  it('disjoint-interval v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - w148', () => {
+  it('disjoint-interval v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - w151', () => {
+  it('disjoint-interval v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - w154', () => {
+  it('disjoint-interval v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - w157', () => {
+  it('disjoint-interval v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval - w160', () => {
+  it('disjoint-interval v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

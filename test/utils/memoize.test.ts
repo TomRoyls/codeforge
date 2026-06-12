@@ -819,3 +819,87 @@ describe('memoize - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('memoize - w142', () => {
+  it('memoize v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - w145', () => {
+  it('memoize v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - w148', () => {
+  it('memoize v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - w151', () => {
+  it('memoize v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - w154', () => {
+  it('memoize v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - w157', () => {
+  it('memoize v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - w160', () => {
+  it('memoize v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

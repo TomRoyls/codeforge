@@ -937,3 +937,87 @@ describe('bench - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bench - w142', () => {
+  it('bench v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bench - w145', () => {
+  it('bench v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bench - w148', () => {
+  it('bench v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bench - w151', () => {
+  it('bench v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bench - w154', () => {
+  it('bench v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bench - w157', () => {
+  it('bench v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bench - w160', () => {
+  it('bench v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

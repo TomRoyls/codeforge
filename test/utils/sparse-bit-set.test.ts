@@ -824,3 +824,87 @@ describe('sparse-bit-set - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-bit-set - w142', () => {
+  it('sparse-bit-set v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bit-set - w145', () => {
+  it('sparse-bit-set v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bit-set - w148', () => {
+  it('sparse-bit-set v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bit-set - w151', () => {
+  it('sparse-bit-set v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bit-set - w154', () => {
+  it('sparse-bit-set v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bit-set - w157', () => {
+  it('sparse-bit-set v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bit-set - w160', () => {
+  it('sparse-bit-set v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

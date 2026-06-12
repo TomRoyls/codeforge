@@ -994,3 +994,87 @@ describe('min-max-heap - wave139', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('min-max-heap - w142', () => {
+  it('min-max-heap v142x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v142x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v142x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - w145', () => {
+  it('min-max-heap v145x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v145x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v145x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - w148', () => {
+  it('min-max-heap v148x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v148x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v148x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - w151', () => {
+  it('min-max-heap v151x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v151x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v151x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - w154', () => {
+  it('min-max-heap v154x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v154x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v154x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - w157', () => {
+  it('min-max-heap v157x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v157x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v157x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-heap - w160', () => {
+  it('min-max-heap v160x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v160x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap v160x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

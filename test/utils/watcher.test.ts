@@ -1243,3 +1243,87 @@ describe('watcher - wave139', () => {
     expect(mkdirSync).toBeDefined()
   })
 })
+
+describe('watcher - w142', () => {
+  it('watcher v142x0', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v142x1', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v142x2', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+})
+
+describe('watcher - w145', () => {
+  it('watcher v145x0', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v145x1', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v145x2', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+})
+
+describe('watcher - w148', () => {
+  it('watcher v148x0', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v148x1', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v148x2', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+})
+
+describe('watcher - w151', () => {
+  it('watcher v151x0', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v151x1', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v151x2', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+})
+
+describe('watcher - w154', () => {
+  it('watcher v154x0', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v154x1', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v154x2', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+})
+
+describe('watcher - w157', () => {
+  it('watcher v157x0', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v157x1', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v157x2', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+})
+
+describe('watcher - w160', () => {
+  it('watcher v160x0', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v160x1', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher v160x2', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+})

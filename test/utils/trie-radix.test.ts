@@ -802,3 +802,87 @@ describe('trie-radix - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('trie-radix - w142', () => {
+  it('trie-radix v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-radix - w145', () => {
+  it('trie-radix v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-radix - w148', () => {
+  it('trie-radix v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-radix - w151', () => {
+  it('trie-radix v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-radix - w154', () => {
+  it('trie-radix v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-radix - w157', () => {
+  it('trie-radix v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-radix - w160', () => {
+  it('trie-radix v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

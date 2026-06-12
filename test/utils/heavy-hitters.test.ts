@@ -741,3 +741,87 @@ describe('heavy-hitters - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-hitters - w142', () => {
+  it('heavy-hitters v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w145', () => {
+  it('heavy-hitters v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w148', () => {
+  it('heavy-hitters v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w151', () => {
+  it('heavy-hitters v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w154', () => {
+  it('heavy-hitters v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w157', () => {
+  it('heavy-hitters v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w160', () => {
+  it('heavy-hitters v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

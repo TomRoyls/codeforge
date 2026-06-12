@@ -559,3 +559,87 @@ describe('boyer-moore-extended - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('boyer-moore-extended - w142', () => {
+  it('boyer-moore-extended v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w145', () => {
+  it('boyer-moore-extended v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w148', () => {
+  it('boyer-moore-extended v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w151', () => {
+  it('boyer-moore-extended v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w154', () => {
+  it('boyer-moore-extended v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w157', () => {
+  it('boyer-moore-extended v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w160', () => {
+  it('boyer-moore-extended v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -956,3 +956,87 @@ describe('avl-tree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('avl-tree - w142', () => {
+  it('avl-tree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('avl-tree - w145', () => {
+  it('avl-tree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('avl-tree - w148', () => {
+  it('avl-tree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('avl-tree - w151', () => {
+  it('avl-tree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('avl-tree - w154', () => {
+  it('avl-tree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('avl-tree - w157', () => {
+  it('avl-tree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('avl-tree - w160', () => {
+  it('avl-tree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

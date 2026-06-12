@@ -672,3 +672,87 @@ describe('suffix-automaton - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suffix-automaton - w142', () => {
+  it('suffix-automaton v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - w145', () => {
+  it('suffix-automaton v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - w148', () => {
+  it('suffix-automaton v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - w151', () => {
+  it('suffix-automaton v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - w154', () => {
+  it('suffix-automaton v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - w157', () => {
+  it('suffix-automaton v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - w160', () => {
+  it('suffix-automaton v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

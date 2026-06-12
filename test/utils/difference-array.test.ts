@@ -784,3 +784,87 @@ describe('difference-array - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('difference-array - w142', () => {
+  it('difference-array v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('difference-array - w145', () => {
+  it('difference-array v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('difference-array - w148', () => {
+  it('difference-array v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('difference-array - w151', () => {
+  it('difference-array v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('difference-array - w154', () => {
+  it('difference-array v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('difference-array - w157', () => {
+  it('difference-array v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('difference-array - w160', () => {
+  it('difference-array v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

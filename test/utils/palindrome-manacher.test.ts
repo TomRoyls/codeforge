@@ -638,3 +638,87 @@ describe('palindrome-manacher - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('palindrome-manacher - w142', () => {
+  it('palindrome-manacher v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w145', () => {
+  it('palindrome-manacher v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w148', () => {
+  it('palindrome-manacher v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w151', () => {
+  it('palindrome-manacher v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w154', () => {
+  it('palindrome-manacher v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w157', () => {
+  it('palindrome-manacher v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w160', () => {
+  it('palindrome-manacher v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

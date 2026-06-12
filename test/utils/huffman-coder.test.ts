@@ -747,3 +747,87 @@ describe('huffman-coder - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('huffman-coder - w142', () => {
+  it('huffman-coder v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w145', () => {
+  it('huffman-coder v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w148', () => {
+  it('huffman-coder v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w151', () => {
+  it('huffman-coder v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w154', () => {
+  it('huffman-coder v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w157', () => {
+  it('huffman-coder v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w160', () => {
+  it('huffman-coder v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

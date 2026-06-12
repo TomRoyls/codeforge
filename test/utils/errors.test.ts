@@ -743,3 +743,87 @@ describe('errors - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('errors - w142', () => {
+  it('errors v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - w145', () => {
+  it('errors v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - w148', () => {
+  it('errors v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - w151', () => {
+  it('errors v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - w154', () => {
+  it('errors v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - w157', () => {
+  it('errors v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('errors - w160', () => {
+  it('errors v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

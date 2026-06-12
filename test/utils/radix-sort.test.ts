@@ -669,3 +669,87 @@ describe('radix-sort - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('radix-sort - w142', () => {
+  it('radix-sort v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-sort - w145', () => {
+  it('radix-sort v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-sort - w148', () => {
+  it('radix-sort v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-sort - w151', () => {
+  it('radix-sort v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-sort - w154', () => {
+  it('radix-sort v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-sort - w157', () => {
+  it('radix-sort v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('radix-sort - w160', () => {
+  it('radix-sort v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-sort v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

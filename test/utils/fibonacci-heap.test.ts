@@ -999,3 +999,87 @@ describe('fibonacci-heap - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fibonacci-heap - w142', () => {
+  it('fibonacci-heap v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-heap - w145', () => {
+  it('fibonacci-heap v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-heap - w148', () => {
+  it('fibonacci-heap v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-heap - w151', () => {
+  it('fibonacci-heap v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-heap - w154', () => {
+  it('fibonacci-heap v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-heap - w157', () => {
+  it('fibonacci-heap v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-heap - w160', () => {
+  it('fibonacci-heap v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

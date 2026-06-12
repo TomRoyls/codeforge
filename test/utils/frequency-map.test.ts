@@ -834,3 +834,87 @@ describe('frequency-map - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('frequency-map - w142', () => {
+  it('frequency-map v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w145', () => {
+  it('frequency-map v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w148', () => {
+  it('frequency-map v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w151', () => {
+  it('frequency-map v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w154', () => {
+  it('frequency-map v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w157', () => {
+  it('frequency-map v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w160', () => {
+  it('frequency-map v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

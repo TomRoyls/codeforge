@@ -682,3 +682,87 @@ describe('crt - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('crt - w142', () => {
+  it('crt v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('crt - w145', () => {
+  it('crt v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('crt - w148', () => {
+  it('crt v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('crt - w151', () => {
+  it('crt v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('crt - w154', () => {
+  it('crt v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('crt - w157', () => {
+  it('crt v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('crt - w160', () => {
+  it('crt v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

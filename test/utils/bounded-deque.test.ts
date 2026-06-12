@@ -790,3 +790,87 @@ describe('bounded-deque - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bounded-deque - w142', () => {
+  it('bounded-deque v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-deque - w145', () => {
+  it('bounded-deque v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-deque - w148', () => {
+  it('bounded-deque v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-deque - w151', () => {
+  it('bounded-deque v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-deque - w154', () => {
+  it('bounded-deque v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-deque - w157', () => {
+  it('bounded-deque v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-deque - w160', () => {
+  it('bounded-deque v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-deque v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

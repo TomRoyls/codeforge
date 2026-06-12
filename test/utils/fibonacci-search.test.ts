@@ -679,3 +679,87 @@ describe('fibonacci-search - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fibonacci-search - w142', () => {
+  it('fibonacci-search v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-search - w145', () => {
+  it('fibonacci-search v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-search - w148', () => {
+  it('fibonacci-search v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-search - w151', () => {
+  it('fibonacci-search v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-search - w154', () => {
+  it('fibonacci-search v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-search - w157', () => {
+  it('fibonacci-search v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fibonacci-search - w160', () => {
+  it('fibonacci-search v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-search v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

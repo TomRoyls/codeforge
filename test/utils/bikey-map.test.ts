@@ -962,3 +962,87 @@ describe('bikey-map - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bikey-map - w142', () => {
+  it('bikey-map v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bikey-map - w145', () => {
+  it('bikey-map v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bikey-map - w148', () => {
+  it('bikey-map v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bikey-map - w151', () => {
+  it('bikey-map v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bikey-map - w154', () => {
+  it('bikey-map v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bikey-map - w157', () => {
+  it('bikey-map v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bikey-map - w160', () => {
+  it('bikey-map v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

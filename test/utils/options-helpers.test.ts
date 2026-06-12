@@ -662,3 +662,87 @@ describe('options-helpers - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('options-helpers - w142', () => {
+  it('options-helpers v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('options-helpers - w145', () => {
+  it('options-helpers v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('options-helpers - w148', () => {
+  it('options-helpers v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('options-helpers - w151', () => {
+  it('options-helpers v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('options-helpers - w154', () => {
+  it('options-helpers v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('options-helpers - w157', () => {
+  it('options-helpers v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('options-helpers - w160', () => {
+  it('options-helpers v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

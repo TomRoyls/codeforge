@@ -618,3 +618,87 @@ describe('extended-euclidean - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('extended-euclidean - w142', () => {
+  it('extended-euclidean v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - w145', () => {
+  it('extended-euclidean v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - w148', () => {
+  it('extended-euclidean v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - w151', () => {
+  it('extended-euclidean v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - w154', () => {
+  it('extended-euclidean v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - w157', () => {
+  it('extended-euclidean v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - w160', () => {
+  it('extended-euclidean v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

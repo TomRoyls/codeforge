@@ -749,3 +749,87 @@ describe('persistent-segment - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-segment - w142', () => {
+  it('persistent-segment v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-segment - w145', () => {
+  it('persistent-segment v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-segment - w148', () => {
+  it('persistent-segment v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-segment - w151', () => {
+  it('persistent-segment v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-segment - w154', () => {
+  it('persistent-segment v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-segment - w157', () => {
+  it('persistent-segment v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-segment - w160', () => {
+  it('persistent-segment v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

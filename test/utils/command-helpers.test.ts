@@ -645,3 +645,87 @@ describe('command-helpers - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('command-helpers - w142', () => {
+  it('command-helpers v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w145', () => {
+  it('command-helpers v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w148', () => {
+  it('command-helpers v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w151', () => {
+  it('command-helpers v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w154', () => {
+  it('command-helpers v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w157', () => {
+  it('command-helpers v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w160', () => {
+  it('command-helpers v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

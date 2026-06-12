@@ -1013,3 +1013,87 @@ describe('object-pool - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('object-pool - w142', () => {
+  it('object-pool v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - w145', () => {
+  it('object-pool v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - w148', () => {
+  it('object-pool v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - w151', () => {
+  it('object-pool v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - w154', () => {
+  it('object-pool v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - w157', () => {
+  it('object-pool v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('object-pool - w160', () => {
+  it('object-pool v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('object-pool v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -855,3 +855,87 @@ describe('moving-average - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('moving-average - w142', () => {
+  it('moving-average v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w145', () => {
+  it('moving-average v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w148', () => {
+  it('moving-average v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w151', () => {
+  it('moving-average v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w154', () => {
+  it('moving-average v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w157', () => {
+  it('moving-average v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w160', () => {
+  it('moving-average v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

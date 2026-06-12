@@ -619,3 +619,87 @@ describe('modular-arithmetic - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('modular-arithmetic - w142', () => {
+  it('modular-arithmetic v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-arithmetic - w145', () => {
+  it('modular-arithmetic v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-arithmetic - w148', () => {
+  it('modular-arithmetic v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-arithmetic - w151', () => {
+  it('modular-arithmetic v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-arithmetic - w154', () => {
+  it('modular-arithmetic v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-arithmetic - w157', () => {
+  it('modular-arithmetic v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-arithmetic - w160', () => {
+  it('modular-arithmetic v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

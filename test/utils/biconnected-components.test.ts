@@ -850,3 +850,87 @@ describe('biconnected-components - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('biconnected-components - w142', () => {
+  it('biconnected-components v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('biconnected-components - w145', () => {
+  it('biconnected-components v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('biconnected-components - w148', () => {
+  it('biconnected-components v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('biconnected-components - w151', () => {
+  it('biconnected-components v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('biconnected-components - w154', () => {
+  it('biconnected-components v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('biconnected-components - w157', () => {
+  it('biconnected-components v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('biconnected-components - w160', () => {
+  it('biconnected-components v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

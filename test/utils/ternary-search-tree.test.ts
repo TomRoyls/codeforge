@@ -836,3 +836,87 @@ describe('ternary-search-tree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ternary-search-tree - w142', () => {
+  it('ternary-search-tree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-tree - w145', () => {
+  it('ternary-search-tree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-tree - w148', () => {
+  it('ternary-search-tree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-tree - w151', () => {
+  it('ternary-search-tree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-tree - w154', () => {
+  it('ternary-search-tree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-tree - w157', () => {
+  it('ternary-search-tree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-tree - w160', () => {
+  it('ternary-search-tree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

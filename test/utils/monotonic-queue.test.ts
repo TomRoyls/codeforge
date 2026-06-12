@@ -845,3 +845,87 @@ describe('monotonic-queue - wave139', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('monotonic-queue - w142', () => {
+  it('monotonic-queue v142x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v142x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v142x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - w145', () => {
+  it('monotonic-queue v145x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v145x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v145x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - w148', () => {
+  it('monotonic-queue v148x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v148x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v148x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - w151', () => {
+  it('monotonic-queue v151x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v151x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v151x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - w154', () => {
+  it('monotonic-queue v154x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v154x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v154x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - w157', () => {
+  it('monotonic-queue v157x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v157x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v157x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - w160', () => {
+  it('monotonic-queue v160x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v160x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue v160x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

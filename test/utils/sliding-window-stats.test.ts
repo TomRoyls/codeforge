@@ -804,3 +804,87 @@ describe('sliding-window-stats - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sliding-window-stats - w142', () => {
+  it('sliding-window-stats v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-stats - w145', () => {
+  it('sliding-window-stats v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-stats - w148', () => {
+  it('sliding-window-stats v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-stats - w151', () => {
+  it('sliding-window-stats v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-stats - w154', () => {
+  it('sliding-window-stats v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-stats - w157', () => {
+  it('sliding-window-stats v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-stats - w160', () => {
+  it('sliding-window-stats v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

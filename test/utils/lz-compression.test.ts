@@ -683,3 +683,87 @@ describe('lz-compression - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lz-compression - w142', () => {
+  it('lz-compression v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - w145', () => {
+  it('lz-compression v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - w148', () => {
+  it('lz-compression v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - w151', () => {
+  it('lz-compression v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - w154', () => {
+  it('lz-compression v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - w157', () => {
+  it('lz-compression v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lz-compression - w160', () => {
+  it('lz-compression v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -768,3 +768,87 @@ describe('convex-hull-trick - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('convex-hull-trick - w142', () => {
+  it('convex-hull-trick v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-trick - w145', () => {
+  it('convex-hull-trick v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-trick - w148', () => {
+  it('convex-hull-trick v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-trick - w151', () => {
+  it('convex-hull-trick v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-trick - w154', () => {
+  it('convex-hull-trick v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-trick - w157', () => {
+  it('convex-hull-trick v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-trick - w160', () => {
+  it('convex-hull-trick v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-trick v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

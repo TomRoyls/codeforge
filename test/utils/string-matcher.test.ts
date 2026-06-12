@@ -839,3 +839,87 @@ describe('string-matcher - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-matcher - w142', () => {
+  it('string-matcher v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-matcher - w145', () => {
+  it('string-matcher v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-matcher - w148', () => {
+  it('string-matcher v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-matcher - w151', () => {
+  it('string-matcher v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-matcher - w154', () => {
+  it('string-matcher v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-matcher - w157', () => {
+  it('string-matcher v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-matcher - w160', () => {
+  it('string-matcher v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

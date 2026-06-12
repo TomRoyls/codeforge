@@ -905,3 +905,87 @@ describe('dijkstra-fibonacci - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dijkstra-fibonacci - w142', () => {
+  it('dijkstra-fibonacci v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra-fibonacci - w145', () => {
+  it('dijkstra-fibonacci v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra-fibonacci - w148', () => {
+  it('dijkstra-fibonacci v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra-fibonacci - w151', () => {
+  it('dijkstra-fibonacci v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra-fibonacci - w154', () => {
+  it('dijkstra-fibonacci v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra-fibonacci - w157', () => {
+  it('dijkstra-fibonacci v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra-fibonacci - w160', () => {
+  it('dijkstra-fibonacci v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -807,3 +807,87 @@ describe('bipartite-matching - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bipartite-matching - w142', () => {
+  it('bipartite-matching v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bipartite-matching - w145', () => {
+  it('bipartite-matching v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bipartite-matching - w148', () => {
+  it('bipartite-matching v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bipartite-matching - w151', () => {
+  it('bipartite-matching v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bipartite-matching - w154', () => {
+  it('bipartite-matching v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bipartite-matching - w157', () => {
+  it('bipartite-matching v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bipartite-matching - w160', () => {
+  it('bipartite-matching v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

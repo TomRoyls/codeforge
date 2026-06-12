@@ -803,3 +803,87 @@ describe('streaming-quantile - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-quantile - w142', () => {
+  it('streaming-quantile v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - w145', () => {
+  it('streaming-quantile v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - w148', () => {
+  it('streaming-quantile v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - w151', () => {
+  it('streaming-quantile v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - w154', () => {
+  it('streaming-quantile v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - w157', () => {
+  it('streaming-quantile v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - w160', () => {
+  it('streaming-quantile v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

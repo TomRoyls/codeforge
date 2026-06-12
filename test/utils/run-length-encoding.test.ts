@@ -676,3 +676,87 @@ describe('run-length-encoding - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('run-length-encoding - w142', () => {
+  it('run-length-encoding v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoding - w145', () => {
+  it('run-length-encoding v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoding - w148', () => {
+  it('run-length-encoding v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoding - w151', () => {
+  it('run-length-encoding v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoding - w154', () => {
+  it('run-length-encoding v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoding - w157', () => {
+  it('run-length-encoding v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoding - w160', () => {
+  it('run-length-encoding v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

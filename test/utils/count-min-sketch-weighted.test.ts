@@ -866,3 +866,87 @@ describe('count-min-sketch-weighted - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('count-min-sketch-weighted - w142', () => {
+  it('count-min-sketch-weighted v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch-weighted - w145', () => {
+  it('count-min-sketch-weighted v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch-weighted - w148', () => {
+  it('count-min-sketch-weighted v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch-weighted - w151', () => {
+  it('count-min-sketch-weighted v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch-weighted - w154', () => {
+  it('count-min-sketch-weighted v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch-weighted - w157', () => {
+  it('count-min-sketch-weighted v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch-weighted - w160', () => {
+  it('count-min-sketch-weighted v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch-weighted v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

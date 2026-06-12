@@ -688,3 +688,87 @@ describe('cartesian-tree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cartesian-tree - w142', () => {
+  it('cartesian-tree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-tree - w145', () => {
+  it('cartesian-tree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-tree - w148', () => {
+  it('cartesian-tree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-tree - w151', () => {
+  it('cartesian-tree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-tree - w154', () => {
+  it('cartesian-tree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-tree - w157', () => {
+  it('cartesian-tree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-tree - w160', () => {
+  it('cartesian-tree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

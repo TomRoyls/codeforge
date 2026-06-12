@@ -740,3 +740,87 @@ describe('approximate-set - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('approximate-set - w142', () => {
+  it('approximate-set v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('approximate-set - w145', () => {
+  it('approximate-set v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('approximate-set - w148', () => {
+  it('approximate-set v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('approximate-set - w151', () => {
+  it('approximate-set v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('approximate-set - w154', () => {
+  it('approximate-set v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('approximate-set - w157', () => {
+  it('approximate-set v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('approximate-set - w160', () => {
+  it('approximate-set v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('approximate-set v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

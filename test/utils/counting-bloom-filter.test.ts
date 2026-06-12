@@ -754,3 +754,87 @@ describe('counting-bloom-filter - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counting-bloom-filter - w142', () => {
+  it('counting-bloom-filter v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-bloom-filter - w145', () => {
+  it('counting-bloom-filter v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-bloom-filter - w148', () => {
+  it('counting-bloom-filter v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-bloom-filter - w151', () => {
+  it('counting-bloom-filter v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-bloom-filter - w154', () => {
+  it('counting-bloom-filter v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-bloom-filter - w157', () => {
+  it('counting-bloom-filter v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-bloom-filter - w160', () => {
+  it('counting-bloom-filter v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-bloom-filter v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

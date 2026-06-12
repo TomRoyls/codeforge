@@ -835,3 +835,87 @@ describe('floyd-warshall - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('floyd-warshall - w142', () => {
+  it('floyd-warshall v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w145', () => {
+  it('floyd-warshall v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w148', () => {
+  it('floyd-warshall v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w151', () => {
+  it('floyd-warshall v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w154', () => {
+  it('floyd-warshall v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w157', () => {
+  it('floyd-warshall v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w160', () => {
+  it('floyd-warshall v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

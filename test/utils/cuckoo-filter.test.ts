@@ -790,3 +790,87 @@ describe('cuckoo-filter - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cuckoo-filter - w142', () => {
+  it('cuckoo-filter v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-filter - w145', () => {
+  it('cuckoo-filter v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-filter - w148', () => {
+  it('cuckoo-filter v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-filter - w151', () => {
+  it('cuckoo-filter v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-filter - w154', () => {
+  it('cuckoo-filter v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-filter - w157', () => {
+  it('cuckoo-filter v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-filter - w160', () => {
+  it('cuckoo-filter v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

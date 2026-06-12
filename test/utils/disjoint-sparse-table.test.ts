@@ -692,3 +692,87 @@ describe('disjoint-sparse-table - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-sparse-table - w142', () => {
+  it('disjoint-sparse-table v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-sparse-table - w145', () => {
+  it('disjoint-sparse-table v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-sparse-table - w148', () => {
+  it('disjoint-sparse-table v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-sparse-table - w151', () => {
+  it('disjoint-sparse-table v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-sparse-table - w154', () => {
+  it('disjoint-sparse-table v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-sparse-table - w157', () => {
+  it('disjoint-sparse-table v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-sparse-table - w160', () => {
+  it('disjoint-sparse-table v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

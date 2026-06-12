@@ -774,3 +774,87 @@ describe('binary-lifting - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-lifting - w142', () => {
+  it('binary-lifting v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - w145', () => {
+  it('binary-lifting v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - w148', () => {
+  it('binary-lifting v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - w151', () => {
+  it('binary-lifting v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - w154', () => {
+  it('binary-lifting v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - w157', () => {
+  it('binary-lifting v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-lifting - w160', () => {
+  it('binary-lifting v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

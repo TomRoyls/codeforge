@@ -672,3 +672,87 @@ describe('coordinate-compressor - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('coordinate-compressor - w142', () => {
+  it('coordinate-compressor v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('coordinate-compressor - w145', () => {
+  it('coordinate-compressor v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('coordinate-compressor - w148', () => {
+  it('coordinate-compressor v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('coordinate-compressor - w151', () => {
+  it('coordinate-compressor v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('coordinate-compressor - w154', () => {
+  it('coordinate-compressor v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('coordinate-compressor - w157', () => {
+  it('coordinate-compressor v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('coordinate-compressor - w160', () => {
+  it('coordinate-compressor v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

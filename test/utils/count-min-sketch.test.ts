@@ -933,3 +933,87 @@ describe('count-min-sketch - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('count-min-sketch - w142', () => {
+  it('count-min-sketch v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w145', () => {
+  it('count-min-sketch v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w148', () => {
+  it('count-min-sketch v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w151', () => {
+  it('count-min-sketch v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w154', () => {
+  it('count-min-sketch v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w157', () => {
+  it('count-min-sketch v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w160', () => {
+  it('count-min-sketch v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

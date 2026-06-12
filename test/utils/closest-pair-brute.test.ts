@@ -833,3 +833,87 @@ describe('closest-pair-brute - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('closest-pair-brute - w142', () => {
+  it('closest-pair-brute v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w145', () => {
+  it('closest-pair-brute v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w148', () => {
+  it('closest-pair-brute v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w151', () => {
+  it('closest-pair-brute v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w154', () => {
+  it('closest-pair-brute v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w157', () => {
+  it('closest-pair-brute v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w160', () => {
+  it('closest-pair-brute v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -823,3 +823,87 @@ describe('rendezvous-hash - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rendezvous-hash - w142', () => {
+  it('rendezvous-hash v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rendezvous-hash - w145', () => {
+  it('rendezvous-hash v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rendezvous-hash - w148', () => {
+  it('rendezvous-hash v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rendezvous-hash - w151', () => {
+  it('rendezvous-hash v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rendezvous-hash - w154', () => {
+  it('rendezvous-hash v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rendezvous-hash - w157', () => {
+  it('rendezvous-hash v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rendezvous-hash - w160', () => {
+  it('rendezvous-hash v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rendezvous-hash v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

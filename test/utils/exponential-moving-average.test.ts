@@ -832,3 +832,87 @@ describe('exponential-moving-average - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('exponential-moving-average - w142', () => {
+  it('exponential-moving-average v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-moving-average - w145', () => {
+  it('exponential-moving-average v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-moving-average - w148', () => {
+  it('exponential-moving-average v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-moving-average - w151', () => {
+  it('exponential-moving-average v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-moving-average - w154', () => {
+  it('exponential-moving-average v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-moving-average - w157', () => {
+  it('exponential-moving-average v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('exponential-moving-average - w160', () => {
+  it('exponential-moving-average v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-moving-average v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

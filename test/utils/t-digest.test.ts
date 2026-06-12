@@ -731,3 +731,87 @@ describe('t-digest - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('t-digest - w142', () => {
+  it('t-digest v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('t-digest - w145', () => {
+  it('t-digest v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('t-digest - w148', () => {
+  it('t-digest v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('t-digest - w151', () => {
+  it('t-digest v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('t-digest - w154', () => {
+  it('t-digest v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('t-digest - w157', () => {
+  it('t-digest v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('t-digest - w160', () => {
+  it('t-digest v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

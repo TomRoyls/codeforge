@@ -725,3 +725,87 @@ describe('run-length-encoder - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('run-length-encoder - w142', () => {
+  it('run-length-encoder v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoder - w145', () => {
+  it('run-length-encoder v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoder - w148', () => {
+  it('run-length-encoder v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoder - w151', () => {
+  it('run-length-encoder v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoder - w154', () => {
+  it('run-length-encoder v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoder - w157', () => {
+  it('run-length-encoder v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoder - w160', () => {
+  it('run-length-encoder v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

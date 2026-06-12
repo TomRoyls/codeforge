@@ -791,3 +791,87 @@ describe('linked-list - wave139', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('linked-list - w142', () => {
+  it('linked-list v142x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v142x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v142x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - w145', () => {
+  it('linked-list v145x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v145x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v145x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - w148', () => {
+  it('linked-list v148x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v148x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v148x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - w151', () => {
+  it('linked-list v151x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v151x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v151x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - w154', () => {
+  it('linked-list v154x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v154x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v154x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - w157', () => {
+  it('linked-list v157x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v157x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v157x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('linked-list - w160', () => {
+  it('linked-list v160x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v160x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list v160x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

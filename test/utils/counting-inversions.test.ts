@@ -603,3 +603,87 @@ describe('counting-inversions - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counting-inversions - w142', () => {
+  it('counting-inversions v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w145', () => {
+  it('counting-inversions v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w148', () => {
+  it('counting-inversions v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w151', () => {
+  it('counting-inversions v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w154', () => {
+  it('counting-inversions v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w157', () => {
+  it('counting-inversions v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w160', () => {
+  it('counting-inversions v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

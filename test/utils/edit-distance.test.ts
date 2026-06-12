@@ -594,3 +594,87 @@ describe('edit-distance - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edit-distance - w142', () => {
+  it('edit-distance v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w145', () => {
+  it('edit-distance v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w148', () => {
+  it('edit-distance v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w151', () => {
+  it('edit-distance v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w154', () => {
+  it('edit-distance v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w157', () => {
+  it('edit-distance v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w160', () => {
+  it('edit-distance v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

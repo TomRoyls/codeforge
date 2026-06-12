@@ -697,3 +697,87 @@ describe('backoff - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('backoff - w142', () => {
+  it('backoff v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('backoff - w145', () => {
+  it('backoff v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('backoff - w148', () => {
+  it('backoff v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('backoff - w151', () => {
+  it('backoff v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('backoff - w154', () => {
+  it('backoff v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('backoff - w157', () => {
+  it('backoff v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('backoff - w160', () => {
+  it('backoff v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

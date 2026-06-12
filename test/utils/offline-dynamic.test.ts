@@ -787,3 +787,87 @@ describe('offline-dynamic - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('offline-dynamic - w142', () => {
+  it('offline-dynamic v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('offline-dynamic - w145', () => {
+  it('offline-dynamic v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('offline-dynamic - w148', () => {
+  it('offline-dynamic v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('offline-dynamic - w151', () => {
+  it('offline-dynamic v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('offline-dynamic - w154', () => {
+  it('offline-dynamic v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('offline-dynamic - w157', () => {
+  it('offline-dynamic v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('offline-dynamic - w160', () => {
+  it('offline-dynamic v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

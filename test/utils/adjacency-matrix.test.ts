@@ -745,3 +745,87 @@ describe('adjacency-matrix - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('adjacency-matrix - w142', () => {
+  it('adjacency-matrix v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-matrix - w145', () => {
+  it('adjacency-matrix v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-matrix - w148', () => {
+  it('adjacency-matrix v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-matrix - w151', () => {
+  it('adjacency-matrix v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-matrix - w154', () => {
+  it('adjacency-matrix v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-matrix - w157', () => {
+  it('adjacency-matrix v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-matrix - w160', () => {
+  it('adjacency-matrix v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

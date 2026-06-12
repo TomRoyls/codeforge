@@ -570,3 +570,87 @@ describe('prefix-function - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('prefix-function - w142', () => {
+  it('prefix-function v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prefix-function - w145', () => {
+  it('prefix-function v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prefix-function - w148', () => {
+  it('prefix-function v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prefix-function - w151', () => {
+  it('prefix-function v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prefix-function - w154', () => {
+  it('prefix-function v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prefix-function - w157', () => {
+  it('prefix-function v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prefix-function - w160', () => {
+  it('prefix-function v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

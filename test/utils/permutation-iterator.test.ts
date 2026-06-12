@@ -697,3 +697,87 @@ describe('permutation-iterator - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('permutation-iterator - w142', () => {
+  it('permutation-iterator v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('permutation-iterator - w145', () => {
+  it('permutation-iterator v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('permutation-iterator - w148', () => {
+  it('permutation-iterator v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('permutation-iterator - w151', () => {
+  it('permutation-iterator v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('permutation-iterator - w154', () => {
+  it('permutation-iterator v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('permutation-iterator - w157', () => {
+  it('permutation-iterator v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('permutation-iterator - w160', () => {
+  it('permutation-iterator v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

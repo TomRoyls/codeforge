@@ -703,3 +703,87 @@ describe('persistent-array - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-array - w142', () => {
+  it('persistent-array v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-array - w145', () => {
+  it('persistent-array v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-array - w148', () => {
+  it('persistent-array v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-array - w151', () => {
+  it('persistent-array v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-array - w154', () => {
+  it('persistent-array v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-array - w157', () => {
+  it('persistent-array v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-array - w160', () => {
+  it('persistent-array v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

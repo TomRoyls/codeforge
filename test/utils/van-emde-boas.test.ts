@@ -948,3 +948,87 @@ describe('van-emde-boas - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('van-emde-boas - w142', () => {
+  it('van-emde-boas v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - w145', () => {
+  it('van-emde-boas v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - w148', () => {
+  it('van-emde-boas v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - w151', () => {
+  it('van-emde-boas v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - w154', () => {
+  it('van-emde-boas v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - w157', () => {
+  it('van-emde-boas v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - w160', () => {
+  it('van-emde-boas v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

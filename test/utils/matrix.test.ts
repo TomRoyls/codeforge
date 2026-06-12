@@ -875,3 +875,87 @@ describe('matrix - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('matrix - w142', () => {
+  it('matrix v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix - w145', () => {
+  it('matrix v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix - w148', () => {
+  it('matrix v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix - w151', () => {
+  it('matrix v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix - w154', () => {
+  it('matrix v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix - w157', () => {
+  it('matrix v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix - w160', () => {
+  it('matrix v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

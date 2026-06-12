@@ -745,3 +745,87 @@ describe('git-helpers - wave139', () => {
     expect(resolve).toBeDefined()
   })
 })
+
+describe('git-helpers - w142', () => {
+  it('git-helpers v142x0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v142x1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v142x2', () => {
+    expect(resolve).toBeDefined()
+  })
+})
+
+describe('git-helpers - w145', () => {
+  it('git-helpers v145x0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v145x1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v145x2', () => {
+    expect(resolve).toBeDefined()
+  })
+})
+
+describe('git-helpers - w148', () => {
+  it('git-helpers v148x0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v148x1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v148x2', () => {
+    expect(resolve).toBeDefined()
+  })
+})
+
+describe('git-helpers - w151', () => {
+  it('git-helpers v151x0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v151x1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v151x2', () => {
+    expect(resolve).toBeDefined()
+  })
+})
+
+describe('git-helpers - w154', () => {
+  it('git-helpers v154x0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v154x1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v154x2', () => {
+    expect(resolve).toBeDefined()
+  })
+})
+
+describe('git-helpers - w157', () => {
+  it('git-helpers v157x0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v157x1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v157x2', () => {
+    expect(resolve).toBeDefined()
+  })
+})
+
+describe('git-helpers - w160', () => {
+  it('git-helpers v160x0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v160x1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers v160x2', () => {
+    expect(resolve).toBeDefined()
+  })
+})

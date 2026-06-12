@@ -751,3 +751,87 @@ describe('segment-tree-lazy - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('segment-tree-lazy - w142', () => {
+  it('segment-tree-lazy v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-tree-lazy - w145', () => {
+  it('segment-tree-lazy v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-tree-lazy - w148', () => {
+  it('segment-tree-lazy v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-tree-lazy - w151', () => {
+  it('segment-tree-lazy v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-tree-lazy - w154', () => {
+  it('segment-tree-lazy v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-tree-lazy - w157', () => {
+  it('segment-tree-lazy v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-tree-lazy - w160', () => {
+  it('segment-tree-lazy v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

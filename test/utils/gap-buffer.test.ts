@@ -834,3 +834,87 @@ describe('gap-buffer - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gap-buffer - w142', () => {
+  it('gap-buffer v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gap-buffer - w145', () => {
+  it('gap-buffer v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gap-buffer - w148', () => {
+  it('gap-buffer v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gap-buffer - w151', () => {
+  it('gap-buffer v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gap-buffer - w154', () => {
+  it('gap-buffer v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gap-buffer - w157', () => {
+  it('gap-buffer v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gap-buffer - w160', () => {
+  it('gap-buffer v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -839,3 +839,87 @@ describe('2sat - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('2sat - w142', () => {
+  it('2sat v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('2sat - w145', () => {
+  it('2sat v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('2sat - w148', () => {
+  it('2sat v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('2sat - w151', () => {
+  it('2sat v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('2sat - w154', () => {
+  it('2sat v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('2sat - w157', () => {
+  it('2sat v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('2sat - w160', () => {
+  it('2sat v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

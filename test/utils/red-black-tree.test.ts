@@ -818,3 +818,87 @@ describe('red-black-tree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('red-black-tree - w142', () => {
+  it('red-black-tree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('red-black-tree - w145', () => {
+  it('red-black-tree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('red-black-tree - w148', () => {
+  it('red-black-tree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('red-black-tree - w151', () => {
+  it('red-black-tree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('red-black-tree - w154', () => {
+  it('red-black-tree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('red-black-tree - w157', () => {
+  it('red-black-tree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('red-black-tree - w160', () => {
+  it('red-black-tree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

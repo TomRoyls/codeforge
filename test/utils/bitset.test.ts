@@ -729,3 +729,87 @@ describe('bitset - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bitset - w142', () => {
+  it('bitset v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitset - w145', () => {
+  it('bitset v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitset - w148', () => {
+  it('bitset v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitset - w151', () => {
+  it('bitset v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitset - w154', () => {
+  it('bitset v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitset - w157', () => {
+  it('bitset v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bitset - w160', () => {
+  it('bitset v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

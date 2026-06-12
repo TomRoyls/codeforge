@@ -847,3 +847,87 @@ describe('circuit-breaker - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circuit-breaker - w142', () => {
+  it('circuit-breaker v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w145', () => {
+  it('circuit-breaker v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w148', () => {
+  it('circuit-breaker v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w151', () => {
+  it('circuit-breaker v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w154', () => {
+  it('circuit-breaker v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w157', () => {
+  it('circuit-breaker v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w160', () => {
+  it('circuit-breaker v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

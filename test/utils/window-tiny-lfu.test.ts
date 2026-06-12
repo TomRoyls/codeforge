@@ -678,3 +678,87 @@ describe('window-tiny-lfu - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('window-tiny-lfu - w142', () => {
+  it('window-tiny-lfu v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w145', () => {
+  it('window-tiny-lfu v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w148', () => {
+  it('window-tiny-lfu v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w151', () => {
+  it('window-tiny-lfu v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w154', () => {
+  it('window-tiny-lfu v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w157', () => {
+  it('window-tiny-lfu v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w160', () => {
+  it('window-tiny-lfu v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

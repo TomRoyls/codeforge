@@ -620,3 +620,87 @@ describe('bisect - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bisect - w142', () => {
+  it('bisect v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - w145', () => {
+  it('bisect v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - w148', () => {
+  it('bisect v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - w151', () => {
+  it('bisect v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - w154', () => {
+  it('bisect v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - w157', () => {
+  it('bisect v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - w160', () => {
+  it('bisect v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

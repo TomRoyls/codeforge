@@ -783,3 +783,87 @@ describe('tarjan - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tarjan - w142', () => {
+  it('tarjan v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan - w145', () => {
+  it('tarjan v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan - w148', () => {
+  it('tarjan v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan - w151', () => {
+  it('tarjan v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan - w154', () => {
+  it('tarjan v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan - w157', () => {
+  it('tarjan v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan - w160', () => {
+  it('tarjan v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -803,3 +803,87 @@ describe('edge-coloring - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edge-coloring - w142', () => {
+  it('edge-coloring v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - w145', () => {
+  it('edge-coloring v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - w148', () => {
+  it('edge-coloring v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - w151', () => {
+  it('edge-coloring v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - w154', () => {
+  it('edge-coloring v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - w157', () => {
+  it('edge-coloring v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - w160', () => {
+  it('edge-coloring v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

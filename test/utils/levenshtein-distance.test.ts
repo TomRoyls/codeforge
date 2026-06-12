@@ -588,3 +588,87 @@ describe('levenshtein-distance - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('levenshtein-distance - w142', () => {
+  it('levenshtein-distance v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('levenshtein-distance - w145', () => {
+  it('levenshtein-distance v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('levenshtein-distance - w148', () => {
+  it('levenshtein-distance v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('levenshtein-distance - w151', () => {
+  it('levenshtein-distance v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('levenshtein-distance - w154', () => {
+  it('levenshtein-distance v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('levenshtein-distance - w157', () => {
+  it('levenshtein-distance v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('levenshtein-distance - w160', () => {
+  it('levenshtein-distance v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

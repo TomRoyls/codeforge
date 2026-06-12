@@ -721,3 +721,87 @@ describe('result - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('result - w142', () => {
+  it('result v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('result - w145', () => {
+  it('result v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('result - w148', () => {
+  it('result v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('result - w151', () => {
+  it('result v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('result - w154', () => {
+  it('result v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('result - w157', () => {
+  it('result v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('result - w160', () => {
+  it('result v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

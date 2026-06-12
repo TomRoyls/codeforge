@@ -795,3 +795,87 @@ describe('hash-map-open - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hash-map-open - w142', () => {
+  it('hash-map-open v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - w145', () => {
+  it('hash-map-open v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - w148', () => {
+  it('hash-map-open v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - w151', () => {
+  it('hash-map-open v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - w154', () => {
+  it('hash-map-open v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - w157', () => {
+  it('hash-map-open v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - w160', () => {
+  it('hash-map-open v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

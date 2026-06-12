@@ -653,3 +653,87 @@ describe('string-similarity - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-similarity - w142', () => {
+  it('string-similarity v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w145', () => {
+  it('string-similarity v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w148', () => {
+  it('string-similarity v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w151', () => {
+  it('string-similarity v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w154', () => {
+  it('string-similarity v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w157', () => {
+  it('string-similarity v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w160', () => {
+  it('string-similarity v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

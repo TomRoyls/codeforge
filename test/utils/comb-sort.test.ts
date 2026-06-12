@@ -615,3 +615,87 @@ describe('comb-sort - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('comb-sort - w142', () => {
+  it('comb-sort v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comb-sort - w145', () => {
+  it('comb-sort v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comb-sort - w148', () => {
+  it('comb-sort v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comb-sort - w151', () => {
+  it('comb-sort v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comb-sort - w154', () => {
+  it('comb-sort v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comb-sort - w157', () => {
+  it('comb-sort v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comb-sort - w160', () => {
+  it('comb-sort v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

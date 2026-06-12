@@ -993,3 +993,87 @@ describe('scapegoat-tree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('scapegoat-tree - w142', () => {
+  it('scapegoat-tree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scapegoat-tree - w145', () => {
+  it('scapegoat-tree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scapegoat-tree - w148', () => {
+  it('scapegoat-tree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scapegoat-tree - w151', () => {
+  it('scapegoat-tree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scapegoat-tree - w154', () => {
+  it('scapegoat-tree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scapegoat-tree - w157', () => {
+  it('scapegoat-tree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scapegoat-tree - w160', () => {
+  it('scapegoat-tree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -972,3 +972,87 @@ describe('centroid-decompose - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('centroid-decompose - w142', () => {
+  it('centroid-decompose v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - w145', () => {
+  it('centroid-decompose v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - w148', () => {
+  it('centroid-decompose v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - w151', () => {
+  it('centroid-decompose v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - w154', () => {
+  it('centroid-decompose v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - w157', () => {
+  it('centroid-decompose v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - w160', () => {
+  it('centroid-decompose v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

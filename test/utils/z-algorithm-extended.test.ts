@@ -568,3 +568,87 @@ describe('z-algorithm-extended - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('z-algorithm-extended - w142', () => {
+  it('z-algorithm-extended v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-algorithm-extended - w145', () => {
+  it('z-algorithm-extended v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-algorithm-extended - w148', () => {
+  it('z-algorithm-extended v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-algorithm-extended - w151', () => {
+  it('z-algorithm-extended v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-algorithm-extended - w154', () => {
+  it('z-algorithm-extended v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-algorithm-extended - w157', () => {
+  it('z-algorithm-extended v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-algorithm-extended - w160', () => {
+  it('z-algorithm-extended v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

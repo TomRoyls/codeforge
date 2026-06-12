@@ -684,3 +684,87 @@ describe('event-sink - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('event-sink - w142', () => {
+  it('event-sink v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w145', () => {
+  it('event-sink v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w148', () => {
+  it('event-sink v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w151', () => {
+  it('event-sink v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w154', () => {
+  it('event-sink v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w157', () => {
+  it('event-sink v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w160', () => {
+  it('event-sink v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

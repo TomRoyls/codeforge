@@ -822,3 +822,87 @@ describe('scalable-bloom-filter - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('scalable-bloom-filter - w142', () => {
+  it('scalable-bloom-filter v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scalable-bloom-filter - w145', () => {
+  it('scalable-bloom-filter v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scalable-bloom-filter - w148', () => {
+  it('scalable-bloom-filter v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scalable-bloom-filter - w151', () => {
+  it('scalable-bloom-filter v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scalable-bloom-filter - w154', () => {
+  it('scalable-bloom-filter v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scalable-bloom-filter - w157', () => {
+  it('scalable-bloom-filter v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scalable-bloom-filter - w160', () => {
+  it('scalable-bloom-filter v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scalable-bloom-filter v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

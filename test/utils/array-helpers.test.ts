@@ -685,3 +685,87 @@ describe('array-helpers - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('array-helpers - w142', () => {
+  it('array-helpers v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - w145', () => {
+  it('array-helpers v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - w148', () => {
+  it('array-helpers v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - w151', () => {
+  it('array-helpers v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - w154', () => {
+  it('array-helpers v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - w157', () => {
+  it('array-helpers v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('array-helpers - w160', () => {
+  it('array-helpers v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

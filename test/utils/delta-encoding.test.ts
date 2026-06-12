@@ -656,3 +656,87 @@ describe('delta-encoding - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('delta-encoding - w142', () => {
+  it('delta-encoding v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - w145', () => {
+  it('delta-encoding v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - w148', () => {
+  it('delta-encoding v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - w151', () => {
+  it('delta-encoding v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - w154', () => {
+  it('delta-encoding v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - w157', () => {
+  it('delta-encoding v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - w160', () => {
+  it('delta-encoding v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

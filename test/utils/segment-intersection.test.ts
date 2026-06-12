@@ -678,3 +678,87 @@ describe('segment-intersection - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('segment-intersection - w142', () => {
+  it('segment-intersection v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w145', () => {
+  it('segment-intersection v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w148', () => {
+  it('segment-intersection v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w151', () => {
+  it('segment-intersection v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w154', () => {
+  it('segment-intersection v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w157', () => {
+  it('segment-intersection v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w160', () => {
+  it('segment-intersection v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

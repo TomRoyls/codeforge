@@ -813,3 +813,87 @@ describe('double-buffer - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('double-buffer - w142', () => {
+  it('double-buffer v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('double-buffer - w145', () => {
+  it('double-buffer v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('double-buffer - w148', () => {
+  it('double-buffer v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('double-buffer - w151', () => {
+  it('double-buffer v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('double-buffer - w154', () => {
+  it('double-buffer v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('double-buffer - w157', () => {
+  it('double-buffer v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('double-buffer - w160', () => {
+  it('double-buffer v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

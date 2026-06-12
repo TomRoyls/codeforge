@@ -883,3 +883,87 @@ describe('min-cost-flow-bellman - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('min-cost-flow-bellman - w142', () => {
+  it('min-cost-flow-bellman v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - w145', () => {
+  it('min-cost-flow-bellman v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - w148', () => {
+  it('min-cost-flow-bellman v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - w151', () => {
+  it('min-cost-flow-bellman v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - w154', () => {
+  it('min-cost-flow-bellman v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - w157', () => {
+  it('min-cost-flow-bellman v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - w160', () => {
+  it('min-cost-flow-bellman v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

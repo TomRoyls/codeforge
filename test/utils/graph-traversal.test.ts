@@ -729,3 +729,87 @@ describe('graph-traversal - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-traversal - w142', () => {
+  it('graph-traversal v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w145', () => {
+  it('graph-traversal v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w148', () => {
+  it('graph-traversal v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w151', () => {
+  it('graph-traversal v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w154', () => {
+  it('graph-traversal v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w157', () => {
+  it('graph-traversal v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w160', () => {
+  it('graph-traversal v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

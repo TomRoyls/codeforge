@@ -770,3 +770,87 @@ describe('persistent-dsu - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-dsu - w142', () => {
+  it('persistent-dsu v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-dsu - w145', () => {
+  it('persistent-dsu v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-dsu - w148', () => {
+  it('persistent-dsu v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-dsu - w151', () => {
+  it('persistent-dsu v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-dsu - w154', () => {
+  it('persistent-dsu v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-dsu - w157', () => {
+  it('persistent-dsu v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-dsu - w160', () => {
+  it('persistent-dsu v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

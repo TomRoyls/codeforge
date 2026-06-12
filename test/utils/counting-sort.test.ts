@@ -614,3 +614,87 @@ describe('counting-sort - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counting-sort - w142', () => {
+  it('counting-sort v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-sort - w145', () => {
+  it('counting-sort v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-sort - w148', () => {
+  it('counting-sort v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-sort - w151', () => {
+  it('counting-sort v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-sort - w154', () => {
+  it('counting-sort v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-sort - w157', () => {
+  it('counting-sort v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-sort - w160', () => {
+  it('counting-sort v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

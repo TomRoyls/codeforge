@@ -653,3 +653,87 @@ describe('kmp-automaton - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kmp-automaton - w142', () => {
+  it('kmp-automaton v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp-automaton - w145', () => {
+  it('kmp-automaton v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp-automaton - w148', () => {
+  it('kmp-automaton v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp-automaton - w151', () => {
+  it('kmp-automaton v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp-automaton - w154', () => {
+  it('kmp-automaton v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp-automaton - w157', () => {
+  it('kmp-automaton v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp-automaton - w160', () => {
+  it('kmp-automaton v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

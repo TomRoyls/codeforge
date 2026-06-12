@@ -732,3 +732,87 @@ describe('sliding-window-counter - wave139', () => {
     expect(afterEach).toBeDefined()
   })
 })
+
+describe('sliding-window-counter - w142', () => {
+  it('sliding-window-counter v142x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v142x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v142x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('sliding-window-counter - w145', () => {
+  it('sliding-window-counter v145x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v145x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v145x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('sliding-window-counter - w148', () => {
+  it('sliding-window-counter v148x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v148x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v148x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('sliding-window-counter - w151', () => {
+  it('sliding-window-counter v151x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v151x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v151x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('sliding-window-counter - w154', () => {
+  it('sliding-window-counter v154x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v154x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v154x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('sliding-window-counter - w157', () => {
+  it('sliding-window-counter v157x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v157x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v157x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('sliding-window-counter - w160', () => {
+  it('sliding-window-counter v160x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v160x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter v160x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+})

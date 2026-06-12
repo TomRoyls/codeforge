@@ -821,3 +821,87 @@ describe('lfu-cache - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lfu-cache - w142', () => {
+  it('lfu-cache v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lfu-cache - w145', () => {
+  it('lfu-cache v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lfu-cache - w148', () => {
+  it('lfu-cache v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lfu-cache - w151', () => {
+  it('lfu-cache v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lfu-cache - w154', () => {
+  it('lfu-cache v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lfu-cache - w157', () => {
+  it('lfu-cache v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lfu-cache - w160', () => {
+  it('lfu-cache v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lfu-cache v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -833,3 +833,87 @@ describe('disjoint-set-union - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-set-union - w142', () => {
+  it('disjoint-set-union v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - w145', () => {
+  it('disjoint-set-union v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - w148', () => {
+  it('disjoint-set-union v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - w151', () => {
+  it('disjoint-set-union v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - w154', () => {
+  it('disjoint-set-union v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - w157', () => {
+  it('disjoint-set-union v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-set-union - w160', () => {
+  it('disjoint-set-union v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

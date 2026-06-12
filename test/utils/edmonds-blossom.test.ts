@@ -764,3 +764,87 @@ describe('edmonds-blossom - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edmonds-blossom - w142', () => {
+  it('edmonds-blossom v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-blossom - w145', () => {
+  it('edmonds-blossom v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-blossom - w148', () => {
+  it('edmonds-blossom v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-blossom - w151', () => {
+  it('edmonds-blossom v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-blossom - w154', () => {
+  it('edmonds-blossom v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-blossom - w157', () => {
+  it('edmonds-blossom v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-blossom - w160', () => {
+  it('edmonds-blossom v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

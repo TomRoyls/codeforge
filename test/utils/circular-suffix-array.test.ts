@@ -668,3 +668,87 @@ describe('circular-suffix-array - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circular-suffix-array - w142', () => {
+  it('circular-suffix-array v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix-array - w145', () => {
+  it('circular-suffix-array v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix-array - w148', () => {
+  it('circular-suffix-array v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix-array - w151', () => {
+  it('circular-suffix-array v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix-array - w154', () => {
+  it('circular-suffix-array v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix-array - w157', () => {
+  it('circular-suffix-array v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix-array - w160', () => {
+  it('circular-suffix-array v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

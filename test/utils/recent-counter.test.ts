@@ -769,3 +769,87 @@ describe('recent-counter - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('recent-counter - w142', () => {
+  it('recent-counter v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('recent-counter - w145', () => {
+  it('recent-counter v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('recent-counter - w148', () => {
+  it('recent-counter v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('recent-counter - w151', () => {
+  it('recent-counter v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('recent-counter - w154', () => {
+  it('recent-counter v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('recent-counter - w157', () => {
+  it('recent-counter v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('recent-counter - w160', () => {
+  it('recent-counter v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

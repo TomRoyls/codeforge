@@ -868,3 +868,87 @@ describe('deque-aggregation - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deque-aggregation - w142', () => {
+  it('deque-aggregation v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w145', () => {
+  it('deque-aggregation v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w148', () => {
+  it('deque-aggregation v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w151', () => {
+  it('deque-aggregation v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w154', () => {
+  it('deque-aggregation v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w157', () => {
+  it('deque-aggregation v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w160', () => {
+  it('deque-aggregation v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

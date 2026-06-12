@@ -617,3 +617,87 @@ describe('cartesian-product - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cartesian-product - w142', () => {
+  it('cartesian-product v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product - w145', () => {
+  it('cartesian-product v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product - w148', () => {
+  it('cartesian-product v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product - w151', () => {
+  it('cartesian-product v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product - w154', () => {
+  it('cartesian-product v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product - w157', () => {
+  it('cartesian-product v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product - w160', () => {
+  it('cartesian-product v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

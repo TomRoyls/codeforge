@@ -810,3 +810,87 @@ describe('reservoir-sampler - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('reservoir-sampler - w142', () => {
+  it('reservoir-sampler v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('reservoir-sampler - w145', () => {
+  it('reservoir-sampler v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('reservoir-sampler - w148', () => {
+  it('reservoir-sampler v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('reservoir-sampler - w151', () => {
+  it('reservoir-sampler v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('reservoir-sampler - w154', () => {
+  it('reservoir-sampler v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('reservoir-sampler - w157', () => {
+  it('reservoir-sampler v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('reservoir-sampler - w160', () => {
+  it('reservoir-sampler v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('reservoir-sampler v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

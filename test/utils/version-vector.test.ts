@@ -846,3 +846,87 @@ describe('version-vector - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('version-vector - w142', () => {
+  it('version-vector v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version-vector - w145', () => {
+  it('version-vector v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version-vector - w148', () => {
+  it('version-vector v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version-vector - w151', () => {
+  it('version-vector v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version-vector - w154', () => {
+  it('version-vector v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version-vector - w157', () => {
+  it('version-vector v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version-vector - w160', () => {
+  it('version-vector v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

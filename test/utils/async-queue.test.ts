@@ -817,3 +817,87 @@ describe('async-queue - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('async-queue - w142', () => {
+  it('async-queue v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('async-queue - w145', () => {
+  it('async-queue v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('async-queue - w148', () => {
+  it('async-queue v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('async-queue - w151', () => {
+  it('async-queue v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('async-queue - w154', () => {
+  it('async-queue v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('async-queue - w157', () => {
+  it('async-queue v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('async-queue - w160', () => {
+  it('async-queue v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('async-queue v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

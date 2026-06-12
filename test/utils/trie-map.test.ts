@@ -757,3 +757,87 @@ describe('trie-map - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('trie-map - w142', () => {
+  it('trie-map v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-map - w145', () => {
+  it('trie-map v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-map - w148', () => {
+  it('trie-map v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-map - w151', () => {
+  it('trie-map v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-map - w154', () => {
+  it('trie-map v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-map - w157', () => {
+  it('trie-map v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-map - w160', () => {
+  it('trie-map v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

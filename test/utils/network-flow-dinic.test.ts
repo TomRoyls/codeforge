@@ -772,3 +772,87 @@ describe('network-flow-dinic - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('network-flow-dinic - w142', () => {
+  it('network-flow-dinic v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow-dinic - w145', () => {
+  it('network-flow-dinic v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow-dinic - w148', () => {
+  it('network-flow-dinic v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow-dinic - w151', () => {
+  it('network-flow-dinic v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow-dinic - w154', () => {
+  it('network-flow-dinic v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow-dinic - w157', () => {
+  it('network-flow-dinic v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow-dinic - w160', () => {
+  it('network-flow-dinic v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

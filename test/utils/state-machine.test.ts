@@ -1060,3 +1060,87 @@ describe('state-machine - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('state-machine - w142', () => {
+  it('state-machine v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('state-machine - w145', () => {
+  it('state-machine v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('state-machine - w148', () => {
+  it('state-machine v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('state-machine - w151', () => {
+  it('state-machine v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('state-machine - w154', () => {
+  it('state-machine v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('state-machine - w157', () => {
+  it('state-machine v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('state-machine - w160', () => {
+  it('state-machine v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

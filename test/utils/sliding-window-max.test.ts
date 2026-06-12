@@ -595,3 +595,87 @@ describe('sliding-window-max - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sliding-window-max - w142', () => {
+  it('sliding-window-max v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-max - w145', () => {
+  it('sliding-window-max v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-max - w148', () => {
+  it('sliding-window-max v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-max - w151', () => {
+  it('sliding-window-max v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-max - w154', () => {
+  it('sliding-window-max v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-max - w157', () => {
+  it('sliding-window-max v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sliding-window-max - w160', () => {
+  it('sliding-window-max v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

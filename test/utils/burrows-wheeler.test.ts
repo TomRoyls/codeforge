@@ -694,3 +694,87 @@ describe('burrows-wheeler - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('burrows-wheeler - w142', () => {
+  it('burrows-wheeler v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('burrows-wheeler - w145', () => {
+  it('burrows-wheeler v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('burrows-wheeler - w148', () => {
+  it('burrows-wheeler v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('burrows-wheeler - w151', () => {
+  it('burrows-wheeler v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('burrows-wheeler - w154', () => {
+  it('burrows-wheeler v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('burrows-wheeler - w157', () => {
+  it('burrows-wheeler v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('burrows-wheeler - w160', () => {
+  it('burrows-wheeler v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

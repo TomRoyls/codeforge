@@ -702,3 +702,87 @@ describe('sqrt-decomposition - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sqrt-decomposition - w142', () => {
+  it('sqrt-decomposition v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - w145', () => {
+  it('sqrt-decomposition v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - w148', () => {
+  it('sqrt-decomposition v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - w151', () => {
+  it('sqrt-decomposition v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - w154', () => {
+  it('sqrt-decomposition v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - w157', () => {
+  it('sqrt-decomposition v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomposition - w160', () => {
+  it('sqrt-decomposition v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomposition v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

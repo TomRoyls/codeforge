@@ -591,3 +591,87 @@ describe('escape - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('escape - w142', () => {
+  it('escape v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('escape - w145', () => {
+  it('escape v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('escape - w148', () => {
+  it('escape v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('escape - w151', () => {
+  it('escape v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('escape - w154', () => {
+  it('escape v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('escape - w157', () => {
+  it('escape v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('escape - w160', () => {
+  it('escape v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

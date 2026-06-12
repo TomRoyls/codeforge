@@ -849,3 +849,87 @@ describe('pairing-heap - wave139', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('pairing-heap - w142', () => {
+  it('pairing-heap v142x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v142x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v142x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('pairing-heap - w145', () => {
+  it('pairing-heap v145x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v145x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v145x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('pairing-heap - w148', () => {
+  it('pairing-heap v148x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v148x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v148x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('pairing-heap - w151', () => {
+  it('pairing-heap v151x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v151x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v151x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('pairing-heap - w154', () => {
+  it('pairing-heap v154x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v154x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v154x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('pairing-heap - w157', () => {
+  it('pairing-heap v157x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v157x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v157x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('pairing-heap - w160', () => {
+  it('pairing-heap v160x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v160x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap v160x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

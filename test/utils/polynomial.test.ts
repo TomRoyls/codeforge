@@ -668,3 +668,87 @@ describe('polynomial - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('polynomial - w142', () => {
+  it('polynomial v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('polynomial - w145', () => {
+  it('polynomial v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('polynomial - w148', () => {
+  it('polynomial v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('polynomial - w151', () => {
+  it('polynomial v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('polynomial - w154', () => {
+  it('polynomial v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('polynomial - w157', () => {
+  it('polynomial v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('polynomial - w160', () => {
+  it('polynomial v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

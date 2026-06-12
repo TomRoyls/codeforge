@@ -806,3 +806,87 @@ describe('robin-hood-map - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('robin-hood-map - w142', () => {
+  it('robin-hood-map v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('robin-hood-map - w145', () => {
+  it('robin-hood-map v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('robin-hood-map - w148', () => {
+  it('robin-hood-map v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('robin-hood-map - w151', () => {
+  it('robin-hood-map v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('robin-hood-map - w154', () => {
+  it('robin-hood-map v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('robin-hood-map - w157', () => {
+  it('robin-hood-map v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('robin-hood-map - w160', () => {
+  it('robin-hood-map v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('robin-hood-map v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

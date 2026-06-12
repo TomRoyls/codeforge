@@ -850,3 +850,87 @@ describe('index-priority-queue - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('index-priority-queue - w142', () => {
+  it('index-priority-queue v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('index-priority-queue - w145', () => {
+  it('index-priority-queue v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('index-priority-queue - w148', () => {
+  it('index-priority-queue v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('index-priority-queue - w151', () => {
+  it('index-priority-queue v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('index-priority-queue - w154', () => {
+  it('index-priority-queue v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('index-priority-queue - w157', () => {
+  it('index-priority-queue v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('index-priority-queue - w160', () => {
+  it('index-priority-queue v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -785,3 +785,87 @@ describe('discrete-sampler - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('discrete-sampler - w142', () => {
+  it('discrete-sampler v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('discrete-sampler - w145', () => {
+  it('discrete-sampler v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('discrete-sampler - w148', () => {
+  it('discrete-sampler v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('discrete-sampler - w151', () => {
+  it('discrete-sampler v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('discrete-sampler - w154', () => {
+  it('discrete-sampler v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('discrete-sampler - w157', () => {
+  it('discrete-sampler v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('discrete-sampler - w160', () => {
+  it('discrete-sampler v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

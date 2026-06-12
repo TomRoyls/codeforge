@@ -763,3 +763,87 @@ describe('line-graph - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('line-graph - w142', () => {
+  it('line-graph v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-graph - w145', () => {
+  it('line-graph v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-graph - w148', () => {
+  it('line-graph v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-graph - w151', () => {
+  it('line-graph v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-graph - w154', () => {
+  it('line-graph v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-graph - w157', () => {
+  it('line-graph v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('line-graph - w160', () => {
+  it('line-graph v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('line-graph v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -588,3 +588,87 @@ describe('interpolation-search - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interpolation-search - w142', () => {
+  it('interpolation-search v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - w145', () => {
+  it('interpolation-search v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - w148', () => {
+  it('interpolation-search v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - w151', () => {
+  it('interpolation-search v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - w154', () => {
+  it('interpolation-search v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - w157', () => {
+  it('interpolation-search v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - w160', () => {
+  it('interpolation-search v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

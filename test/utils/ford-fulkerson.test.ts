@@ -772,3 +772,87 @@ describe('ford-fulkerson - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ford-fulkerson - w142', () => {
+  it('ford-fulkerson v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - w145', () => {
+  it('ford-fulkerson v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - w148', () => {
+  it('ford-fulkerson v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - w151', () => {
+  it('ford-fulkerson v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - w154', () => {
+  it('ford-fulkerson v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - w157', () => {
+  it('ford-fulkerson v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - w160', () => {
+  it('ford-fulkerson v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

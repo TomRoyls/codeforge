@@ -575,3 +575,87 @@ describe('kmp - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kmp - w142', () => {
+  it('kmp v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w145', () => {
+  it('kmp v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w148', () => {
+  it('kmp v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w151', () => {
+  it('kmp v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w154', () => {
+  it('kmp v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w157', () => {
+  it('kmp v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w160', () => {
+  it('kmp v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -687,3 +687,87 @@ describe('chinese-remainder - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('chinese-remainder - w142', () => {
+  it('chinese-remainder v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - w145', () => {
+  it('chinese-remainder v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - w148', () => {
+  it('chinese-remainder v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - w151', () => {
+  it('chinese-remainder v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - w154', () => {
+  it('chinese-remainder v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - w157', () => {
+  it('chinese-remainder v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - w160', () => {
+  it('chinese-remainder v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

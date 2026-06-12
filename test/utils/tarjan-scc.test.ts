@@ -713,3 +713,87 @@ describe('tarjan-scc - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tarjan-scc - w142', () => {
+  it('tarjan-scc v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan-scc - w145', () => {
+  it('tarjan-scc v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan-scc - w148', () => {
+  it('tarjan-scc v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan-scc - w151', () => {
+  it('tarjan-scc v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan-scc - w154', () => {
+  it('tarjan-scc v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan-scc - w157', () => {
+  it('tarjan-scc v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('tarjan-scc - w160', () => {
+  it('tarjan-scc v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan-scc v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

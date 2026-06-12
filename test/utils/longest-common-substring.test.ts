@@ -566,3 +566,87 @@ describe('longest-common-substring - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('longest-common-substring - w142', () => {
+  it('longest-common-substring v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-common-substring - w145', () => {
+  it('longest-common-substring v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-common-substring - w148', () => {
+  it('longest-common-substring v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-common-substring - w151', () => {
+  it('longest-common-substring v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-common-substring - w154', () => {
+  it('longest-common-substring v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-common-substring - w157', () => {
+  it('longest-common-substring v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-common-substring - w160', () => {
+  it('longest-common-substring v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

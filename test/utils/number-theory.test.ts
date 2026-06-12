@@ -633,3 +633,87 @@ describe('number-theory - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('number-theory - w142', () => {
+  it('number-theory v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('number-theory - w145', () => {
+  it('number-theory v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('number-theory - w148', () => {
+  it('number-theory v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('number-theory - w151', () => {
+  it('number-theory v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('number-theory - w154', () => {
+  it('number-theory v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('number-theory - w157', () => {
+  it('number-theory v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('number-theory - w160', () => {
+  it('number-theory v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

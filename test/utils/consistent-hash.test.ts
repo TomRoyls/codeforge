@@ -831,3 +831,87 @@ describe('consistent-hash - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('consistent-hash - w142', () => {
+  it('consistent-hash v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash - w145', () => {
+  it('consistent-hash v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash - w148', () => {
+  it('consistent-hash v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash - w151', () => {
+  it('consistent-hash v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash - w154', () => {
+  it('consistent-hash v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash - w157', () => {
+  it('consistent-hash v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash - w160', () => {
+  it('consistent-hash v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

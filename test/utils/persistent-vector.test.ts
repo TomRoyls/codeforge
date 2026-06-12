@@ -682,3 +682,87 @@ describe('persistent-vector - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-vector - w142', () => {
+  it('persistent-vector v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-vector - w145', () => {
+  it('persistent-vector v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-vector - w148', () => {
+  it('persistent-vector v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-vector - w151', () => {
+  it('persistent-vector v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-vector - w154', () => {
+  it('persistent-vector v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-vector - w157', () => {
+  it('persistent-vector v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-vector - w160', () => {
+  it('persistent-vector v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-vector v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

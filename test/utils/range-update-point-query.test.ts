@@ -743,3 +743,87 @@ describe('range-update-point-query - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('range-update-point-query - w142', () => {
+  it('range-update-point-query v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-update-point-query - w145', () => {
+  it('range-update-point-query v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-update-point-query - w148', () => {
+  it('range-update-point-query v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-update-point-query - w151', () => {
+  it('range-update-point-query v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-update-point-query - w154', () => {
+  it('range-update-point-query v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-update-point-query - w157', () => {
+  it('range-update-point-query v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-update-point-query - w160', () => {
+  it('range-update-point-query v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

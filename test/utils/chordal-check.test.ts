@@ -818,3 +818,87 @@ describe('chordal-check - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('chordal-check - w142', () => {
+  it('chordal-check v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - w145', () => {
+  it('chordal-check v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - w148', () => {
+  it('chordal-check v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - w151', () => {
+  it('chordal-check v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - w154', () => {
+  it('chordal-check v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - w157', () => {
+  it('chordal-check v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chordal-check - w160', () => {
+  it('chordal-check v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chordal-check v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

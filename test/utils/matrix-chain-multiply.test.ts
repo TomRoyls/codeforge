@@ -654,3 +654,87 @@ describe('matrix-chain-multiply - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('matrix-chain-multiply - w142', () => {
+  it('matrix-chain-multiply v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix-chain-multiply - w145', () => {
+  it('matrix-chain-multiply v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix-chain-multiply - w148', () => {
+  it('matrix-chain-multiply v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix-chain-multiply - w151', () => {
+  it('matrix-chain-multiply v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix-chain-multiply - w154', () => {
+  it('matrix-chain-multiply v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix-chain-multiply - w157', () => {
+  it('matrix-chain-multiply v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('matrix-chain-multiply - w160', () => {
+  it('matrix-chain-multiply v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

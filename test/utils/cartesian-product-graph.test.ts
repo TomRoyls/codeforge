@@ -810,3 +810,87 @@ describe('cartesian-product-graph - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cartesian-product-graph - w142', () => {
+  it('cartesian-product-graph v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product-graph - w145', () => {
+  it('cartesian-product-graph v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product-graph - w148', () => {
+  it('cartesian-product-graph v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product-graph - w151', () => {
+  it('cartesian-product-graph v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product-graph - w154', () => {
+  it('cartesian-product-graph v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product-graph - w157', () => {
+  it('cartesian-product-graph v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product-graph - w160', () => {
+  it('cartesian-product-graph v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product-graph v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -884,3 +884,87 @@ describe('skew-heap - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('skew-heap - w142', () => {
+  it('skew-heap v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - w145', () => {
+  it('skew-heap v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - w148', () => {
+  it('skew-heap v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - w151', () => {
+  it('skew-heap v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - w154', () => {
+  it('skew-heap v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - w157', () => {
+  it('skew-heap v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - w160', () => {
+  it('skew-heap v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

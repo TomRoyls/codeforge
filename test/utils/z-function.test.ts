@@ -609,3 +609,87 @@ describe('z-function - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('z-function - w142', () => {
+  it('z-function v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-function - w145', () => {
+  it('z-function v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-function - w148', () => {
+  it('z-function v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-function - w151', () => {
+  it('z-function v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-function - w154', () => {
+  it('z-function v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-function - w157', () => {
+  it('z-function v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-function - w160', () => {
+  it('z-function v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-function v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

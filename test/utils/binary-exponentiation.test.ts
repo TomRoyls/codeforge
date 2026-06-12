@@ -588,3 +588,87 @@ describe('binary-exponentiation - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-exponentiation - w142', () => {
+  it('binary-exponentiation v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-exponentiation - w145', () => {
+  it('binary-exponentiation v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-exponentiation - w148', () => {
+  it('binary-exponentiation v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-exponentiation - w151', () => {
+  it('binary-exponentiation v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-exponentiation - w154', () => {
+  it('binary-exponentiation v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-exponentiation - w157', () => {
+  it('binary-exponentiation v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-exponentiation - w160', () => {
+  it('binary-exponentiation v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

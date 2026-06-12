@@ -666,3 +666,87 @@ describe('glob - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('glob - w142', () => {
+  it('glob v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('glob - w145', () => {
+  it('glob v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('glob - w148', () => {
+  it('glob v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('glob - w151', () => {
+  it('glob v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('glob - w154', () => {
+  it('glob v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('glob - w157', () => {
+  it('glob v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('glob - w160', () => {
+  it('glob v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('glob v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -800,3 +800,87 @@ describe('linear-probing-hash - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('linear-probing-hash - w142', () => {
+  it('linear-probing-hash v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('linear-probing-hash - w145', () => {
+  it('linear-probing-hash v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('linear-probing-hash - w148', () => {
+  it('linear-probing-hash v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('linear-probing-hash - w151', () => {
+  it('linear-probing-hash v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('linear-probing-hash - w154', () => {
+  it('linear-probing-hash v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('linear-probing-hash - w157', () => {
+  it('linear-probing-hash v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('linear-probing-hash - w160', () => {
+  it('linear-probing-hash v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

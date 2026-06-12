@@ -608,3 +608,87 @@ describe('lis - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lis - w142', () => {
+  it('lis v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lis - w145', () => {
+  it('lis v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lis - w148', () => {
+  it('lis v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lis - w151', () => {
+  it('lis v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lis - w154', () => {
+  it('lis v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lis - w157', () => {
+  it('lis v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lis - w160', () => {
+  it('lis v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

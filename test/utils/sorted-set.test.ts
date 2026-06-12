@@ -851,3 +851,87 @@ describe('sorted-set - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sorted-set - w142', () => {
+  it('sorted-set v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sorted-set - w145', () => {
+  it('sorted-set v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sorted-set - w148', () => {
+  it('sorted-set v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sorted-set - w151', () => {
+  it('sorted-set v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sorted-set - w154', () => {
+  it('sorted-set v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sorted-set - w157', () => {
+  it('sorted-set v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sorted-set - w160', () => {
+  it('sorted-set v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

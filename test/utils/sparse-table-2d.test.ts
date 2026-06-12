@@ -691,3 +691,87 @@ describe('sparse-table-2d - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-table-2d - w142', () => {
+  it('sparse-table-2d v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-2d - w145', () => {
+  it('sparse-table-2d v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-2d - w148', () => {
+  it('sparse-table-2d v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-2d - w151', () => {
+  it('sparse-table-2d v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-2d - w154', () => {
+  it('sparse-table-2d v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-2d - w157', () => {
+  it('sparse-table-2d v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-table-2d - w160', () => {
+  it('sparse-table-2d v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-2d v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

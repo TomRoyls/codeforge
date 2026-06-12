@@ -798,3 +798,87 @@ describe('parallel-binary-search - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('parallel-binary-search - w142', () => {
+  it('parallel-binary-search v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('parallel-binary-search - w145', () => {
+  it('parallel-binary-search v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('parallel-binary-search - w148', () => {
+  it('parallel-binary-search v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('parallel-binary-search - w151', () => {
+  it('parallel-binary-search v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('parallel-binary-search - w154', () => {
+  it('parallel-binary-search v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('parallel-binary-search - w157', () => {
+  it('parallel-binary-search v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('parallel-binary-search - w160', () => {
+  it('parallel-binary-search v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

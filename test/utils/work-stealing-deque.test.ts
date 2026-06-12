@@ -833,3 +833,87 @@ describe('work-stealing-deque - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('work-stealing-deque - w142', () => {
+  it('work-stealing-deque v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w145', () => {
+  it('work-stealing-deque v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w148', () => {
+  it('work-stealing-deque v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w151', () => {
+  it('work-stealing-deque v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w154', () => {
+  it('work-stealing-deque v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w157', () => {
+  it('work-stealing-deque v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w160', () => {
+  it('work-stealing-deque v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

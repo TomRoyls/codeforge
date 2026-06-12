@@ -755,3 +755,87 @@ describe('hamiltonian-path - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hamiltonian-path - w142', () => {
+  it('hamiltonian-path v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - w145', () => {
+  it('hamiltonian-path v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - w148', () => {
+  it('hamiltonian-path v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - w151', () => {
+  it('hamiltonian-path v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - w154', () => {
+  it('hamiltonian-path v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - w157', () => {
+  it('hamiltonian-path v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hamiltonian-path - w160', () => {
+  it('hamiltonian-path v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

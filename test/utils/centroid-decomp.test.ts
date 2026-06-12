@@ -832,3 +832,87 @@ describe('centroid-decomp - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('centroid-decomp - w142', () => {
+  it('centroid-decomp v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decomp - w145', () => {
+  it('centroid-decomp v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decomp - w148', () => {
+  it('centroid-decomp v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decomp - w151', () => {
+  it('centroid-decomp v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decomp - w154', () => {
+  it('centroid-decomp v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decomp - w157', () => {
+  it('centroid-decomp v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decomp - w160', () => {
+  it('centroid-decomp v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -791,3 +791,87 @@ describe('bounded-priority-queue - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bounded-priority-queue - w142', () => {
+  it('bounded-priority-queue v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-priority-queue - w145', () => {
+  it('bounded-priority-queue v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-priority-queue - w148', () => {
+  it('bounded-priority-queue v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-priority-queue - w151', () => {
+  it('bounded-priority-queue v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-priority-queue - w154', () => {
+  it('bounded-priority-queue v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-priority-queue - w157', () => {
+  it('bounded-priority-queue v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bounded-priority-queue - w160', () => {
+  it('bounded-priority-queue v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

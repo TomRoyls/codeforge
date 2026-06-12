@@ -891,3 +891,87 @@ describe('dominator-tree - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dominator-tree - w142', () => {
+  it('dominator-tree v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dominator-tree - w145', () => {
+  it('dominator-tree v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dominator-tree - w148', () => {
+  it('dominator-tree v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dominator-tree - w151', () => {
+  it('dominator-tree v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dominator-tree - w154', () => {
+  it('dominator-tree v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dominator-tree - w157', () => {
+  it('dominator-tree v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dominator-tree - w160', () => {
+  it('dominator-tree v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

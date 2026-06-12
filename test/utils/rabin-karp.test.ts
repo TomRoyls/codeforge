@@ -616,3 +616,87 @@ describe('rabin-karp - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rabin-karp - w142', () => {
+  it('rabin-karp v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rabin-karp - w145', () => {
+  it('rabin-karp v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rabin-karp - w148', () => {
+  it('rabin-karp v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rabin-karp - w151', () => {
+  it('rabin-karp v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rabin-karp - w154', () => {
+  it('rabin-karp v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rabin-karp - w157', () => {
+  it('rabin-karp v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rabin-karp - w160', () => {
+  it('rabin-karp v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

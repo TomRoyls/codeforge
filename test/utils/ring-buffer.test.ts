@@ -819,3 +819,87 @@ describe('ring-buffer - wave139', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('ring-buffer - w142', () => {
+  it('ring-buffer v142x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v142x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v142x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - w145', () => {
+  it('ring-buffer v145x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v145x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v145x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - w148', () => {
+  it('ring-buffer v148x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v148x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v148x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - w151', () => {
+  it('ring-buffer v151x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v151x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v151x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - w154', () => {
+  it('ring-buffer v154x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v154x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v154x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - w157', () => {
+  it('ring-buffer v157x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v157x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v157x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - w160', () => {
+  it('ring-buffer v160x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v160x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer v160x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

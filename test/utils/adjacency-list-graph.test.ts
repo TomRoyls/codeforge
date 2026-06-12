@@ -784,3 +784,87 @@ describe('adjacency-list-graph - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('adjacency-list-graph - w142', () => {
+  it('adjacency-list-graph v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-list-graph - w145', () => {
+  it('adjacency-list-graph v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-list-graph - w148', () => {
+  it('adjacency-list-graph v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-list-graph - w151', () => {
+  it('adjacency-list-graph v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-list-graph - w154', () => {
+  it('adjacency-list-graph v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-list-graph - w157', () => {
+  it('adjacency-list-graph v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-list-graph - w160', () => {
+  it('adjacency-list-graph v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

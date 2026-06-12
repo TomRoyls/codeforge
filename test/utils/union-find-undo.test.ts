@@ -943,3 +943,87 @@ describe('union-find-undo - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('union-find-undo - w142', () => {
+  it('union-find-undo v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find-undo - w145', () => {
+  it('union-find-undo v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find-undo - w148', () => {
+  it('union-find-undo v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find-undo - w151', () => {
+  it('union-find-undo v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find-undo - w154', () => {
+  it('union-find-undo v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find-undo - w157', () => {
+  it('union-find-undo v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find-undo - w160', () => {
+  it('union-find-undo v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

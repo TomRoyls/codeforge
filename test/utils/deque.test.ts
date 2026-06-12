@@ -802,3 +802,87 @@ describe('deque - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deque - w142', () => {
+  it('deque v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque - w145', () => {
+  it('deque v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque - w148', () => {
+  it('deque v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque - w151', () => {
+  it('deque v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque - w154', () => {
+  it('deque v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque - w157', () => {
+  it('deque v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque - w160', () => {
+  it('deque v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

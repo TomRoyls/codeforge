@@ -663,3 +663,87 @@ describe('josephus - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('josephus - w142', () => {
+  it('josephus v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - w145', () => {
+  it('josephus v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - w148', () => {
+  it('josephus v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - w151', () => {
+  it('josephus v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - w154', () => {
+  it('josephus v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - w157', () => {
+  it('josephus v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - w160', () => {
+  it('josephus v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

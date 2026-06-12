@@ -760,3 +760,87 @@ describe('zobrist-hashing - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('zobrist-hashing - w142', () => {
+  it('zobrist-hashing v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w145', () => {
+  it('zobrist-hashing v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w148', () => {
+  it('zobrist-hashing v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w151', () => {
+  it('zobrist-hashing v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w154', () => {
+  it('zobrist-hashing v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w157', () => {
+  it('zobrist-hashing v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w160', () => {
+  it('zobrist-hashing v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

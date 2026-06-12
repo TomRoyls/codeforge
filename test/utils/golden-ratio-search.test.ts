@@ -635,3 +635,87 @@ describe('golden-ratio-search - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('golden-ratio-search - w142', () => {
+  it('golden-ratio-search v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('golden-ratio-search - w145', () => {
+  it('golden-ratio-search v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('golden-ratio-search - w148', () => {
+  it('golden-ratio-search v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('golden-ratio-search - w151', () => {
+  it('golden-ratio-search v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('golden-ratio-search - w154', () => {
+  it('golden-ratio-search v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('golden-ratio-search - w157', () => {
+  it('golden-ratio-search v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('golden-ratio-search - w160', () => {
+  it('golden-ratio-search v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

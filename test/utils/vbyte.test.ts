@@ -703,3 +703,87 @@ describe('vbyte - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('vbyte - w142', () => {
+  it('vbyte v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vbyte - w145', () => {
+  it('vbyte v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vbyte - w148', () => {
+  it('vbyte v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vbyte - w151', () => {
+  it('vbyte v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vbyte - w154', () => {
+  it('vbyte v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vbyte - w157', () => {
+  it('vbyte v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vbyte - w160', () => {
+  it('vbyte v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

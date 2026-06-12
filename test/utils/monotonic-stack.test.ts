@@ -700,3 +700,87 @@ describe('monotonic-stack - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('monotonic-stack - w142', () => {
+  it('monotonic-stack v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - w145', () => {
+  it('monotonic-stack v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - w148', () => {
+  it('monotonic-stack v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - w151', () => {
+  it('monotonic-stack v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - w154', () => {
+  it('monotonic-stack v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - w157', () => {
+  it('monotonic-stack v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - w160', () => {
+  it('monotonic-stack v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

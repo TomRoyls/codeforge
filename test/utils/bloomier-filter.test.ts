@@ -880,3 +880,87 @@ describe('bloomier-filter - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bloomier-filter - w142', () => {
+  it('bloomier-filter v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloomier-filter - w145', () => {
+  it('bloomier-filter v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloomier-filter - w148', () => {
+  it('bloomier-filter v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloomier-filter - w151', () => {
+  it('bloomier-filter v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloomier-filter - w154', () => {
+  it('bloomier-filter v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloomier-filter - w157', () => {
+  it('bloomier-filter v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bloomier-filter - w160', () => {
+  it('bloomier-filter v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloomier-filter v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

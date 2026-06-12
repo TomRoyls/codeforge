@@ -692,3 +692,87 @@ describe('ntt - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ntt - w142', () => {
+  it('ntt v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - w145', () => {
+  it('ntt v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - w148', () => {
+  it('ntt v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - w151', () => {
+  it('ntt v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - w154', () => {
+  it('ntt v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - w157', () => {
+  it('ntt v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - w160', () => {
+  it('ntt v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

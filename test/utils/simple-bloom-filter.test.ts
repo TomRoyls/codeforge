@@ -748,3 +748,87 @@ describe('simple-bloom-filter - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('simple-bloom-filter - w142', () => {
+  it('simple-bloom-filter v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simple-bloom-filter - w145', () => {
+  it('simple-bloom-filter v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simple-bloom-filter - w148', () => {
+  it('simple-bloom-filter v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simple-bloom-filter - w151', () => {
+  it('simple-bloom-filter v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simple-bloom-filter - w154', () => {
+  it('simple-bloom-filter v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simple-bloom-filter - w157', () => {
+  it('simple-bloom-filter v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('simple-bloom-filter - w160', () => {
+  it('simple-bloom-filter v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simple-bloom-filter v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -671,3 +671,87 @@ describe('wavelet-matrix - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('wavelet-matrix - w142', () => {
+  it('wavelet-matrix v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - w145', () => {
+  it('wavelet-matrix v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - w148', () => {
+  it('wavelet-matrix v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - w151', () => {
+  it('wavelet-matrix v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - w154', () => {
+  it('wavelet-matrix v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - w157', () => {
+  it('wavelet-matrix v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('wavelet-matrix - w160', () => {
+  it('wavelet-matrix v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

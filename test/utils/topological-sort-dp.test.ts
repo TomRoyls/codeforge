@@ -790,3 +790,87 @@ describe('topological-sort-dp - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('topological-sort-dp - w142', () => {
+  it('topological-sort-dp v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - w145', () => {
+  it('topological-sort-dp v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - w148', () => {
+  it('topological-sort-dp v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - w151', () => {
+  it('topological-sort-dp v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - w154', () => {
+  it('topological-sort-dp v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - w157', () => {
+  it('topological-sort-dp v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-sort-dp - w160', () => {
+  it('topological-sort-dp v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-sort-dp v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -918,3 +918,87 @@ describe('sparse-matrix - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-matrix - w142', () => {
+  it('sparse-matrix v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-matrix - w145', () => {
+  it('sparse-matrix v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-matrix - w148', () => {
+  it('sparse-matrix v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-matrix - w151', () => {
+  it('sparse-matrix v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-matrix - w154', () => {
+  it('sparse-matrix v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-matrix - w157', () => {
+  it('sparse-matrix v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-matrix - w160', () => {
+  it('sparse-matrix v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

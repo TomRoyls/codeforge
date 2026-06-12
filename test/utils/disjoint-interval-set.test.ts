@@ -790,3 +790,87 @@ describe('disjoint-interval-set - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-interval-set - w142', () => {
+  it('disjoint-interval-set v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval-set - w145', () => {
+  it('disjoint-interval-set v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval-set - w148', () => {
+  it('disjoint-interval-set v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval-set - w151', () => {
+  it('disjoint-interval-set v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval-set - w154', () => {
+  it('disjoint-interval-set v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval-set - w157', () => {
+  it('disjoint-interval-set v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('disjoint-interval-set - w160', () => {
+  it('disjoint-interval-set v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval-set v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

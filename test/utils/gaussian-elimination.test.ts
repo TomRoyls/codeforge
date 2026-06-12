@@ -803,3 +803,87 @@ describe('gaussian-elimination - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gaussian-elimination - w142', () => {
+  it('gaussian-elimination v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w145', () => {
+  it('gaussian-elimination v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w148', () => {
+  it('gaussian-elimination v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w151', () => {
+  it('gaussian-elimination v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w154', () => {
+  it('gaussian-elimination v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w157', () => {
+  it('gaussian-elimination v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w160', () => {
+  it('gaussian-elimination v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

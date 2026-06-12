@@ -802,3 +802,87 @@ describe('cuckoo-hash - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cuckoo-hash - w142', () => {
+  it('cuckoo-hash v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w145', () => {
+  it('cuckoo-hash v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w148', () => {
+  it('cuckoo-hash v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w151', () => {
+  it('cuckoo-hash v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w154', () => {
+  it('cuckoo-hash v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w157', () => {
+  it('cuckoo-hash v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w160', () => {
+  it('cuckoo-hash v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

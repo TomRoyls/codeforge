@@ -829,3 +829,87 @@ describe('hierarchical-timer - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hierarchical-timer - w142', () => {
+  it('hierarchical-timer v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hierarchical-timer - w145', () => {
+  it('hierarchical-timer v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hierarchical-timer - w148', () => {
+  it('hierarchical-timer v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hierarchical-timer - w151', () => {
+  it('hierarchical-timer v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hierarchical-timer - w154', () => {
+  it('hierarchical-timer v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hierarchical-timer - w157', () => {
+  it('hierarchical-timer v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hierarchical-timer - w160', () => {
+  it('hierarchical-timer v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

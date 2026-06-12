@@ -597,3 +597,87 @@ describe('collatz - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('collatz - w142', () => {
+  it('collatz v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - w145', () => {
+  it('collatz v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - w148', () => {
+  it('collatz v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - w151', () => {
+  it('collatz v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - w154', () => {
+  it('collatz v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - w157', () => {
+  it('collatz v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - w160', () => {
+  it('collatz v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

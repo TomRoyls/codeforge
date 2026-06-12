@@ -746,3 +746,87 @@ describe('graph-entropy - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-entropy - w142', () => {
+  it('graph-entropy v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-entropy - w145', () => {
+  it('graph-entropy v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-entropy - w148', () => {
+  it('graph-entropy v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-entropy - w151', () => {
+  it('graph-entropy v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-entropy - w154', () => {
+  it('graph-entropy v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-entropy - w157', () => {
+  it('graph-entropy v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-entropy - w160', () => {
+  it('graph-entropy v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

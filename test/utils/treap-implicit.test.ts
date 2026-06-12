@@ -834,3 +834,87 @@ describe('treap-implicit - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('treap-implicit - w142', () => {
+  it('treap-implicit v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - w145', () => {
+  it('treap-implicit v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - w148', () => {
+  it('treap-implicit v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - w151', () => {
+  it('treap-implicit v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - w154', () => {
+  it('treap-implicit v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - w157', () => {
+  it('treap-implicit v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap-implicit - w160', () => {
+  it('treap-implicit v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

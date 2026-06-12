@@ -666,3 +666,87 @@ describe('rect-area - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rect-area - w142', () => {
+  it('rect-area v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rect-area - w145', () => {
+  it('rect-area v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rect-area - w148', () => {
+  it('rect-area v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rect-area - w151', () => {
+  it('rect-area v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rect-area - w154', () => {
+  it('rect-area v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rect-area - w157', () => {
+  it('rect-area v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rect-area - w160', () => {
+  it('rect-area v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})

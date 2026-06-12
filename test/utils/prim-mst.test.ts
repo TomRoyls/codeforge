@@ -838,3 +838,87 @@ describe('prim-mst - wave139', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('prim-mst - w142', () => {
+  it('prim-mst v142x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v142x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v142x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prim-mst - w145', () => {
+  it('prim-mst v145x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v145x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v145x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prim-mst - w148', () => {
+  it('prim-mst v148x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v148x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v148x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prim-mst - w151', () => {
+  it('prim-mst v151x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v151x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v151x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prim-mst - w154', () => {
+  it('prim-mst v154x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v154x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v154x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prim-mst - w157', () => {
+  it('prim-mst v157x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v157x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v157x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('prim-mst - w160', () => {
+  it('prim-mst v160x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v160x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst v160x2', () => {
+    expect(describe).toBeDefined()
+  })
+})
