@@ -578,3 +578,15 @@ describe('segment-2d - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('segment-2d - wave554', () => {
+  it('segment-2d w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-2d w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-2d w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

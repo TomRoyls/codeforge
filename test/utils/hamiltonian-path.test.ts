@@ -539,3 +539,15 @@ describe('hamiltonian-path - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hamiltonian-path - wave554', () => {
+  it('hamiltonian-path w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

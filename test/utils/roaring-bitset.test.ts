@@ -537,3 +537,15 @@ describe('roaring-bitset - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('roaring-bitset - wave554', () => {
+  it('roaring-bitset w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

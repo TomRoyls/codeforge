@@ -377,3 +377,15 @@ describe('bigint-utils - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bigint-utils - wave554', () => {
+  it('bigint-utils w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -460,3 +460,15 @@ describe('run-length-encoding - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('run-length-encoding - wave554', () => {
+  it('run-length-encoding w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

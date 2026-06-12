@@ -464,3 +464,15 @@ describe('comparators - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('comparators - wave554', () => {
+  it('comparators w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

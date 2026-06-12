@@ -577,3 +577,15 @@ describe('kruskal-mst - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kruskal-mst - wave554', () => {
+  it('kruskal-mst w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

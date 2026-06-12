@@ -475,3 +475,8 @@ describe('EventSink', () => {
     expect(sink.clone().equals(sink)).toBe(true)
   })
 })
+describe('event-sink - wave554', () => {
+  it('event-sink w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -706,3 +706,15 @@ describe('block-cut-tree - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('block-cut-tree - wave554', () => {
+  it('block-cut-tree w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

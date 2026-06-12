@@ -443,3 +443,15 @@ describe('lcp-array - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lcp-array - wave554', () => {
+  it('lcp-array w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

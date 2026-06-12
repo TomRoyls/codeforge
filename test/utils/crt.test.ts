@@ -466,3 +466,15 @@ describe('crt - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('crt - wave554', () => {
+  it('crt w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

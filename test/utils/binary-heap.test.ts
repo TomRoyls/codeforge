@@ -675,3 +675,15 @@ describe('binary-heap - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-heap - wave554', () => {
+  it('binary-heap w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

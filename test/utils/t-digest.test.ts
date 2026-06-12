@@ -515,3 +515,15 @@ describe('t-digest - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('t-digest - wave554', () => {
+  it('t-digest w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

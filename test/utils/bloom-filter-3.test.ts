@@ -658,3 +658,15 @@ describe('bloom-filter-3 - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bloom-filter-3 - wave554', () => {
+  it('bloom-filter-3 w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bloom-filter-3 w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

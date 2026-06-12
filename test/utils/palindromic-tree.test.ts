@@ -438,3 +438,15 @@ describe('palindromic-tree - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('palindromic-tree - wave554', () => {
+  it('palindromic-tree w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindromic-tree w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindromic-tree w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

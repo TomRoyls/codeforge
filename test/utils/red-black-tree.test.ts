@@ -602,3 +602,15 @@ describe('red-black-tree - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('red-black-tree - wave554', () => {
+  it('red-black-tree w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

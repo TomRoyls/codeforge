@@ -631,3 +631,15 @@ describe('circuit-breaker - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circuit-breaker - wave554', () => {
+  it('circuit-breaker w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

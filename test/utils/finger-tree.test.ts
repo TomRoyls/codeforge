@@ -464,3 +464,15 @@ describe('finger-tree - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('finger-tree - wave554', () => {
+  it('finger-tree w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('finger-tree w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('finger-tree w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

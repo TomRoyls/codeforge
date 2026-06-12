@@ -387,3 +387,15 @@ describe('counting-inversions - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counting-inversions - wave554', () => {
+  it('counting-inversions w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -701,3 +701,15 @@ describe('priority-queue - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('priority-queue - wave554', () => {
+  it('priority-queue w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-queue w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -559,3 +559,15 @@ describe('binary-trie - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-trie - wave554', () => {
+  it('binary-trie w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

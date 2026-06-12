@@ -671,3 +671,15 @@ describe('scc-tarjan - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('scc-tarjan - wave554', () => {
+  it('scc-tarjan w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

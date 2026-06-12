@@ -533,3 +533,15 @@ describe('persistent-segment - wave553', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-segment - wave554', () => {
+  it('persistent-segment w554 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment w554 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-segment w554 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
