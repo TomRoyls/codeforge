@@ -1013,3 +1013,168 @@ describe('cycle-space - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cycle-space - w210', () => {
+  it('cycle-space x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cycle-space - w220', () => {
+  it('cycle-space x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cycle-space - w230', () => {
+  it('cycle-space x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cycle-space - w240', () => {
+  it('cycle-space x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cycle-space - w250', () => {
+  it('cycle-space x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-space x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

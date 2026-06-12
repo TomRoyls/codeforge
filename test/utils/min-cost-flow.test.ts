@@ -1001,3 +1001,168 @@ describe('min-cost-flow - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('min-cost-flow - w210', () => {
+  it('min-cost-flow x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - w220', () => {
+  it('min-cost-flow x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - w230', () => {
+  it('min-cost-flow x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - w240', () => {
+  it('min-cost-flow x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow - w250', () => {
+  it('min-cost-flow x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

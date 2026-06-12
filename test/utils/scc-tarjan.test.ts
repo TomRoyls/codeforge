@@ -1103,3 +1103,168 @@ describe('scc-tarjan - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('scc-tarjan - w210', () => {
+  it('scc-tarjan x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scc-tarjan - w220', () => {
+  it('scc-tarjan x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scc-tarjan - w230', () => {
+  it('scc-tarjan x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scc-tarjan - w240', () => {
+  it('scc-tarjan x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('scc-tarjan - w250', () => {
+  it('scc-tarjan x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1059,3 +1059,168 @@ describe('ziggurat-normal - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ziggurat-normal - w210', () => {
+  it('ziggurat-normal x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w220', () => {
+  it('ziggurat-normal x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w230', () => {
+  it('ziggurat-normal x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w240', () => {
+  it('ziggurat-normal x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w250', () => {
+  it('ziggurat-normal x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

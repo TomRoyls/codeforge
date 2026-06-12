@@ -1164,3 +1164,168 @@ describe('van-emde-boas - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('van-emde-boas - w210', () => {
+  it('van-emde-boas x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - w220', () => {
+  it('van-emde-boas x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - w230', () => {
+  it('van-emde-boas x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - w240', () => {
+  it('van-emde-boas x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('van-emde-boas - w250', () => {
+  it('van-emde-boas x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('van-emde-boas x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

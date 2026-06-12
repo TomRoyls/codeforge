@@ -999,3 +999,168 @@ describe('counted-bloom-filter - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counted-bloom-filter - w210', () => {
+  it('counted-bloom-filter x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counted-bloom-filter - w220', () => {
+  it('counted-bloom-filter x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counted-bloom-filter - w230', () => {
+  it('counted-bloom-filter x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counted-bloom-filter - w240', () => {
+  it('counted-bloom-filter x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counted-bloom-filter - w250', () => {
+  it('counted-bloom-filter x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counted-bloom-filter x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

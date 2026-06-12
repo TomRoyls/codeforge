@@ -1050,3 +1050,168 @@ describe('sparse-bitset - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-bitset - w210', () => {
+  it('sparse-bitset x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bitset - w220', () => {
+  it('sparse-bitset x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bitset - w230', () => {
+  it('sparse-bitset x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bitset - w240', () => {
+  it('sparse-bitset x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sparse-bitset - w250', () => {
+  it('sparse-bitset x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bitset x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

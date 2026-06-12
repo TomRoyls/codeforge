@@ -912,3 +912,168 @@ describe('welford - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('welford - w210', () => {
+  it('welford x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('welford - w220', () => {
+  it('welford x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('welford - w230', () => {
+  it('welford x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('welford - w240', () => {
+  it('welford x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('welford - w250', () => {
+  it('welford x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

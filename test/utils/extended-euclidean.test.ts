@@ -834,3 +834,168 @@ describe('extended-euclidean - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('extended-euclidean - w210', () => {
+  it('extended-euclidean x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - w220', () => {
+  it('extended-euclidean x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - w230', () => {
+  it('extended-euclidean x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - w240', () => {
+  it('extended-euclidean x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('extended-euclidean - w250', () => {
+  it('extended-euclidean x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

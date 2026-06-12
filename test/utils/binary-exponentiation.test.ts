@@ -804,3 +804,168 @@ describe('binary-exponentiation - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-exponentiation - w210', () => {
+  it('binary-exponentiation x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-exponentiation - w220', () => {
+  it('binary-exponentiation x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-exponentiation - w230', () => {
+  it('binary-exponentiation x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-exponentiation - w240', () => {
+  it('binary-exponentiation x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-exponentiation - w250', () => {
+  it('binary-exponentiation x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

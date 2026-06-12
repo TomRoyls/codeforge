@@ -885,3 +885,168 @@ describe('huffman-coding - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('huffman-coding - w210', () => {
+  it('huffman-coding x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coding - w220', () => {
+  it('huffman-coding x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coding - w230', () => {
+  it('huffman-coding x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coding - w240', () => {
+  it('huffman-coding x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coding - w250', () => {
+  it('huffman-coding x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coding x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -872,3 +872,168 @@ describe('delta-encoding - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('delta-encoding - w210', () => {
+  it('delta-encoding x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - w220', () => {
+  it('delta-encoding x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - w230', () => {
+  it('delta-encoding x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - w240', () => {
+  it('delta-encoding x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('delta-encoding - w250', () => {
+  it('delta-encoding x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

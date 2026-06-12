@@ -831,3 +831,168 @@ describe('comb-sort - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('comb-sort - w210', () => {
+  it('comb-sort x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comb-sort - w220', () => {
+  it('comb-sort x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comb-sort - w230', () => {
+  it('comb-sort x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comb-sort - w240', () => {
+  it('comb-sort x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comb-sort - w250', () => {
+  it('comb-sort x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

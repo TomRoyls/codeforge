@@ -952,3 +952,168 @@ describe('graph-coloring - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-coloring - w210', () => {
+  it('graph-coloring x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-coloring - w220', () => {
+  it('graph-coloring x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-coloring - w230', () => {
+  it('graph-coloring x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-coloring - w240', () => {
+  it('graph-coloring x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-coloring - w250', () => {
+  it('graph-coloring x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

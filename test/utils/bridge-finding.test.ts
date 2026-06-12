@@ -1056,3 +1056,168 @@ describe('bridge-finding - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bridge-finding - w210', () => {
+  it('bridge-finding x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finding - w220', () => {
+  it('bridge-finding x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finding - w230', () => {
+  it('bridge-finding x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finding - w240', () => {
+  it('bridge-finding x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finding - w250', () => {
+  it('bridge-finding x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

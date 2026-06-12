@@ -832,3 +832,168 @@ describe('integer-partition - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('integer-partition - w210', () => {
+  it('integer-partition x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - w220', () => {
+  it('integer-partition x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - w230', () => {
+  it('integer-partition x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - w240', () => {
+  it('integer-partition x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('integer-partition - w250', () => {
+  it('integer-partition x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

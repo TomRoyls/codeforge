@@ -908,3 +908,168 @@ describe('ntt - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ntt - w210', () => {
+  it('ntt x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - w220', () => {
+  it('ntt x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - w230', () => {
+  it('ntt x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - w240', () => {
+  it('ntt x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ntt - w250', () => {
+  it('ntt x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

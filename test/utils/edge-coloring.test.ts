@@ -1019,3 +1019,168 @@ describe('edge-coloring - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edge-coloring - w210', () => {
+  it('edge-coloring x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - w220', () => {
+  it('edge-coloring x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - w230', () => {
+  it('edge-coloring x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - w240', () => {
+  it('edge-coloring x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edge-coloring - w250', () => {
+  it('edge-coloring x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

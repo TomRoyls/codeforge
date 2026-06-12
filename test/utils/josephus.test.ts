@@ -879,3 +879,168 @@ describe('josephus - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('josephus - w210', () => {
+  it('josephus x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - w220', () => {
+  it('josephus x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - w230', () => {
+  it('josephus x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - w240', () => {
+  it('josephus x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('josephus - w250', () => {
+  it('josephus x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

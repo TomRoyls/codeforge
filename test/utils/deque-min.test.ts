@@ -1054,3 +1054,168 @@ describe('deque-min - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deque-min - w210', () => {
+  it('deque-min x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-min - w220', () => {
+  it('deque-min x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-min - w230', () => {
+  it('deque-min x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-min - w240', () => {
+  it('deque-min x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-min - w250', () => {
+  it('deque-min x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-min x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

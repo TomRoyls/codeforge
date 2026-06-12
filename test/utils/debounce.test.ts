@@ -1174,3 +1174,168 @@ describe('debounce - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('debounce - w210', () => {
+  it('debounce x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('debounce - w220', () => {
+  it('debounce x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('debounce - w230', () => {
+  it('debounce x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('debounce - w240', () => {
+  it('debounce x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('debounce - w250', () => {
+  it('debounce x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('debounce x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

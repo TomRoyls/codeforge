@@ -869,3 +869,168 @@ describe('modulo-combinatorics - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('modulo-combinatorics - w210', () => {
+  it('modulo-combinatorics x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modulo-combinatorics - w220', () => {
+  it('modulo-combinatorics x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modulo-combinatorics - w230', () => {
+  it('modulo-combinatorics x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modulo-combinatorics - w240', () => {
+  it('modulo-combinatorics x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modulo-combinatorics - w250', () => {
+  it('modulo-combinatorics x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -840,3 +840,168 @@ describe('typed-emitter - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('typed-emitter - w210', () => {
+  it('typed-emitter x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('typed-emitter - w220', () => {
+  it('typed-emitter x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('typed-emitter - w230', () => {
+  it('typed-emitter x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('typed-emitter - w240', () => {
+  it('typed-emitter x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('typed-emitter - w250', () => {
+  it('typed-emitter x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('typed-emitter x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

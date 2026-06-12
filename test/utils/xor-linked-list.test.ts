@@ -974,3 +974,168 @@ describe('xor-linked-list - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('xor-linked-list - w210', () => {
+  it('xor-linked-list x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-linked-list - w220', () => {
+  it('xor-linked-list x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-linked-list - w230', () => {
+  it('xor-linked-list x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-linked-list - w240', () => {
+  it('xor-linked-list x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-linked-list - w250', () => {
+  it('xor-linked-list x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

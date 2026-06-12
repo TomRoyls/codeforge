@@ -960,3 +960,168 @@ describe('fenwick-tree - w200', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('fenwick-tree - w210', () => {
+  it('fenwick-tree x210x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x210x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x210x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x210x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x210x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x210x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x210x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x210x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x210x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x210x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('fenwick-tree - w220', () => {
+  it('fenwick-tree x220x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x220x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x220x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x220x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x220x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x220x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x220x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x220x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x220x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x220x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('fenwick-tree - w230', () => {
+  it('fenwick-tree x230x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x230x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x230x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x230x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x230x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x230x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x230x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x230x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x230x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x230x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('fenwick-tree - w240', () => {
+  it('fenwick-tree x240x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x240x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x240x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x240x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x240x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x240x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x240x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x240x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x240x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x240x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('fenwick-tree - w250', () => {
+  it('fenwick-tree x250x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x250x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x250x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x250x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x250x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x250x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x250x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x250x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x250x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree x250x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

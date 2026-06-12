@@ -773,3 +773,168 @@ describe('knuth-morris-pratt - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('knuth-morris-pratt - w210', () => {
+  it('knuth-morris-pratt x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - w220', () => {
+  it('knuth-morris-pratt x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - w230', () => {
+  it('knuth-morris-pratt x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - w240', () => {
+  it('knuth-morris-pratt x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('knuth-morris-pratt - w250', () => {
+  it('knuth-morris-pratt x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

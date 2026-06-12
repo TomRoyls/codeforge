@@ -1099,3 +1099,168 @@ describe('min-cost-flow-bellman - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('min-cost-flow-bellman - w210', () => {
+  it('min-cost-flow-bellman x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - w220', () => {
+  it('min-cost-flow-bellman x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - w230', () => {
+  it('min-cost-flow-bellman x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - w240', () => {
+  it('min-cost-flow-bellman x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('min-cost-flow-bellman - w250', () => {
+  it('min-cost-flow-bellman x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

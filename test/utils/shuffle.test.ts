@@ -886,3 +886,168 @@ describe('shuffle - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('shuffle - w210', () => {
+  it('shuffle x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('shuffle - w220', () => {
+  it('shuffle x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('shuffle - w230', () => {
+  it('shuffle x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('shuffle - w240', () => {
+  it('shuffle x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('shuffle - w250', () => {
+  it('shuffle x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('shuffle x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

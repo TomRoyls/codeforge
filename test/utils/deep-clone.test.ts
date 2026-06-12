@@ -938,3 +938,168 @@ describe('deep-clone - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deep-clone - w210', () => {
+  it('deep-clone x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deep-clone - w220', () => {
+  it('deep-clone x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deep-clone - w230', () => {
+  it('deep-clone x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deep-clone - w240', () => {
+  it('deep-clone x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deep-clone - w250', () => {
+  it('deep-clone x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

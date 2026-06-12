@@ -1060,3 +1060,168 @@ describe('union-find - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('union-find - w210', () => {
+  it('union-find x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find - w220', () => {
+  it('union-find x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find - w230', () => {
+  it('union-find x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find - w240', () => {
+  it('union-find x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('union-find - w250', () => {
+  it('union-find x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

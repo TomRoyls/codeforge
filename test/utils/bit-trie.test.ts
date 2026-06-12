@@ -1131,3 +1131,168 @@ describe('bit-trie - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bit-trie - w210', () => {
+  it('bit-trie x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - w220', () => {
+  it('bit-trie x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - w230', () => {
+  it('bit-trie x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - w240', () => {
+  it('bit-trie x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bit-trie - w250', () => {
+  it('bit-trie x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

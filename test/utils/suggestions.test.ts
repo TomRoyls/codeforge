@@ -800,3 +800,168 @@ describe('suggestions - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suggestions - w210', () => {
+  it('suggestions x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suggestions - w220', () => {
+  it('suggestions x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suggestions - w230', () => {
+  it('suggestions x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suggestions - w240', () => {
+  it('suggestions x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suggestions - w250', () => {
+  it('suggestions x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

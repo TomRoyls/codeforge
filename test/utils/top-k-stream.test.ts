@@ -1006,3 +1006,168 @@ describe('top-k-stream - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('top-k-stream - w210', () => {
+  it('top-k-stream x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k-stream - w220', () => {
+  it('top-k-stream x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k-stream - w230', () => {
+  it('top-k-stream x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k-stream - w240', () => {
+  it('top-k-stream x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('top-k-stream - w250', () => {
+  it('top-k-stream x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-stream x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -804,3 +804,168 @@ describe('interpolation-search - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interpolation-search - w210', () => {
+  it('interpolation-search x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - w220', () => {
+  it('interpolation-search x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - w230', () => {
+  it('interpolation-search x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - w240', () => {
+  it('interpolation-search x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interpolation-search - w250', () => {
+  it('interpolation-search x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

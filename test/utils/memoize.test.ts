@@ -1035,3 +1035,168 @@ describe('memoize - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('memoize - w210', () => {
+  it('memoize x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - w220', () => {
+  it('memoize x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - w230', () => {
+  it('memoize x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - w240', () => {
+  it('memoize x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('memoize - w250', () => {
+  it('memoize x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('memoize x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

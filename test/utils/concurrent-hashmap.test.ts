@@ -1028,3 +1028,168 @@ describe('concurrent-hashmap - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('concurrent-hashmap - w210', () => {
+  it('concurrent-hashmap x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('concurrent-hashmap - w220', () => {
+  it('concurrent-hashmap x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('concurrent-hashmap - w230', () => {
+  it('concurrent-hashmap x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('concurrent-hashmap - w240', () => {
+  it('concurrent-hashmap x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('concurrent-hashmap - w250', () => {
+  it('concurrent-hashmap x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

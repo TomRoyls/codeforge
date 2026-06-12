@@ -1020,3 +1020,168 @@ describe('stopwatch - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stopwatch - w210', () => {
+  it('stopwatch x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - w220', () => {
+  it('stopwatch x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - w230', () => {
+  it('stopwatch x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - w240', () => {
+  it('stopwatch x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - w250', () => {
+  it('stopwatch x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

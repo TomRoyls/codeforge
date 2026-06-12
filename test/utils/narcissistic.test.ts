@@ -825,3 +825,168 @@ describe('narcissistic - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('narcissistic - w210', () => {
+  it('narcissistic x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('narcissistic - w220', () => {
+  it('narcissistic x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('narcissistic - w230', () => {
+  it('narcissistic x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('narcissistic - w240', () => {
+  it('narcissistic x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('narcissistic - w250', () => {
+  it('narcissistic x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('narcissistic x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

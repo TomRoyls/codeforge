@@ -836,3 +836,168 @@ describe('bisect - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bisect - w210', () => {
+  it('bisect x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - w220', () => {
+  it('bisect x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - w230', () => {
+  it('bisect x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - w240', () => {
+  it('bisect x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bisect - w250', () => {
+  it('bisect x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

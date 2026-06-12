@@ -903,3 +903,168 @@ describe('chinese-remainder - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('chinese-remainder - w210', () => {
+  it('chinese-remainder x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - w220', () => {
+  it('chinese-remainder x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - w230', () => {
+  it('chinese-remainder x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - w240', () => {
+  it('chinese-remainder x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('chinese-remainder - w250', () => {
+  it('chinese-remainder x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

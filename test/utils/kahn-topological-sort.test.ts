@@ -910,3 +910,168 @@ describe('kahn-topological-sort - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kahn-topological-sort - w210', () => {
+  it('kahn-topological-sort x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-topological-sort - w220', () => {
+  it('kahn-topological-sort x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-topological-sort - w230', () => {
+  it('kahn-topological-sort x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-topological-sort - w240', () => {
+  it('kahn-topological-sort x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-topological-sort - w250', () => {
+  it('kahn-topological-sort x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-topological-sort x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

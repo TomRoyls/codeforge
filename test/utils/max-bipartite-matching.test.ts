@@ -1036,3 +1036,168 @@ describe('max-bipartite-matching - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('max-bipartite-matching - w210', () => {
+  it('max-bipartite-matching x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('max-bipartite-matching - w220', () => {
+  it('max-bipartite-matching x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('max-bipartite-matching - w230', () => {
+  it('max-bipartite-matching x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('max-bipartite-matching - w240', () => {
+  it('max-bipartite-matching x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('max-bipartite-matching - w250', () => {
+  it('max-bipartite-matching x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

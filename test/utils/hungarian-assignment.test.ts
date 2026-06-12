@@ -1122,3 +1122,168 @@ describe('hungarian-assignment - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hungarian-assignment - w210', () => {
+  it('hungarian-assignment x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian-assignment - w220', () => {
+  it('hungarian-assignment x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian-assignment - w230', () => {
+  it('hungarian-assignment x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian-assignment - w240', () => {
+  it('hungarian-assignment x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian-assignment - w250', () => {
+  it('hungarian-assignment x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian-assignment x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

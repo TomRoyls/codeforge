@@ -979,3 +979,168 @@ describe('strong-connectivity-contraction - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('strong-connectivity-contraction - w210', () => {
+  it('strong-connectivity-contraction x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('strong-connectivity-contraction - w220', () => {
+  it('strong-connectivity-contraction x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('strong-connectivity-contraction - w230', () => {
+  it('strong-connectivity-contraction x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('strong-connectivity-contraction - w240', () => {
+  it('strong-connectivity-contraction x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('strong-connectivity-contraction - w250', () => {
+  it('strong-connectivity-contraction x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

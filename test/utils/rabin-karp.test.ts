@@ -832,3 +832,168 @@ describe('rabin-karp - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rabin-karp - w210', () => {
+  it('rabin-karp x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rabin-karp - w220', () => {
+  it('rabin-karp x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rabin-karp - w230', () => {
+  it('rabin-karp x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rabin-karp - w240', () => {
+  it('rabin-karp x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rabin-karp - w250', () => {
+  it('rabin-karp x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

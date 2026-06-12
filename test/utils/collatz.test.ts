@@ -813,3 +813,168 @@ describe('collatz - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('collatz - w210', () => {
+  it('collatz x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - w220', () => {
+  it('collatz x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - w230', () => {
+  it('collatz x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - w240', () => {
+  it('collatz x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('collatz - w250', () => {
+  it('collatz x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

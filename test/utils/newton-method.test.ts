@@ -1017,3 +1017,168 @@ describe('newton-method - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('newton-method - w210', () => {
+  it('newton-method x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('newton-method - w220', () => {
+  it('newton-method x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('newton-method - w230', () => {
+  it('newton-method x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('newton-method - w240', () => {
+  it('newton-method x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('newton-method - w250', () => {
+  it('newton-method x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

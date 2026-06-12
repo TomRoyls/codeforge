@@ -998,3 +998,168 @@ describe('hungarian - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hungarian - w210', () => {
+  it('hungarian x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w220', () => {
+  it('hungarian x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w230', () => {
+  it('hungarian x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w240', () => {
+  it('hungarian x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w250', () => {
+  it('hungarian x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

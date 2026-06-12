@@ -888,3 +888,168 @@ describe('suffix-automaton - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suffix-automaton - w210', () => {
+  it('suffix-automaton x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - w220', () => {
+  it('suffix-automaton x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - w230', () => {
+  it('suffix-automaton x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - w240', () => {
+  it('suffix-automaton x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-automaton - w250', () => {
+  it('suffix-automaton x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

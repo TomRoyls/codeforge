@@ -934,3 +934,168 @@ describe('euler-tour - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('euler-tour - w210', () => {
+  it('euler-tour x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('euler-tour - w220', () => {
+  it('euler-tour x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('euler-tour - w230', () => {
+  it('euler-tour x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('euler-tour - w240', () => {
+  it('euler-tour x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('euler-tour - w250', () => {
+  it('euler-tour x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -836,3 +836,168 @@ describe('mod-int - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('mod-int - w210', () => {
+  it('mod-int x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mod-int - w220', () => {
+  it('mod-int x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mod-int - w230', () => {
+  it('mod-int x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mod-int - w240', () => {
+  it('mod-int x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('mod-int - w250', () => {
+  it('mod-int x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

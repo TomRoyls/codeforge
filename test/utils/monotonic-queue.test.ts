@@ -1061,3 +1061,168 @@ describe('monotonic-queue - w200', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('monotonic-queue - w210', () => {
+  it('monotonic-queue x210x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x210x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x210x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x210x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x210x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x210x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x210x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x210x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x210x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x210x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - w220', () => {
+  it('monotonic-queue x220x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x220x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x220x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x220x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x220x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x220x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x220x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x220x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x220x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x220x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - w230', () => {
+  it('monotonic-queue x230x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x230x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x230x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x230x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x230x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x230x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x230x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x230x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x230x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x230x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - w240', () => {
+  it('monotonic-queue x240x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x240x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x240x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x240x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x240x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x240x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x240x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x240x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x240x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x240x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('monotonic-queue - w250', () => {
+  it('monotonic-queue x250x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x250x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x250x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x250x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x250x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x250x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x250x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x250x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x250x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue x250x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

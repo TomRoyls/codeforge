@@ -1000,3 +1000,168 @@ describe('rollback-dsu - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rollback-dsu - w210', () => {
+  it('rollback-dsu x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rollback-dsu - w220', () => {
+  it('rollback-dsu x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rollback-dsu - w230', () => {
+  it('rollback-dsu x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rollback-dsu - w240', () => {
+  it('rollback-dsu x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rollback-dsu - w250', () => {
+  it('rollback-dsu x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

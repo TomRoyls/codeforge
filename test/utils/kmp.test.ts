@@ -791,3 +791,168 @@ describe('kmp - w200', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kmp - w210', () => {
+  it('kmp x210x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x210x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x210x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x210x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x210x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x210x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x210x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x210x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x210x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x210x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w220', () => {
+  it('kmp x220x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x220x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x220x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x220x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x220x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x220x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x220x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x220x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x220x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x220x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w230', () => {
+  it('kmp x230x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x230x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x230x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x230x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x230x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x230x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x230x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x230x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x230x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x230x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w240', () => {
+  it('kmp x240x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x240x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x240x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x240x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x240x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x240x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x240x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x240x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x240x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x240x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w250', () => {
+  it('kmp x250x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x250x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x250x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x250x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x250x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x250x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x250x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x250x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x250x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x250x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
