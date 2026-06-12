@@ -372,4 +372,55 @@ describe('ParallelBinarySearch', () => {
     const results = ParallelBinarySearch.search(queries)
     expect(results[0]).toBe(26)
   })
+
+  it('handles query with lo greater than hi', () => {
+    const queries = [
+      { lo: 10, hi: 5, check: (mid: number) => mid >= 0 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(-1)
+  })
+
+  it('handles range crossing zero threshold', () => {
+    const queries = [
+      { lo: -100, hi: 100, check: (mid: number) => mid >= 1 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(1)
+  })
+
+  it('handles check using closure variable', () => {
+    const target = 75
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => mid >= target },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(75)
+  })
+
+  it('handles very small range difference', () => {
+    const queries = [
+      { lo: 100, hi: 101, check: (mid: number) => mid >= 101 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(101)
+  })
+
+  it('handles check with Math.ceil', () => {
+    const queries = [
+      { lo: 0, hi: 100, check: (mid: number) => Math.ceil(mid / 10) >= 5 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results[0]).toBe(41)
+  })
+
+  it('handles queries with widely different ranges', () => {
+    const queries = [
+      { lo: 0, hi: 10, check: (mid: number) => mid >= 5 },
+      { lo: 0, hi: 10000, check: (mid: number) => mid >= 5000 },
+      { lo: -100, hi: 100, check: (mid: number) => mid >= 0 },
+    ]
+    const results = ParallelBinarySearch.search(queries)
+    expect(results).toEqual([5, 5000, 0])
+  })
 })

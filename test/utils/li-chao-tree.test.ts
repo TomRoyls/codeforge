@@ -326,4 +326,78 @@ describe('LiChaoTree', () => {
     tree.insertForMin(2, 0)
     expect(tree.queryMin(5)).toBeLessThanOrEqual(10)
   })
+
+  it('handles highly intersecting lines', () => {
+    const tree = new LiChaoTree(0, 100)
+    for (let i = 0; i < 10; i++) {
+      tree.insert(i % 3 - 1, i * 5)
+    }
+    const result = tree.query(50)
+    expect(result).toBeGreaterThan(-Infinity)
+    expect(result).toBeLessThan(Infinity)
+  })
+
+  it('query with floating point parameters', () => {
+    const tree = new LiChaoTree(0, 10)
+    tree.insert(0.5, 2.5)
+    tree.insert(-0.25, 7.5)
+    expect(tree.query(0)).toBe(7.5)
+    expect(tree.query(10)).toBe(7.5)
+  })
+
+  it('insertForMin with multiple competing lines', () => {
+    const tree = new LiChaoTree(0, 10)
+    tree.insertForMin(1, 0)
+    tree.insertForMin(-1, 10)
+    tree.insertForMin(0, 5)
+    expect(tree.queryMin(0)).toBeLessThanOrEqual(5)
+    expect(tree.queryMin(10)).toBeLessThanOrEqual(10)
+  })
+
+  it('clone preserves all lines', () => {
+    const tree = new LiChaoTree(0, 10)
+    tree.insert(1, 2)
+    tree.insert(3, 4)
+    tree.insert(-1, 5)
+    const clone = tree.clone()
+    expect(clone.lineCount()).toBe(tree.lineCount())
+    expect(clone.query(0)).toBe(tree.query(0))
+    expect(clone.query(10)).toBe(tree.query(10))
+  })
+
+  it('equals returns true for trees with same lines in different order', () => {
+    const tree1 = new LiChaoTree(0, 10)
+    const tree2 = new LiChaoTree(0, 10)
+    tree1.insert(1, 2)
+    tree1.insert(3, 4)
+    tree2.insert(3, 4)
+    tree2.insert(1, 2)
+    expect(tree1.equals(tree2)).toBe(true)
+  })
+
+  it('fromLines with single line', () => {
+    const tree = LiChaoTree.fromLines([[2, 3]], 0, 10)
+    expect(tree.isEmpty()).toBe(false)
+    expect(tree.lineCount()).toBe(1)
+    expect(tree.query(0)).toBe(3)
+  })
+
+  it('toString with multiple lines shows correct count', () => {
+    const tree = new LiChaoTree(0, 10)
+    tree.insert(1, 2)
+    tree.insert(3, 4)
+    tree.insert(5, 6)
+    const str = tree.toString()
+    expect(str).toContain('3 lines')
+  })
+
+  it('query returns correct results after clear and reinsert', () => {
+    const tree = new LiChaoTree(0, 10)
+    tree.insert(1, 2)
+    tree.insert(3, 4)
+    tree.clear()
+    tree.insert(5, 6)
+    expect(tree.query(0)).toBe(6)
+    expect(tree.lineCount()).toBe(1)
+  })
 })

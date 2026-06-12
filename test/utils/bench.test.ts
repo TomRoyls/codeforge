@@ -512,4 +512,98 @@ describe('bench', () => {
     expect(result.opsPerSec).toBeGreaterThan(0)
     expect(result.avgNs).toBeGreaterThan(0)
   })
+
+  it('benchmarks function with floating point arithmetic', () => {
+    const result = bench('floats', () => {
+      const x = Math.PI * 2.71828
+      x / 1.41421
+    }, 1000)
+
+    expect(result.iterations).toBe(1000)
+    expect(result.totalMs).toBeGreaterThan(0)
+  })
+
+  it('benchmarks function with try-catch error handling', () => {
+    let catchCount = 0
+    const fn = () => {
+      try {
+        if (Math.random() > 0.9) throw new Error('random error')
+      } catch {
+        catchCount++
+      }
+    }
+    const result = bench('error-handling', fn, 100)
+    expect(result.iterations).toBe(100)
+    expect(typeof catchCount).toBe('number')
+  })
+
+  it('benchmarks string manipulation operations', () => {
+    const result = bench('strings', () => {
+      const s = 'hello world'
+      s.toUpperCase().split(' ').join('-')
+    }, 500)
+
+    expect(result.iterations).toBe(500)
+    expect(result.opsPerSec).toBeGreaterThan(0)
+  })
+
+  it('benchmarks object property access', () => {
+    const obj = { a: 1, b: 2, c: 3, d: 4, e: 5 }
+    const result = bench('props', () => {
+      obj.a + obj.b + obj.c
+    }, 1000)
+
+    expect(result.totalMs).toBeGreaterThanOrEqual(0)
+    expect(result.avgNs).toBeGreaterThanOrEqual(0)
+  })
+
+  it('benchmarks array operations', () => {
+    const result = bench('arrays', () => {
+      const arr = [1, 2, 3, 4, 5]
+      arr.map(x => x * 2).filter(x => x > 5)
+    }, 500)
+
+    expect(result.iterations).toBe(500)
+    expect(result.opsPerSec).toBeGreaterThan(0)
+  })
+
+  it('benchmarks conditional operations', () => {
+    const result = bench('conditionals', () => {
+      const x = Math.random()
+      x > 0.5 ? 'high' : 'low'
+    }, 10000)
+
+    expect(result.totalMs).toBeGreaterThanOrEqual(0)
+  })
+
+  it('benchmarks regex operations', () => {
+    const result = bench('regex', () => {
+      const re = /\d{3}-\d{3}-\d{4}/
+      re.test('123-456-7890')
+    }, 1000)
+
+    expect(result.iterations).toBe(1000)
+    expect(result.opsPerSec).toBeGreaterThan(0)
+  })
+
+  it('handles function with loop operations', () => {
+    const result = bench('loops', () => {
+      let sum = 0
+      for (let i = 0; i < 10; i++) sum += i
+    }, 1000)
+
+    expect(result.avgNs).toBeGreaterThan(0)
+    expect(typeof result.totalMs).toBe('number')
+  })
+
+  it('benchmarks Date operations', () => {
+    const result = bench('date', () => {
+      const d = new Date()
+      d.getTime()
+      d.toISOString()
+    }, 500)
+
+    expect(result.iterations).toBe(500)
+    expect(result.totalMs).toBeGreaterThan(0)
+  })
 })

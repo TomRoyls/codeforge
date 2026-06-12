@@ -388,4 +388,91 @@ describe('AsyncQueue - concurrency patterns', () => {
     q.enqueue(undefined)
     expect(await q.dequeue()).toBe(undefined)
   })
+
+  it('clone preserves enqueued and dequeued counts', () => {
+    const q = new AsyncQueue<number>()
+    q.enqueue(1)
+    q.enqueue(2)
+    q.enqueue(3)
+    q.enqueue(4)
+    const c = q.clone()
+    expect(c.getStats().enqueued).toBe(4)
+    expect(c.getStats().dequeued).toBe(0)
+  })
+
+  it('clone with dequeued items preserves correct state', async () => {
+    const q = new AsyncQueue<number>()
+    q.enqueue(1)
+    q.enqueue(2)
+    q.enqueue(3)
+    await q.dequeue()
+    await q.dequeue()
+    const c = q.clone()
+    expect(c.size).toBe(1)
+    expect(c.getStats().dequeued).toBe(2)
+    expect(await c.dequeue()).toBe(3)
+  })
+
+  it('equals returns false for queues with different closed state', () => {
+    const q1 = new AsyncQueue<number>()
+    const q2 = new AsyncQueue<number>()
+    q1.enqueue(1)
+    q2.enqueue(1)
+    q2.close()
+    expect(q1.equals(q2)).toBe(false)
+  })
+
+  it('equals returns false for queues with different enqueued counts', async () => {
+    const q1 = new AsyncQueue<number>()
+    const q2 = new AsyncQueue<number>()
+    q1.enqueue(1)
+    q2.enqueue(1)
+    q2.enqueue(2)
+    await q2.dequeue()
+    expect(q1.equals(q2)).toBe(false)
+  })
+
+  it('iterator respects dequeued items', async () => {
+    const q = new AsyncQueue<number>()
+    q.enqueue(1)
+    q.enqueue(2)
+    q.enqueue(3)
+    await q.dequeue()
+    const items: number[] = []
+    for (const item of q) {
+      items.push(item)
+    }
+    expect(items).toEqual([2, 3])
+  })
+
+  it('close can be called multiple times', () => {
+    const q = new AsyncQueue<number>()
+    q.close()
+    q.close()
+    q.close()
+    expect(q.closed).toBe(true)
+    expect(q.pending).toBe(0)
+  })
+
+  it('toString includes closed state', () => {
+    const q = new AsyncQueue<number>()
+    q.enqueue(1)
+    q.close()
+    const str = q.toString()
+    expect(str).toContain('closed=true')
+    expect(str).toContain('size=1')
+    expect(str).toContain('enqueued=1')
+  })
+
+  it('toJSON returns only remaining items after dequeues', async () => {
+    const q = new AsyncQueue<number>()
+    q.enqueue(1)
+    q.enqueue(2)
+    q.enqueue(3)
+    await q.dequeue()
+    const json = q.toJSON() as { items: number[]; enqueued: number; dequeued: number }
+    expect(json.items).toEqual([2, 3])
+    expect(json.enqueued).toBe(3)
+    expect(json.dequeued).toBe(1)
+  })
 })

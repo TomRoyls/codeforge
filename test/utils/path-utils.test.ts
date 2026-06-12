@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { resolvePath, resolveAndValidatePath } from '../../src/utils/path-utils.js'
-import { mkdtempSync, rmSync, writeFileSync } from 'fs'
+import { mkdtempSync, rmSync, writeFileSync, symlinkSync } from 'fs'
 import { join } from 'path'
 import { tmpdir } from 'os'
 
@@ -252,5 +252,42 @@ describe('path-utils', () => {
   it('resolvePath with mixed separators normalized', () => {
     const result = resolvePath('./src/.')
     expect(result).toContain('src')
+  })
+
+  it('resolvePath handles relative path without leading dot', () => {
+    const result = resolvePath('src/utils')
+    expect(result).toContain('src')
+    expect(result).toContain('utils')
+  })
+
+  it('resolveAndValidatePath handles current directory variations', () => {
+    const result = resolveAndValidatePath('./')
+    expect(typeof result).toBe('string')
+    expect(result.startsWith('/')).toBe(true)
+  })
+
+  it('resolvePath with special characters', () => {
+    const result = resolvePath('./test@file')
+    expect(typeof result).toBe('string')
+  })
+
+  it('resolveAndValidatePath with symbolic link to existing file', () => {
+    const tmpDir = mkdtempSync(join(tmpdir(), 'path-utils-test-'))
+    const file = join(tmpDir, 'original.txt')
+    writeFileSync(file, 'test')
+    const symlink = join(tmpDir, 'link.txt')
+    symlinkSync(file, symlink)
+
+    try {
+      const result = resolveAndValidatePath(symlink)
+      expect(result).toBe(symlink)
+    } finally {
+      rmSync(tmpDir, { recursive: true, force: true })
+    }
+  })
+
+  it('resolvePath normalizes path with extra dots', () => {
+    const result = resolvePath('./src/.../utils')
+    expect(typeof result).toBe('string')
   })
 })

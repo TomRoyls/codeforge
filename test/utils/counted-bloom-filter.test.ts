@@ -359,4 +359,47 @@ describe('CountedBloomFilter', () => {
     expect(bf.contains('key-日本語-123-!')).toBe(true)
     expect(bf.remove('key-日本語-123-!')).toBe(true)
   })
+
+  it('handles extremely large expected items', () => {
+    const bf = new CountedBloomFilter(1000000, 0.01)
+    bf.add('test')
+    expect(bf.contains('test')).toBe(true)
+  })
+
+  it('count returns zero for newly added and immediately removed item', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('item')
+    bf.remove('item')
+    expect(bf.count('item')).toBe(0)
+  })
+
+  it('multiple additions and partial removals track correctly', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('x')
+    bf.add('x')
+    bf.add('x')
+    bf.add('x')
+    bf.add('x')
+    bf.remove('x')
+    bf.remove('x')
+    expect(bf.count('x')).toBeGreaterThanOrEqual(2)
+  })
+
+  it('handles key with null-byte equivalent character', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('key\u0000null')
+    expect(bf.contains('key\u0000null')).toBe(true)
+    expect(bf.remove('key\u0000null')).toBe(true)
+  })
+
+  it('remove operation preserves other items', () => {
+    const bf = new CountedBloomFilter()
+    bf.add('keep1')
+    bf.add('keep2')
+    bf.add('remove-me')
+    bf.remove('remove-me')
+    expect(bf.contains('keep1')).toBe(true)
+    expect(bf.contains('keep2')).toBe(true)
+    expect(bf.contains('remove-me')).toBe(false)
+  })
 })

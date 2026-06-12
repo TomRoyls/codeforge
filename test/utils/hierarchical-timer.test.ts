@@ -408,4 +408,64 @@ describe('HierarchicalTimer', () => {
     const flat = timer.flatDurations
     expect(flat.size).toBe(0)
   })
+
+  it('measureAsync handles Promise return value', async () => {
+    const timer = new HierarchicalTimer()
+    const result = await timer.measureAsync('test', async () => {
+      return Promise.resolve('resolved')
+    })
+    expect(result).toBe('resolved')
+  })
+
+  it('equals returns false for different nested structure names', () => {
+    const t1 = new HierarchicalTimer()
+    t1.start('a')
+    t1.start('b')
+    t1.end('b')
+    t1.end('a')
+    const t2 = new HierarchicalTimer()
+    t2.start('a')
+    t2.start('c')
+    t2.end('c')
+    t2.end('a')
+    expect(t1.equals(t2)).toBe(false)
+  })
+
+  it('clone creates deep copy of results', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('parent')
+    timer.start('child')
+    timer.end('child')
+    timer.end('parent')
+    const cloned = timer.clone()
+    cloned.results[0]!.name = 'modified'
+    expect(timer.results[0]!.name).toBe('parent')
+  })
+
+  it('format handles multiple root children', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('op1')
+    timer.end('op1')
+    timer.start('op2')
+    timer.end('op2')
+    const formatted = timer.format()
+    const lines = formatted.split('\n')
+    expect(lines.length).toBe(2)
+    expect(lines[0]).toContain('op1:')
+    expect(lines[1]).toContain('op2:')
+  })
+
+  it('flatDurations aggregates across sibling operations', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('op')
+    timer.end('op')
+    timer.start('op')
+    timer.end('op')
+    timer.start('op')
+    timer.end('op')
+    const flat = timer.flatDurations
+    expect(flat.has('op')).toBe(true)
+    const opDuration = flat.get('op')!
+    expect(opDuration).toBeGreaterThan(0)
+  })
 })

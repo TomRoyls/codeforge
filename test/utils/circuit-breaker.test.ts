@@ -385,3 +385,102 @@ describe('CircuitBreaker - edge cases', () => {
     await expect(cb.execute(() => Promise.resolve(1))).rejects.toThrow('Circuit breaker is open')
   })
 })
+
+describe('CircuitBreaker - additional edge cases', () => {
+  it('reset clears halfOpenAttempts', async () => {
+    vi.useFakeTimers()
+    try {
+      const cb = new CircuitBreaker({ ...opts, resetTimeoutMs: 100 })
+      for (let i = 0; i < 3; i++) {
+        await expect(cb.execute(() => Promise.reject(new Error('fail')))).rejects.toThrow()
+      }
+      vi.advanceTimersByTime(150)
+      expect(cb.canAttempt()).toBe(true)
+      await expect(cb.execute(() => Promise.reject(new Error('fail')))).rejects.toThrow()
+      cb.reset()
+      expect(cb.getState()).toBe('closed')
+      expect(cb.getStats().failures).toBe(0)
+      expect(cb.getStats().successes).toBe(0)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('consecutive resets have no side effects', async () => {
+    const cb = new CircuitBreaker(opts)
+    await cb.execute(() => Promise.resolve(1))
+    cb.reset()
+    cb.reset()
+    cb.reset()
+    expect(cb.getStats().failures).toBe(0)
+    expect(cb.getStats().successes).toBe(0)
+    expect(cb.getState()).toBe('closed')
+  })
+
+  it('half-open to closed transition resets failures', async () => {
+    vi.useFakeTimers()
+    try {
+      const cb = new CircuitBreaker({ ...opts, resetTimeoutMs: 100 })
+      for (let i = 0; i < 3; i++) {
+        await expect(cb.execute(() => Promise.reject(new Error('fail')))).rejects.toThrow()
+      }
+      vi.advanceTimersByTime(150)
+      await cb.execute(() => Promise.resolve('ok'))
+      expect(cb.getState()).toBe('closed')
+      expect(cb.getStats().failures).toBe(0)
+      expect(cb.getStats().successes).toBe(1)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('stats return immutable snapshot', async () => {
+    const cb = new CircuitBreaker(opts)
+    const stats1 = cb.getStats()
+    await cb.execute(() => Promise.resolve(1))
+    const stats2 = cb.getStats()
+    expect(stats1.failures).toBe(0)
+    expect(stats2.failures).toBe(0)
+    expect(stats1.successes).toBe(0)
+    expect(stats2.successes).toBe(1)
+  })
+
+  it('execute with promise that resolves to undefined', async () => {
+    const cb = new CircuitBreaker(opts)
+    const result = await cb.execute(() => Promise.resolve(undefined))
+    expect(result).toBeUndefined()
+    expect(cb.getStats().successes).toBe(1)
+  })
+
+  it('handles rejection with Error subclass', async () => {
+    class CustomError extends Error {
+      constructor(msg: string) {
+        super(msg)
+        this.name = 'CustomError'
+      }
+    }
+    const cb = new CircuitBreaker(opts)
+    await expect(cb.execute(() => Promise.reject(new CustomError('custom')))).rejects.toThrow(CustomError)
+    expect(cb.getStats().failures).toBe(1)
+  })
+
+  it('large halfOpenMaxAttempts allows more retries', async () => {
+    vi.useFakeTimers()
+    try {
+      const cb = new CircuitBreaker({ ...opts, resetTimeoutMs: 100, halfOpenMaxAttempts: 10 })
+      for (let i = 0; i < 3; i++) {
+        await expect(cb.execute(() => Promise.reject(new Error('fail')))).rejects.toThrow()
+      }
+      vi.advanceTimersByTime(150)
+      for (let i = 0; i < 9; i++) {
+        expect(cb.canAttempt()).toBe(true)
+        await expect(cb.execute(() => Promise.reject(new Error('fail')))).rejects.toThrow()
+      }
+      expect(cb.canAttempt()).toBe(true)
+      await expect(cb.execute(() => Promise.reject(new Error('fail')))).rejects.toThrow()
+      expect(cb.canAttempt()).toBe(false)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+})

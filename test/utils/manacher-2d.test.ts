@@ -379,4 +379,66 @@ describe('Manacher2D', () => {
     const result = Manacher2D.longestPalindromicSubgrid(grid)
     expect(result.len).toBeGreaterThanOrEqual(1)
   })
+
+  it('returns correct center coordinates for 1x1 palindrome', () => {
+    const grid = [['x']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.r).toBe(0)
+    expect(result.c).toBe(0)
+  })
+
+  it('finds center of 3x3 palindrome at correct position', () => {
+    const grid = [
+      ['a', 'b', 'a'],
+      ['b', 'c', 'b'],
+      ['a', 'b', 'a'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.r).toBe(1)
+    expect(result.c).toBe(1)
+    expect(result.len).toBe(3)
+  })
+
+  it('handles grid with no palindrome larger than 1x1', () => {
+    const grid = [
+      ['a', 'b', 'c', 'd'],
+      ['e', 'f', 'g', 'h'],
+      ['i', 'j', 'k', 'l'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBe(1)
+  })
+
+  it('finds palindrome in rectangular 3x5 grid', () => {
+    const grid = [
+      ['a', 'b', 'a', 'b', 'a'],
+      ['c', 'd', 'c', 'd', 'c'],
+      ['a', 'b', 'a', 'b', 'a'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(3)
+  })
+
+  it('handles 9x9 all same character grid', () => {
+    const grid = Array(9).fill(null).map(() => Array(9).fill('a'))
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(1)
+  })
+
+  it('finds smallest possible palindrome in 1x2 grid', () => {
+    const grid = [['a', 'b']]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBe(1)
+  })
+
+  it('handles grid with mixed palindrome sizes', () => {
+    const grid = [
+      ['a', 'a', 'a', 'b'],
+      ['a', 'a', 'a', 'b'],
+      ['a', 'a', 'a', 'b'],
+      ['c', 'c', 'c', 'd'],
+    ]
+    const result = Manacher2D.longestPalindromicSubgrid(grid)
+    expect(result.len).toBeGreaterThanOrEqual(3)
+  })
 })

@@ -228,4 +228,40 @@ describe('GnomeSort', () => {
     })
     expect(result).toEqual([{ v: 1 }, { v: 3 }, null])
   })
+
+  it('sortWithComparator handles NaN values', () => {
+    const result = GnomeSort.sortWithComparator([NaN, 1, 2, NaN, 0], (a, b) => {
+      if (Number.isNaN(a)) return 1
+      if (Number.isNaN(b)) return -1
+      return a - b
+    })
+    expect(result).toEqual([0, 1, 2, NaN, NaN])
+  })
+
+  it('handles arrays with undefined values', () => {
+    const result = GnomeSort.sortWithComparator([undefined, 3, undefined, 1] as any, (a: any, b: any) => {
+      if (a === undefined) return 1
+      if (b === undefined) return -1
+      return a - b
+    })
+    expect(result).toEqual([1, 3, undefined, undefined])
+  })
+
+  it('sortInPlace handles array with three elements', () => {
+    const arr = [3, 1, 2]
+    GnomeSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3])
+  })
+
+  it('sortWithComparator with nested object properties', () => {
+    const items = [{ nested: { deep: { value: 3 } } }, { nested: { deep: { value: 1 } } }, { nested: { deep: { value: 2 } } }]
+    const result = GnomeSort.sortWithComparator(items, (a, b) => a.nested.deep.value - b.nested.deep.value)
+    expect(result.map(x => x.nested.deep.value)).toEqual([1, 2, 3])
+  })
+
+  it('sort returns new array instance', () => {
+    const arr = [3, 1, 2]
+    const result = GnomeSort.sort(arr)
+    expect(result).not.toBe(arr)
+  })
 })

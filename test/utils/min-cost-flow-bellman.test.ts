@@ -427,4 +427,86 @@ describe('MinCostFlow', () => {
     expect(maxFlow).toBe(5)
     expect(minCost).toBe(50)
   })
+
+  it('handles self-loop edges', () => {
+    const edges = [
+      { from: 0, to: 0, capacity: 5, cost: 1 },
+      { from: 0, to: 1, capacity: 10, cost: 1 },
+      { from: 1, to: 2, capacity: 10, cost: 1 },
+    ]
+    const { maxFlow, minCost } = MinCostFlow.minCostMaxFlow(edges, 0, 2, 3)
+    expect(maxFlow).toBe(10)
+    expect(minCost).toBe(20)
+  })
+
+  it('handles mixed positive and negative costs', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5, cost: -3 },
+      { from: 0, to: 2, capacity: 5, cost: 2 },
+      { from: 1, to: 3, capacity: 5, cost: 1 },
+      { from: 2, to: 3, capacity: 5, cost: 1 },
+    ]
+    const { maxFlow, minCost } = MinCostFlow.minCostMaxFlow(edges, 0, 3, 4)
+    expect(maxFlow).toBe(10)
+    expect(minCost).toBe(5 * (-3 + 1) + 5 * (2 + 1))
+  })
+
+  it('handles very large negative costs', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10, cost: -1000 },
+      { from: 1, to: 2, capacity: 10, cost: 1 },
+    ]
+    const { maxFlow, minCost } = MinCostFlow.minCostMaxFlow(edges, 0, 2, 3)
+    expect(maxFlow).toBe(10)
+    expect(minCost).toBe(-9990)
+  })
+
+  it('handles graph with bottleneck at source', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 3, cost: 1 },
+      { from: 0, to: 2, capacity: 3, cost: 1 },
+      { from: 1, to: 3, capacity: 10, cost: 1 },
+      { from: 2, to: 3, capacity: 10, cost: 1 },
+    ]
+    const { maxFlow } = MinCostFlow.minCostMaxFlow(edges, 0, 3, 4)
+    expect(maxFlow).toBe(6)
+  })
+
+  it('handles flow through intermediate node only', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10, cost: 1 },
+      { from: 1, to: 2, capacity: 5, cost: 1 },
+      { from: 1, to: 3, capacity: 5, cost: 1 },
+      { from: 2, to: 4, capacity: 5, cost: 1 },
+      { from: 3, to: 4, capacity: 5, cost: 1 },
+    ]
+    const { maxFlow, minCost } = MinCostFlow.minCostMaxFlow(edges, 0, 4, 5)
+    expect(maxFlow).toBe(10)
+    expect(minCost).toBe(30)
+  })
+
+  it('handles single edge with negative cost only', () => {
+    const edges = [{ from: 0, to: 1, capacity: 10, cost: -5 }]
+    const { maxFlow, minCost } = MinCostFlow.minCostMaxFlow(edges, 0, 1, 2)
+    expect(maxFlow).toBe(10)
+    expect(minCost).toBe(-50)
+  })
+
+  it('handles large graph with balanced costs', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10, cost: 5 },
+      { from: 0, to: 2, capacity: 10, cost: 5 },
+      { from: 1, to: 3, capacity: 10, cost: 5 },
+      { from: 1, to: 4, capacity: 10, cost: 5 },
+      { from: 2, to: 5, capacity: 10, cost: 5 },
+      { from: 2, to: 6, capacity: 10, cost: 5 },
+      { from: 3, to: 7, capacity: 10, cost: 5 },
+      { from: 4, to: 7, capacity: 10, cost: 5 },
+      { from: 5, to: 7, capacity: 10, cost: 5 },
+      { from: 6, to: 7, capacity: 10, cost: 5 },
+    ]
+    const { maxFlow, minCost } = MinCostFlow.minCostMaxFlow(edges, 0, 7, 8)
+    expect(maxFlow).toBe(20)
+    expect(minCost).toBeGreaterThan(0)
+  })
 })

@@ -383,4 +383,83 @@ describe('DynamicConvexHull', () => {
     ch.add(0, 10)
     expect(ch.getHull().length).toBe(2)
   })
+
+  it('area of unit square', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(1, 0)
+    ch.add(1, 1)
+    ch.add(0, 1)
+    expect(ch.area).toBe(1)
+  })
+
+  it('perimeter of unit square', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(1, 0)
+    ch.add(1, 1)
+    ch.add(0, 1)
+    expect(ch.perimeter).toBe(4)
+  })
+
+  it('clone preserves all points and hull', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(3, 4)
+    ch.add(6, 0)
+    const copy = ch.clone()
+    expect(copy.getHull().length).toBe(ch.getHull().length)
+    expect(copy.area).toBe(ch.area)
+    expect(copy.perimeter).toBe(ch.perimeter)
+  })
+
+  it('equals returns false for different hulls with same point count', () => {
+    const a = new DynamicConvexHull()
+    a.add(0, 0)
+    a.add(1, 0)
+    a.add(0, 1)
+    const b = new DynamicConvexHull()
+    b.add(10, 10)
+    b.add(20, 10)
+    b.add(10, 20)
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('toJSON structure contains all original points', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(2, 2)
+    ch.add(1, 1)
+    ch.add(3, 0)
+    ch.add(0, 3)
+    const json = ch.toJSON()
+    expect(json.points.length).toBe(5)
+    expect(json.hull.length).toBeGreaterThan(0)
+    expect(json.hull.length).toBeLessThanOrEqual(5)
+  })
+
+  it('toString for large point count', () => {
+    const ch = new DynamicConvexHull()
+    for (let i = 0; i < 100; i++) {
+      ch.add(i, i)
+    }
+    expect(ch.toString()).toBe('DynamicConvexHull(100 points)')
+  })
+
+  it('perimeter of equilateral triangle', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(1, 0)
+    ch.add(0.5, Math.sqrt(3) / 2)
+    expect(ch.perimeter).toBeCloseTo(3, 2)
+  })
+
+  it('area calculation precision for small triangle', () => {
+    const ch = new DynamicConvexHull()
+    ch.add(0, 0)
+    ch.add(0.001, 0)
+    ch.add(0, 0.001)
+    expect(ch.area).toBeGreaterThan(0)
+    expect(ch.area).toBeLessThan(0.000001)
+  })
 })

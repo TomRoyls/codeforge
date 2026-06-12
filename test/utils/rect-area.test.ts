@@ -269,4 +269,41 @@ describe('RectArea', () => {
     const inner = { x1: 3, y1: 3, x2: 7, y2: 7 }
     expect(RectArea.unionArea([outer, inner])).toBe(100)
   })
+
+  it('intersection of identical rects returns same area', () => {
+    const r = { x1: 0, y1: 0, x2: 5, y2: 5 }
+    expect(RectArea.intersection(r, r)).toEqual({ x1: 0, y1: 0, x2: 5, y2: 5 })
+  })
+
+  it('area of negative coords works', () => {
+    expect(RectArea.area({ x1: -3, y1: -3, x2: 0, y2: 0 })).toBe(9)
+  })
+
+  it('union of empty array returns 0', () => {
+    expect(RectArea.unionArea([])).toBe(0)
+  })
+
+  it('intersection of two identical rects gives same rect', () => {
+    const r = { x1: 1, y1: 1, x2: 4, y2: 4 }
+    const result = RectArea.intersection(r, r)
+    expect(result).not.toBeNull()
+    expect(RectArea.area(result!)).toBe(9)
+  })
+
+  it('area of large rect', () => {
+    expect(RectArea.area({ x1: 0, y1: 0, x2: 1000, y2: 1000 })).toBe(1000000)
+  })
+
+  it('intersection with partial overlap', () => {
+    const r1 = { x1: 0, y1: 0, x2: 5, y2: 5 }
+    const r2 = { x1: 3, y1: 3, x2: 8, y2: 8 }
+    const result = RectArea.intersection(r1, r2)
+    expect(result).not.toBeNull()
+    expect(RectArea.area(result!)).toBe(4)
+  })
+
+  it('union of single rect returns its area', () => {
+    const r = { x1: 0, y1: 0, x2: 10, y2: 10 }
+    expect(RectArea.unionArea([r])).toBe(100)
+  })
 })

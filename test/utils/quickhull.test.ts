@@ -372,4 +372,49 @@ describe('Quickhull', () => {
     ]
     expect(Quickhull.hullArea(hull)).toBeCloseTo(2, 6)
   })
+
+  it('hullArea returns 0 for empty hull', () => {
+    expect(Quickhull.hullArea([])).toBe(0)
+  })
+
+  it('handles all identical points', () => {
+    const points = [
+      { x: 5, y: 5 },
+      { x: 5, y: 5 },
+      { x: 5, y: 5 },
+      { x: 5, y: 5 }
+    ]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBeLessThanOrEqual(1)
+  })
+
+  it('handles very large coordinate values', () => {
+    const points = [
+      { x: 1e9, y: 1e9 },
+      { x: -1e9, y: 1e9 },
+      { x: 0, y: -1e9 },
+      { x: 0, y: 0 }
+    ]
+    const hull = Quickhull.convexHull(points)
+    expect(hull.length).toBe(3)
+  })
+
+  it('isConvex returns false for exactly 2 points', () => {
+    const pts = [{ x: 0, y: 0 }, { x: 1, y: 1 }]
+    expect(Quickhull.isConvex(pts)).toBe(false)
+  })
+
+  it('isConvex returns false for single point', () => {
+    const pts = [{ x: 0, y: 0 }]
+    expect(Quickhull.isConvex(pts)).toBe(false)
+  })
+
+  it('computes hullArea for 3 collinear points', () => {
+    const hull = [
+      { x: 0, y: 0 },
+      { x: 1, y: 1 },
+      { x: 2, y: 2 }
+    ]
+    expect(Quickhull.hullArea(hull)).toBeCloseTo(0, 6)
+  })
 })

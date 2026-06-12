@@ -352,4 +352,73 @@ describe('LineGraph', () => {
     const clone = lg.clone()
     expect(lg.equals(clone)).toBe(true)
   })
+
+  it('handles complete graph K5', () => {
+    const lg = new LineGraph(5)
+    for (let i = 0; i < 5; i++) {
+      for (let j = i + 1; j < 5; j++) {
+        lg.addEdge(i, j)
+      }
+    }
+    expect(lg.edgeCount()).toBe(10)
+    expect(lg.maxDegree()).toBe(6)
+  })
+
+  it('toString with zero edges', () => {
+    const lg = new LineGraph(3)
+    expect(lg.toString()).toBe('LineGraph(0 edges)')
+  })
+
+  it('toString with multiple edges', () => {
+    const lg = new LineGraph(4)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    lg.addEdge(2, 3)
+    expect(lg.toString()).toBe('LineGraph(3 edges)')
+  })
+
+  it('build with multiple disconnected components', () => {
+    const lg = new LineGraph(6)
+    lg.addEdge(0, 1)
+    lg.addEdge(2, 3)
+    lg.addEdge(4, 5)
+    const adj = lg.build()
+    expect(adj.every(a => a.length === 0)).toBe(true)
+  })
+
+  it('equals with same edges different order', () => {
+    const lg1 = new LineGraph(3)
+    const lg2 = new LineGraph(3)
+    lg1.addEdge(0, 1)
+    lg1.addEdge(1, 2)
+    lg2.addEdge(1, 2)
+    lg2.addEdge(0, 1)
+    expect(lg1.equals(lg2)).toBe(false)
+  })
+
+  it('maxDegree for empty graph returns 0', () => {
+    const lg = new LineGraph(5)
+    expect(lg.maxDegree()).toBe(0)
+  })
+
+  it('clone preserves edge order', () => {
+    const lg = new LineGraph(3)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    const clone = lg.clone()
+    const lgJson = lg.toJSON()
+    const cloneJson = clone.toJSON()
+    expect(lgJson[0]).toEqual(cloneJson[0])
+    expect(lgJson[1]).toEqual(cloneJson[1])
+  })
+
+  it('toJSON with multiple edges returns array', () => {
+    const lg = new LineGraph(4)
+    lg.addEdge(0, 1)
+    lg.addEdge(1, 2)
+    lg.addEdge(2, 3)
+    const json = lg.toJSON()
+    expect(Array.isArray(json)).toBe(true)
+    expect(json.length).toBe(3)
+  })
 })

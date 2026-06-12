@@ -380,4 +380,86 @@ describe('EdgeColoring', () => {
     for (const c of colors.values()) maxC = Math.max(maxC, c + 1)
     expect(idx).toBe(maxC)
   })
+
+  it('empty graph greedy color is empty', () => {
+    const ec = new EdgeColoring(5)
+    const colors = ec.greedyColor()
+    expect(colors.size).toBe(0)
+  })
+
+  it('max degree of isolated node in larger graph', () => {
+    const ec = new EdgeColoring(10)
+    ec.addEdge(0, 1)
+    ec.addEdge(1, 2)
+    ec.addEdge(2, 3)
+    expect(ec.maxDegree()).toBe(2)
+  })
+
+  it('chromatic index of edgeless graph', () => {
+    const ec = new EdgeColoring(7)
+    expect(ec.chromaticIndex()).toBe(0)
+  })
+
+  it('edge count with multiple edges added gradually', () => {
+    const ec = new EdgeColoring(4)
+    expect(ec.edgeCount).toBe(0)
+    ec.addEdge(0, 1)
+    expect(ec.edgeCount).toBe(1)
+    ec.addEdge(1, 2)
+    expect(ec.edgeCount).toBe(2)
+    ec.addEdge(2, 3)
+    expect(ec.edgeCount).toBe(3)
+    ec.addEdge(3, 0)
+    expect(ec.edgeCount).toBe(4)
+  })
+
+  it('single edge has color 0', () => {
+    const ec = new EdgeColoring(2)
+    ec.addEdge(0, 1)
+    const colors = ec.greedyColor()
+    expect(colors.get('0,1')).toBe(0)
+  })
+
+  it('complete graph K3 has chromatic index 3', () => {
+    const ec = new EdgeColoring(3)
+    ec.addEdge(0, 1)
+    ec.addEdge(1, 2)
+    ec.addEdge(0, 2)
+    expect(ec.chromaticIndex()).toBe(3)
+  })
+
+  it('path of length 3 uses exactly 2 colors', () => {
+    const ec = new EdgeColoring(4)
+    ec.addEdge(0, 1)
+    ec.addEdge(1, 2)
+    ec.addEdge(2, 3)
+    const colors = ec.greedyColor()
+    const usedColors = new Set(colors.values())
+    expect(usedColors.size).toBe(2)
+  })
+
+  it('max degree increases with star graph', () => {
+    const ec = new EdgeColoring(6)
+    expect(ec.maxDegree()).toBe(0)
+    ec.addEdge(0, 1)
+    expect(ec.maxDegree()).toBe(1)
+    ec.addEdge(0, 2)
+    expect(ec.maxDegree()).toBe(2)
+    ec.addEdge(0, 3)
+    expect(ec.maxDegree()).toBe(3)
+    ec.addEdge(0, 4)
+    expect(ec.maxDegree()).toBe(4)
+    ec.addEdge(0, 5)
+    expect(ec.maxDegree()).toBe(5)
+  })
+
+  it('greedy color returns map with string keys', () => {
+    const ec = new EdgeColoring(3)
+    ec.addEdge(0, 1)
+    ec.addEdge(1, 2)
+    const colors = ec.greedyColor()
+    expect(colors.has('0,1')).toBe(true)
+    expect(colors.has('1,2')).toBe(true)
+    expect(typeof colors.get('0,1')).toBe('number')
+  })
 })

@@ -373,4 +373,47 @@ describe('CuckooFilter edge cases', () => {
     expect(cf.contains('a')).toBe(true)
     expect(cf.contains('b')).toBe(true)
   })
+
+  it('handles fingerprintSize 3', () => {
+    const cf = new CuckooFilter({ capacity: 100, fingerprintSize: 3 })
+    cf.insert('hello')
+    expect(cf.contains('hello')).toBe(true)
+    expect(cf.contains('world')).toBe(false)
+  })
+
+  it('filter with bucketSize 1 behaves correctly', () => {
+    const cf = new CuckooFilter({ capacity: 10, bucketSize: 1 })
+    cf.insert('a')
+    cf.insert('b')
+    expect(cf.size).toBe(2)
+    expect(cf.contains('a')).toBe(true)
+    expect(cf.contains('b')).toBe(true)
+  })
+
+  it('remove from empty filter returns false', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    expect(cf.remove('anything')).toBe(false)
+    expect(cf.size).toBe(0)
+  })
+
+  it('contains returns false for all items on empty filter', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    expect(cf.contains('')).toBe(false)
+    expect(cf.contains('a')).toBe(false)
+    expect(cf.contains('hello world')).toBe(false)
+  })
+
+  it('multiple removes of same item works', () => {
+    const cf = new CuckooFilter({ capacity: 100 })
+    cf.insert('x')
+    expect(cf.remove('x')).toBe(true)
+    expect(cf.remove('x')).toBe(false)
+    expect(cf.size).toBe(0)
+  })
+
+  it('capacity matches expected with non-default bucketSize', () => {
+    const cf = new CuckooFilter({ capacity: 25, bucketSize: 5 })
+    expect(cf.capacity).toBeGreaterThanOrEqual(25)
+    expect(cf.capacity % 5).toBe(0)
+  })
 })

@@ -329,4 +329,54 @@ describe('CountingBloomFilter edge cases', () => {
     expect(bf.has('z')).toBe(true)
     expect(bf.size).toBe(1)
   })
+
+  it('handles false positive rate near zero', () => {
+    const bf = new CountingBloomFilter(100, 0.000001)
+    expect(bf.stats().counterCount).toBeGreaterThan(0)
+    expect(bf.stats().hashCount).toBe(4)
+  })
+
+  it('handles false positive rate near one', () => {
+    const bf = new CountingBloomFilter(100, 0.999)
+    expect(bf.stats().counterCount).toBeGreaterThanOrEqual(64)
+    expect(bf.stats().hashCount).toBe(4)
+  })
+
+  it('stats returns all required properties', () => {
+    const bf = new CountingBloomFilter(100)
+    bf.add('test')
+    const stats = bf.stats()
+    expect(stats).toHaveProperty('capacity')
+    expect(stats).toHaveProperty('size')
+    expect(stats).toHaveProperty('counterCount')
+    expect(stats).toHaveProperty('hashCount')
+    expect(stats).toHaveProperty('falsePositiveRate')
+  })
+
+  it('falsePositiveRate is zero for empty filter', () => {
+    const bf = new CountingBloomFilter(100)
+    expect(bf.falsePositiveRate).toBe(0)
+    bf.clear()
+    expect(bf.falsePositiveRate).toBe(0)
+  })
+
+  it('add same item 65535 times handles uint16 boundary', () => {
+    const bf = new CountingBloomFilter(100)
+    for (let i = 0; i < 65535; i++) {
+      bf.add('boundary-test')
+    }
+    expect(bf.has('boundary-test')).toBe(true)
+    expect(bf.size).toBe(65535)
+  })
+
+  it('isEmpty after clear with multiple operations', () => {
+    const bf = new CountingBloomFilter(100)
+    bf.add('a')
+    bf.add('b')
+    bf.remove('a')
+    bf.add('c')
+    bf.clear()
+    expect(bf.isEmpty).toBe(true)
+    expect(bf.size).toBe(0)
+  })
 })

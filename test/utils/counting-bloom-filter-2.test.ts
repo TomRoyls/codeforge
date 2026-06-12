@@ -340,4 +340,48 @@ describe('CountingBloomFilter2 stats', () => {
     expect(filter.count('q')).toBeGreaterThanOrEqual(2)
     expect(filter.estimatedCount).toBe(2)
   })
+
+  it('handles false positive rate near zero', () => {
+    const filter = new CountingBloomFilter2(100, 0.000001)
+    expect(filter.filterSize).toBeGreaterThan(0)
+    expect(filter.hashCount).toBeGreaterThan(0)
+  })
+
+  it('handles false positive rate near one', () => {
+    const filter = new CountingBloomFilter2(100, 0.999)
+    expect(filter.filterSize).toBeGreaterThanOrEqual(64)
+    expect(filter.hashCount).toBeGreaterThanOrEqual(1)
+  })
+
+  it('clear resets estimatedCount to zero', () => {
+    const filter = new CountingBloomFilter2(100)
+    filter.add('a')
+    filter.add('b')
+    filter.add('c')
+    expect(filter.estimatedCount).toBe(3)
+    filter.clear()
+    expect(filter.estimatedCount).toBe(0)
+  })
+
+  it('handles extremely long keys', () => {
+    const filter = new CountingBloomFilter2(100)
+    const longKey = 'a'.repeat(100000)
+    filter.add(longKey)
+    expect(filter.contains(longKey)).toBe(true)
+  })
+
+  it('remove returns false and does not change estimatedCount for missing item', () => {
+    const filter = new CountingBloomFilter2(100)
+    filter.add('present')
+    expect(filter.estimatedCount).toBe(1)
+    expect(filter.remove('missing')).toBe(false)
+    expect(filter.estimatedCount).toBe(1)
+  })
+
+  it('contains and count consistency for never-added item', () => {
+    const filter = new CountingBloomFilter2(100)
+    filter.add('other')
+    expect(filter.contains('never-added')).toBe(false)
+    expect(filter.count('never-added')).toBe(0)
+  })
 })

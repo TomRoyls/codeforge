@@ -373,4 +373,71 @@ describe('CartesianProductGraph', () => {
     expect(cg.areAdjacent([1, 0], [1, 1])).toBe(true)
     expect(cg.areAdjacent([1, 1], [1, 0])).toBe(true)
   })
+
+  it('asymmetric degree calculation 5x2', () => {
+    const cg = new CartesianProductGraph(5, 2)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(1, 2)
+    cg.addEdgeG1(2, 3)
+    cg.addEdgeG2(0, 1)
+    expect(cg.productDegree(0, 0)).toBe(2)
+    expect(cg.productDegree(1, 0)).toBe(3)
+    expect(cg.productDegree(2, 0)).toBe(3)
+    expect(cg.productDegree(3, 0)).toBe(2)
+    expect(cg.productDegree(4, 0)).toBe(1)
+  })
+
+  it('adjacency boundary condition large graph', () => {
+    const cg = new CartesianProductGraph(8, 8)
+    cg.addEdgeG1(0, 7)
+    cg.addEdgeG2(0, 7)
+    expect(cg.areAdjacent([0, 0], [7, 0])).toBe(true)
+    expect(cg.areAdjacent([0, 0], [0, 7])).toBe(true)
+    expect(cg.areAdjacent([7, 7], [0, 7])).toBe(true)
+    expect(cg.areAdjacent([7, 7], [7, 0])).toBe(true)
+  })
+
+  it('edge count with disconnected components', () => {
+    const cg = new CartesianProductGraph(5, 3)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(3, 4)
+    cg.addEdgeG2(0, 1)
+    cg.addEdgeG2(1, 2)
+    expect(cg.productEdgeCount()).toBe(16)
+  })
+
+  it('complete graph 4x5 product edge count', () => {
+    const cg = new CartesianProductGraph(4, 5)
+    for (let i = 0; i < 4; i++) {
+      for (let j = i + 1; j < 4; j++) cg.addEdgeG1(i, j)
+    }
+    for (let i = 0; i < 5; i++) {
+      for (let j = i + 1; j < 5; j++) cg.addEdgeG2(i, j)
+    }
+    expect(cg.productNodeCount()).toBe(20)
+    expect(cg.productEdgeCount()).toBe(70)
+  })
+
+  it('degree with multiple edges from same node', () => {
+    const cg = new CartesianProductGraph(4, 3)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(0, 2)
+    cg.addEdgeG1(0, 3)
+    cg.addEdgeG2(0, 1)
+    cg.addEdgeG2(0, 2)
+    expect(cg.productDegree(0, 0)).toBe(5)
+    expect(cg.productDegree(0, 1)).toBe(4)
+    expect(cg.productDegree(1, 2)).toBe(2)
+  })
+
+  it('asymmetric 6x3 graph adjacency', () => {
+    const cg = new CartesianProductGraph(6, 3)
+    cg.addEdgeG1(0, 1)
+    cg.addEdgeG1(1, 2)
+    cg.addEdgeG2(0, 1)
+    expect(cg.areAdjacent([0, 0], [1, 0])).toBe(true)
+    expect(cg.areAdjacent([0, 0], [0, 1])).toBe(true)
+    expect(cg.areAdjacent([2, 2], [5, 0])).toBe(false)
+    expect(cg.areAdjacent([1, 1], [2, 1])).toBe(true)
+  })
 })

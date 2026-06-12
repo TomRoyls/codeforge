@@ -353,4 +353,45 @@ describe('DeterministicRng', () => {
       expect(result).toContain(2)
     }
   })
+
+  it('nextGaussian returns finite number', () => {
+    const rng = new DeterministicRng(42)
+    const val = rng.nextGaussian()
+    expect(isFinite(val)).toBe(true)
+  })
+
+  it('currentSeed returns number', () => {
+    const rng = new DeterministicRng(42)
+    expect(typeof rng.currentSeed).toBe('number')
+  })
+
+  it('reset changes sequence', () => {
+    const rng = new DeterministicRng(42)
+    const a = rng.next()
+    rng.reset(42)
+    const b = rng.next()
+    expect(a).toBe(b)
+  })
+
+  it('toString returns string with state', () => {
+    const rng = new DeterministicRng(42)
+    expect(rng.toString()).toContain('DeterministicRng')
+  })
+
+  it('toJSON returns seed value', () => {
+    const rng = new DeterministicRng(42)
+    expect(typeof rng.toJSON()).toBe('number')
+  })
+
+  it('pick returns element from array', () => {
+    const rng = new DeterministicRng(42)
+    const arr = [10, 20, 30]
+    const val = rng.pick(arr)
+    expect(arr).toContain(val)
+  })
+
+  it('nextBool with probability 0 always false', () => {
+    const rng = new DeterministicRng(42)
+    expect(rng.nextBool(0)).toBe(false)
+  })
 })

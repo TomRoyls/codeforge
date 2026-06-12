@@ -294,4 +294,51 @@ describe('RangeMinQuery', () => {
     expect(rmq.query(0, 3)).toBe(3)
     expect(rmq.query(4, 7)).toBe(2)
   })
+
+  it('handles MIN_SAFE_INTEGER values', () => {
+    const rmq = new RangeMinQuery([0, Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER])
+    expect(rmq.query(0, 2)).toBe(Number.MIN_SAFE_INTEGER)
+  })
+
+  it('handles array of length 2 power-of-two', () => {
+    const rmq = new RangeMinQuery([100, 50])
+    expect(rmq.query(0, 1)).toBe(50)
+    expect(rmq.query(0, 0)).toBe(100)
+  })
+
+  it('handles min in first half only', () => {
+    const rmq = new RangeMinQuery([1, 5, 6, 7, 8, 9])
+    expect(rmq.query(0, 5)).toBe(1)
+    expect(rmq.query(1, 5)).toBe(5)
+  })
+
+  it('handles min in second half only', () => {
+    const rmq = new RangeMinQuery([9, 8, 7, 6, 5, 1])
+    expect(rmq.query(0, 5)).toBe(1)
+    expect(rmq.query(0, 4)).toBe(5)
+  })
+
+  it('handles all negative values sorted ascending', () => {
+    const rmq = new RangeMinQuery([-10, -8, -6, -4, -2])
+    expect(rmq.query(0, 4)).toBe(-10)
+    expect(rmq.query(2, 4)).toBe(-6)
+  })
+
+  it('handles all negative values sorted descending', () => {
+    const rmq = new RangeMinQuery([-2, -4, -6, -8, -10])
+    expect(rmq.query(0, 4)).toBe(-10)
+    expect(rmq.query(0, 2)).toBe(-6)
+  })
+
+  it('handles strictly increasing sequence', () => {
+    const rmq = new RangeMinQuery([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    expect(rmq.query(0, 9)).toBe(1)
+    expect(rmq.query(5, 9)).toBe(6)
+  })
+
+  it('handles strictly decreasing sequence', () => {
+    const rmq = new RangeMinQuery([10, 9, 8, 7, 6, 5, 4, 3, 2, 1])
+    expect(rmq.query(0, 9)).toBe(1)
+    expect(rmq.query(0, 4)).toBe(6)
+  })
 })

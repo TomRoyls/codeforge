@@ -409,4 +409,59 @@ describe('FlowPushRelabel', () => {
     ]
     expect(FlowPushRelabel.maxFlow(edges, 0, 4, 5)).toBe(10)
   })
+
+  it('handles source directly connected to sink with intermediate paths', () => {
+    const edges = [
+      { from: 0, to: 4, capacity: 5 },
+      { from: 0, to: 1, capacity: 10 },
+      { from: 1, to: 2, capacity: 10 },
+      { from: 2, to: 3, capacity: 10 },
+      { from: 3, to: 4, capacity: 10 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 4, 5)).toBe(15)
+  })
+
+  it('handles source with no outgoing edges', () => {
+    const edges = [
+      { from: 1, to: 2, capacity: 10 },
+      { from: 2, to: 3, capacity: 10 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(0)
+  })
+
+  it('handles sink with no incoming edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 1, to: 2, capacity: 10 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(0)
+  })
+
+  it('handles complete graph with equal capacities', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 0, to: 2, capacity: 5 },
+      { from: 1, to: 2, capacity: 5 },
+      { from: 1, to: 3, capacity: 5 },
+      { from: 2, to: 3, capacity: 5 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 3, 4)).toBe(10)
+  })
+
+  it('handles very small float capacity near zero', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 0.0001 },
+      { from: 1, to: 2, capacity: 0.0001 },
+    ]
+    const flow = FlowPushRelabel.maxFlow(edges, 0, 2, 3)
+    expect(flow).toBe(0.0001)
+  })
+
+  it('handles large graph with 100 nodes and minimal edges', () => {
+    const edges = [
+      { from: 0, to: 50, capacity: 10 },
+      { from: 50, to: 99, capacity: 10 },
+    ]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 99, 100)).toBe(10)
+  })
 })

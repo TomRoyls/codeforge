@@ -327,4 +327,70 @@ describe('MonteCarlo', () => {
     const result = MonteCarlo.integrate((x) => x * x, 0, 100, 100000)
     expect(result).toBeGreaterThan(0)
   })
+
+  // === additional integration tests ===
+  it('integrates highly oscillatory function', () => {
+    const result = MonteCarlo.integrate((x) => Math.sin(100 * x), 0, Math.PI, 100000)
+    expect(result).toBeCloseTo(0, 0)
+  })
+
+  it('integrates function with singularity at endpoint', () => {
+    const result = MonteCarlo.integrate((x) => Math.log(1 - x), 0, 0.99, 100000)
+    expect(result).toBeLessThan(0)
+  })
+
+  it('integrates exponential decay', () => {
+    const result = MonteCarlo.integrate((x) => Math.exp(-x), 0, 10, 100000)
+    expect(result).toBeCloseTo(1, 1)
+  })
+
+  // === additional integrateWithError tests ===
+  it('integrateWithError error estimate is non-negative', () => {
+    const results = [
+      MonteCarlo.integrateWithError((x) => x * x, 0, 1, 1000),
+      MonteCarlo.integrateWithError((x) => Math.sin(x), 0, Math.PI, 1000),
+      MonteCarlo.integrateWithError((x) => Math.exp(x), 0, 1, 1000)
+    ]
+    results.forEach(r => {
+      expect(r.error).toBeGreaterThanOrEqual(0)
+    })
+  })
+
+  it('integrateWithError returns samples field matching input', () => {
+    const result = MonteCarlo.integrateWithError((x) => x, 0, 1, 5000)
+    expect(result.samples).toBe(5000)
+  })
+
+  // === additional pi tests ===
+  it('pi with single sample returns 0 or 4', () => {
+    const result = MonteCarlo.pi(1)
+    expect(result === 0 || result === 4).toBe(true)
+  })
+
+  it('pi remains bounded with extreme samples', () => {
+    const result = MonteCarlo.pi(2)
+    expect(result).toBeGreaterThanOrEqual(0)
+    expect(result).toBeLessThanOrEqual(4)
+  })
+
+  // === additional integrate2D tests ===
+  it('integrate2D with zero x-interval', () => {
+    const result = MonteCarlo.integrate2D(() => 1, 1, 1, 0, 2, 1000)
+    expect(result).toBeCloseTo(0, 8)
+  })
+
+  it('integrate2D with zero y-interval', () => {
+    const result = MonteCarlo.integrate2D(() => 1, 0, 2, 3, 3, 1000)
+    expect(result).toBeCloseTo(0, 8)
+  })
+
+  it('integrate2D with very large sample count', () => {
+    const result = MonteCarlo.integrate2D((x, y) => x + y, 0, 1, 0, 1, 100000)
+    expect(result).toBeCloseTo(1, 1)
+  })
+
+  it('integrate2D with negative function', () => {
+    const result = MonteCarlo.integrate2D((x, y) => -(x + y), 0, 1, 0, 1, 10000)
+    expect(result).toBeCloseTo(-1, 1)
+  })
 })

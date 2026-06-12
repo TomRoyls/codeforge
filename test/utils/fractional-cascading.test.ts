@@ -299,4 +299,42 @@ describe('FractionalCascading', () => {
     expect(result.length).toBe(5)
     expect(result.every(v => v === -1)).toBe(true)
   })
+
+  it('handles all empty lists', () => {
+    const fc = new FractionalCascading([[], [], []])
+    const result = fc.search(5)
+    expect(result).toEqual([-1, -1, -1])
+  })
+
+  it('search for very large positive number', () => {
+    const fc = new FractionalCascading([[1, 2, 3], [4, 5, 6]])
+    const result = fc.search(Number.MAX_SAFE_INTEGER)
+    expect(result).toEqual([-1, -1])
+  })
+
+  it('search for very small negative number', () => {
+    const fc = new FractionalCascading([[1, 2, 3], [4, 5, 6]])
+    const result = fc.search(Number.MIN_SAFE_INTEGER)
+    expect(result).toEqual([-1, -1])
+  })
+
+  it('clone with empty lists', () => {
+    const fc = new FractionalCascading([[]])
+    const c = fc.clone()
+    expect(c.equals(fc)).toBe(true)
+  })
+
+  it('equals with empty lists', () => {
+    const fc1 = new FractionalCascading([[]])
+    const fc2 = new FractionalCascading([[]])
+    expect(fc1.equals(fc2)).toBe(true)
+  })
+
+  it('handles very large list of identical values', () => {
+    const largeList = Array.from({ length: 5000 }, () => 42)
+    const fc = new FractionalCascading([largeList])
+    const result = fc.search(42)
+    expect(result[0]).toBeGreaterThanOrEqual(0)
+    expect(result[0]).toBeLessThan(5000)
+  })
 })

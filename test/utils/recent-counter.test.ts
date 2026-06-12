@@ -349,4 +349,47 @@ describe('RecentCounter', () => {
     expect(rc.totalPings).toBe(0)
     expect(rc.count(200)).toBe(0)
   })
+
+  it('compact removes old entries', () => {
+    const rc = new RecentCounter(100)
+    rc.ping(0)
+    rc.ping(50)
+    rc.ping(150)
+    const removed = rc.compact()
+    expect(removed).toBeGreaterThan(0)
+  })
+
+  it('totalPings tracks all pings', () => {
+    const rc = new RecentCounter(1000)
+    rc.ping(0)
+    rc.ping(100)
+    rc.ping(200)
+    expect(rc.totalPings).toBe(3)
+  })
+
+  it('windowSize returns constructor value', () => {
+    const rc = new RecentCounter(500)
+    expect(rc.windowSize).toBe(500)
+  })
+
+  it('reset clears all pings', () => {
+    const rc = new RecentCounter(100)
+    rc.ping(0)
+    rc.ping(50)
+    rc.reset()
+    expect(rc.totalPings).toBe(0)
+  })
+
+  it('count without ping returns 0', () => {
+    const rc = new RecentCounter(100)
+    expect(rc.count(50)).toBe(0)
+  })
+
+  it('ping and count are consistent', () => {
+    const rc = new RecentCounter(100)
+    rc.ping(10)
+    rc.ping(20)
+    expect(rc.ping(30)).toBe(3)
+    expect(rc.count(30)).toBe(3)
+  })
 })

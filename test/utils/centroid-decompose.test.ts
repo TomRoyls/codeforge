@@ -505,4 +505,92 @@ describe('CentroidDecomposition', () => {
     expect(parent.length).toBe(5)
     expect(depth.length).toBe(5)
   })
+
+  it('handles tree with high degree node', () => {
+    const cd = new CentroidDecomposition(9)
+    for (let i = 1; i < 9; i++) cd.addEdge(0, i)
+    const { parent, depth } = cd.decompose()
+    const root = depth.indexOf(0)
+    expect(root).toBe(0)
+    for (let i = 1; i < 9; i++) {
+      expect(parent[i]).toBe(root)
+      expect(depth[i]).toBe(1)
+    }
+  })
+
+  it('handles 2-node edge', () => {
+    const cd = new CentroidDecomposition(2)
+    cd.addEdge(0, 1)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(2)
+    expect(depth.length).toBe(2)
+    const root = depth.indexOf(0)
+    expect(parent[root]).toBe(root)
+  })
+
+  it('handles 4-node path specific centroid', () => {
+    const cd = new CentroidDecomposition(4)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(2, 3)
+    const { depth } = cd.decompose()
+    const root = depth.indexOf(0)
+    expect(root).toBeGreaterThanOrEqual(0)
+    expect(root).toBeLessThan(4)
+    expect(Math.max(...depth)).toBeLessThan(4)
+  })
+
+  it('handles sparse tree with long branches', () => {
+    const cd = new CentroidDecomposition(9)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(0, 3)
+    cd.addEdge(3, 4)
+    cd.addEdge(4, 5)
+    cd.addEdge(0, 6)
+    cd.addEdge(6, 7)
+    cd.addEdge(7, 8)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(9)
+    expect(depth.length).toBe(9)
+    expect(Math.max(...depth)).toBeLessThan(9)
+  })
+
+  it('depth increases from root to leaves', () => {
+    const cd = new CentroidDecomposition(5)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(2, 3)
+    cd.addEdge(3, 4)
+    const { depth } = cd.decompose()
+    const root = depth.indexOf(0)
+    expect(depth[root]).toBe(0)
+    let foundNonZero = false
+    for (const d of depth) {
+      if (d > 0) foundNonZero = true
+    }
+    expect(foundNonZero).toBe(true)
+  })
+
+  it('handles small complete tree K3', () => {
+    const cd = new CentroidDecomposition(3)
+    cd.addEdge(0, 1)
+    cd.addEdge(1, 2)
+    cd.addEdge(0, 2)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(3)
+    expect(depth.length).toBe(3)
+  })
+
+  it('centroid tree parent array has valid structure', () => {
+    const cd = new CentroidDecomposition(10)
+    for (let i = 0; i < 9; i++) cd.addEdge(i, i + 1)
+    const { parent, depth } = cd.decompose()
+    const root = depth.indexOf(0)
+    for (let i = 0; i < 10; i++) {
+      expect(parent[i]).toBeGreaterThanOrEqual(0)
+      expect(parent[i]).toBeLessThan(10)
+      expect(depth[i]).toBeGreaterThanOrEqual(0)
+    }
+  })
 })

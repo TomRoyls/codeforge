@@ -277,4 +277,43 @@ describe('MatrixChainMultiply', () => {
     const result = MatrixChainMultiply.matrixMultiply(a, b)
     expect(result).toEqual([[10, 0, 0], [0, 18, 0], [0, 0, 28]])
   })
+
+  it('minCost for single matrix is zero', () => {
+    const result = MatrixChainMultiply.minCost([10, 20])
+    expect(result.cost).toBe(0)
+  })
+
+  it('minCost for two matrices', () => {
+    const result = MatrixChainMultiply.minCost([10, 20, 30])
+    expect(result.cost).toBe(6000)
+  })
+
+  it('optimalOrder for two matrices', () => {
+    expect(MatrixChainMultiply.optimalOrder([10, 20, 30])).toBe('(A0 × A1)')
+  })
+
+  it('optimalOrder for single matrix', () => {
+    expect(MatrixChainMultiply.optimalOrder([10, 20])).toBe('A0')
+  })
+
+  it('optimalOrder for empty dims', () => {
+    expect(MatrixChainMultiply.optimalOrder([])).toBe('')
+  })
+
+  it('minCost for empty dims is zero', () => {
+    const result = MatrixChainMultiply.minCost([])
+    expect(result.cost).toBe(0)
+  })
+
+  it('matrixMultiply identity matrix', () => {
+    const a = [[1, 0], [0, 1]]
+    const b = [[5, 6], [7, 8]]
+    expect(MatrixChainMultiply.matrixMultiply(a, b)).toEqual(b)
+  })
+
+  it('minCost returns splits array', () => {
+    const result = MatrixChainMultiply.minCost([5, 10, 15, 20])
+    expect(result.splits).toBeDefined()
+    expect(result.splits.length).toBe(3)
+  })
 })

@@ -216,4 +216,26 @@ describe('PigeonholeSort', () => {
     PigeonholeSort.sortInPlace(arr)
     expect(arr.length).toBe(4)
   })
+
+  it('handles extreme range spread', () => {
+    expect(PigeonholeSort.sort([1000000, 0, 500000, -500000])).toEqual([-500000, 0, 500000, 1000000])
+  })
+
+  it('handles single negative multiple positives', () => {
+    expect(PigeonholeSort.sort([-5, 1, 3, 7, 2])).toEqual([-5, 1, 2, 3, 7])
+  })
+
+  it('handles single positive multiple negatives', () => {
+    expect(PigeonholeSort.sort([-7, -3, -1, 5, -4])).toEqual([-7, -4, -3, -1, 5])
+  })
+
+  it('sortInPlace with three unsorted', () => {
+    const arr = [3, 1, 2]
+    PigeonholeSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3])
+  })
+
+  it('handles range equal to array length', () => {
+    expect(PigeonholeSort.sort([0, 1, 2, 3, 4])).toEqual([0, 1, 2, 3, 4])
+  })
 })

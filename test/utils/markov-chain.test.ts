@@ -356,4 +356,70 @@ describe('MarkovChain', () => {
       expect(mc.next('loop')).toBe('loop')
     }
   })
+
+  it('handles boolean states', () => {
+    const mc = new MarkovChain<boolean>()
+    mc.train([true, false, true, false])
+    expect(mc.getTransitionProbability(true, false)).toBeCloseTo(1, 6)
+  })
+
+  it('handles object states', () => {
+    const mc = new MarkovChain<{ id: number }>()
+    const a = { id: 1 }
+    const b = { id: 2 }
+    mc.train([a, b, a])
+    expect(mc.getStates()).toContain(a)
+  })
+
+  it('generate returns array with start state even when length is 0', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('a', 'b')
+    const result = mc.generate('start', 0)
+    expect(result).toEqual(['start'])
+  })
+
+  it('next with unknown state and rng still returns null', () => {
+    const mc = new MarkovChain<string>()
+    const result = mc.next('unknown', () => 0.5)
+    expect(result).toBeNull()
+  })
+
+  it('handles large number of transitions from same state', () => {
+    const mc = new MarkovChain<string>()
+    for (let i = 0; i < 100; i++) {
+      mc.addTransition('a', 'b')
+    }
+    expect(mc.getTransitionsFrom('a').get('b')).toBe(100)
+  })
+
+  it('getStates includes states with only self-transitions', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('self', 'self')
+    const states = mc.getStates()
+    expect(states).toContain('self')
+  })
+
+  it('train on sequence with repeated states', () => {
+    const mc = new MarkovChain<string>()
+    mc.train(['a', 'a', 'a', 'a'])
+    expect(mc.getTransitionProbability('a', 'a')).toBeCloseTo(1, 6)
+  })
+
+  it('next respects probability distribution with many options', () => {
+    const mc = new MarkovChain<string>()
+    for (let i = 0; i < 10; i++) {
+      mc.addTransition('a', `option${i}`)
+    }
+    const trans = mc.getTransitionsFrom('a')
+    expect(trans.size).toBe(10)
+    for (let i = 0; i < 10; i++) {
+      expect(trans.get(`option${i}`)).toBe(1)
+    }
+  })
+
+  it('handles unicode string states', () => {
+    const mc = new MarkovChain<string>()
+    mc.addTransition('こんにちは', '世界')
+    expect(mc.getStates()).toContain('こんにちは')
+  })
 })

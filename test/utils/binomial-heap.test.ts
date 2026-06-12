@@ -470,4 +470,133 @@ describe('BinomialHeap equals', () => {
     const newPeek = heap.peek()!
     expect(newPeek.value).toBe(originalPeek.value)
   })
+
+  it('handles zero priority', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(10, 0)
+    heap.insert(20, 1)
+    heap.insert(30, -1)
+
+    const min = heap.extractMin()
+    expect(min!.priority).toBe(-1)
+  })
+
+  it('handles very large priorities', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(1, Number.MAX_SAFE_INTEGER)
+    heap.insert(2, Number.MIN_SAFE_INTEGER)
+    heap.insert(3, 0)
+
+    const min = heap.extractMin()
+    expect(min!.priority).toBe(Number.MIN_SAFE_INTEGER)
+  })
+
+  it('inserts same value with different priorities', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(42, 3)
+    heap.insert(42, 1)
+    heap.insert(42, 2)
+
+    const min = heap.extractMin()
+    expect(min!.value).toBe(42)
+    expect(min!.priority).toBe(1)
+  })
+
+  it('extracts multiple elements maintaining order', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(5, 5)
+    heap.insert(1, 1)
+    heap.insert(3, 3)
+    heap.insert(2, 2)
+    heap.insert(4, 4)
+
+    const first = heap.extractMin()!
+    const second = heap.extractMin()!
+    const third = heap.extractMin()!
+
+    expect(first.priority).toBe(1)
+    expect(second.priority).toBe(2)
+    expect(third.priority).toBe(3)
+  })
+
+  it('handles priority sequence with gaps', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(10, 100)
+    heap.insert(20, 50)
+    heap.insert(30, 200)
+    heap.insert(40, 10)
+    heap.insert(50, 150)
+
+    const first = heap.extractMin()
+    const second = heap.extractMin()
+
+    expect(first!.priority).toBe(10)
+    expect(second!.priority).toBe(50)
+  })
+
+  it('toString includes correct size', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(1, 1)
+    heap.insert(2, 2)
+    heap.insert(3, 3)
+
+    const str = heap.toString()
+    expect(str).toContain('size=3')
+  })
+
+  it('toJSON maintains value-priority pairs', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(10, 5)
+    heap.insert(20, 2)
+    heap.insert(30, 7)
+
+    const json = heap.toJSON()
+    const has10 = json.some(item => item.value === 10 && item.priority === 5)
+    const has20 = json.some(item => item.value === 20 && item.priority === 2)
+    const has30 = json.some(item => item.value === 30 && item.priority === 7)
+
+    expect(has10).toBe(true)
+    expect(has20).toBe(true)
+    expect(has30).toBe(true)
+  })
+
+  it('clone and extract have same behavior', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(5, 5)
+    heap.insert(1, 1)
+    heap.insert(3, 3)
+
+    const copy = heap.clone()
+    const originalMin = heap.extractMin()!
+    const copyMin = copy.extractMin()!
+
+    expect(originalMin.value).toBe(copyMin.value)
+    expect(originalMin.priority).toBe(copyMin.priority)
+  })
+
+  it('equals returns false for different values with same priorities', () => {
+    const a = new BinomialHeap<number>()
+    a.insert(1, 1)
+    a.insert(2, 2)
+
+    const b = new BinomialHeap<number>()
+    b.insert(3, 1)
+    b.insert(4, 2)
+
+    expect(a.equals(b)).toBe(false)
+  })
+
+  it('handles insertion after extraction', () => {
+    const heap = new BinomialHeap<number>()
+    heap.insert(5, 5)
+    heap.insert(1, 1)
+    heap.insert(3, 3)
+
+    heap.extractMin()
+
+    heap.insert(2, 2)
+
+    const min = heap.extractMin()!
+    expect(min.priority).toBe(2)
+  })
 })

@@ -212,4 +212,43 @@ describe('PollardRho', () => {
     expect(factors.length).toBe(8)
     expect(factors.every(f => f === 2n)).toBe(true)
   })
+
+  it('factorizes product of two large primes', () => {
+    const n = 10007n * 10009n
+    const factors = PollardRho.factorize(n)
+    const product = factors.reduce((a, b) => a * b, 1n)
+    expect(product).toBe(n)
+    expect(factors.length).toBe(2)
+  })
+
+  it('factorizes perfect cube', () => {
+    expect(PollardRho.factorize(27)).toEqual([3n, 3n, 3n])
+  })
+
+  it('factorizes number with mixed small and large factors', () => {
+    const n = 2n * 3n * 10007n
+    const factors = PollardRho.factorize(n)
+    const product = factors.reduce((a, b) => a * b, 1n)
+    expect(product).toBe(n)
+    expect(factors.sort()).toEqual([2n, 3n, 10007n].sort())
+  })
+
+  it('factorizes prime squared times another prime', () => {
+    const n = 7n * 7n * 11n
+    const factors = PollardRho.factorize(n)
+    const product = factors.reduce((a, b) => a * b, 1n)
+    expect(product).toBe(n)
+    expect(factors.sort()).toEqual([7n, 7n, 11n].sort())
+  })
+
+  it('isPrime for very small edge cases', () => {
+    expect(PollardRho.isPrime(2n)).toBe(true)
+    expect(PollardRho.isPrime(3n)).toBe(true)
+    expect(PollardRho.isPrime(5n)).toBe(true)
+  })
+
+  it('isPrime for composite just above prime', () => {
+    expect(PollardRho.isPrime(100n)).toBe(false)
+    expect(PollardRho.isPrime(1001n)).toBe(false)
+  })
 })

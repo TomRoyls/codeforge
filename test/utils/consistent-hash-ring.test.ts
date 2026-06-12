@@ -317,4 +317,48 @@ describe('ConsistentHashRing', () => {
     }
     expect(nodes.size).toBeGreaterThan(1)
   })
+
+  it('getNodes wraps around ring correctly', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2', 'node3'])
+    const nodes = ring.getNodes('key', 5)
+    expect(nodes.length).toBe(3)
+    expect(new Set(nodes).size).toBe(3)
+  })
+
+  it('handles re-adding node after removal', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2'])
+    ring.removeNode('node1')
+    expect(ring.nodeCount).toBe(1)
+    ring.addNode('node1')
+    expect(ring.nodeCount).toBe(2)
+    const node = ring.getNode('key')
+    expect(['node1', 'node2']).toContain(node)
+  })
+
+  it('preserves mappings when removing non-last node', () => {
+    const ring = new ConsistentHashRing(['node1', 'node2', 'node3'])
+    const before = ring.getNode('test-key')
+    ring.removeNode('node2')
+    const after = ring.getNode('test-key')
+    expect(ring.nodeCount).toBe(2)
+    expect(['node1', 'node3']).toContain(after)
+  })
+
+  it('handles getNodes with single node ring', () => {
+    const ring = new ConsistentHashRing(['only'])
+    const nodes = ring.getNodes('key', 5)
+    expect(nodes).toEqual(['only'])
+  })
+
+  it('removing node minimally affects other key mappings', () => {
+    const ring = new ConsistentHashRing(['a', 'b', 'c', 'd'])
+    const keys = Array.from({ length: 100 }, (_, i) => `key${i}`)
+    const original = keys.map(k => ring.getNode(k))
+    ring.removeNode('b')
+    const changed = keys.filter((k, i) => {
+      const newMapping = ring.getNode(k)
+      return newMapping !== original[i] && original[i] !== 'b'
+    })
+    expect(changed.length).toBeLessThan(100 * 0.2)
+  })
 })

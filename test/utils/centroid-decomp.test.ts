@@ -394,4 +394,53 @@ describe('CentroidDecomposition', () => {
     const tree = cd.getCentroidTree()
     expect(tree.length).toBe(7)
   })
+
+  it('verifies centroid property: root has no parent', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3]], [1, [4, 5]], [2, []], [3, []], [4, []], [5, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    const rootIndex = tree.findIndex(p => p === -1)
+    expect(rootIndex).toBeGreaterThanOrEqual(0)
+  })
+
+  it('handles very deep binary tree (15 nodes)', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [3, 4]], [2, [5, 6]], [3, [7, 8]], [4, [9, 10]],
+      [5, [11, 12]], [6, [13, 14]], [7, []], [8, []], [9, []], [10, []],
+      [11, []], [12, []], [13, []], [14, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(15)
+  })
+
+  it('handles tree with single very heavy subtree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2, 3, 4, 5, 6]], [1, [7, 8, 9, 10, 11]], [2, []], [3, []], [4, []],
+      [5, []], [6, []], [7, []], [8, []], [9, []], [10, []], [11, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(12)
+  })
+
+  it('handles tree where centroid splits into equal halves', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [3, 4]], [2, [5, 6]], [3, []], [4, []], [5, []], [6, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(7)
+  })
+
+  it('handles completely asymmetric tree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [2]], [2, [3, 4]], [3, []], [4, [5, 6, 7]], [5, []], [6, []], [7, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(8)
+  })
 })

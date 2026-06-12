@@ -330,4 +330,37 @@ describe('RangeUpdatePointQuery', () => {
       expect(rq.get(i)).toBe(built[i])
     }
   })
+
+  it('overlapping ranges accumulate', () => {
+    const rq = new RangeUpdatePointQuery(5)
+    rq.addRange(0, 4, 1)
+    rq.addRange(2, 4, 2)
+    expect(rq.get(2)).toBe(3)
+    expect(rq.get(0)).toBe(1)
+  })
+
+  it('get out of bounds returns 0', () => {
+    const rq = new RangeUpdatePointQuery(3)
+    expect(rq.get(5)).toBe(0)
+    expect(rq.get(-1)).toBe(0)
+  })
+
+  it('multiple point updates on same index', () => {
+    const rq = new RangeUpdatePointQuery(3)
+    rq.addPoint(1, 5)
+    rq.addPoint(1, 3)
+    expect(rq.get(1)).toBe(8)
+  })
+
+  it('reset clears all updates', () => {
+    const rq = new RangeUpdatePointQuery(3)
+    rq.addRange(0, 2, 10)
+    rq.reset()
+    expect(rq.build()).toEqual([0, 0, 0])
+  })
+
+  it('length getter returns correct size', () => {
+    const rq = new RangeUpdatePointQuery(7)
+    expect(rq.length).toBe(7)
+  })
 })

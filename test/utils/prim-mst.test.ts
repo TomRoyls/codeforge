@@ -417,4 +417,48 @@ describe('PrimMST', () => {
     const result = mst.findMST()
     expect(result.edges.length).toBe(4)
   })
+
+  it('isConnected returns true for connected graph', () => {
+    const mst = new PrimMST(3)
+    mst.addEdge(0, 1, 1)
+    mst.addEdge(1, 2, 2)
+    expect(mst.isConnected()).toBe(true)
+  })
+
+  it('isConnected returns false for disconnected graph', () => {
+    const mst = new PrimMST(4)
+    mst.addEdge(0, 1, 1)
+    expect(mst.isConnected()).toBe(false)
+  })
+
+  it('isConnected returns true for single node', () => {
+    const mst = new PrimMST(1)
+    expect(mst.isConnected()).toBe(true)
+  })
+
+  it('isConnected returns true for empty graph', () => {
+    const mst = new PrimMST(0)
+    expect(mst.isConnected()).toBe(true)
+  })
+
+  it('MST with all equal weights selects any spanning tree', () => {
+    const mst = new PrimMST(4)
+    mst.addEdge(0, 1, 5)
+    mst.addEdge(1, 2, 5)
+    mst.addEdge(2, 3, 5)
+    mst.addEdge(0, 2, 5)
+    const result = mst.findMST()
+    expect(result.totalWeight).toBe(15)
+    expect(result.edges.length).toBe(3)
+  })
+
+  it('handles graph with multiple parallel paths', () => {
+    const mst = new PrimMST(3)
+    mst.addEdge(0, 1, 1)
+    mst.addEdge(0, 1, 10)
+    mst.addEdge(1, 2, 2)
+    mst.addEdge(1, 2, 20)
+    const result = mst.findMST()
+    expect(result.totalWeight).toBe(3)
+  })
 })

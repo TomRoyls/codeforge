@@ -396,4 +396,74 @@ describe('CircularDeque', () => {
     expect(deque.popBack()).toBe(1)
     expect(deque.toArray()).toEqual([3, 2])
   })
+
+  it('capacity remains stable after clear and reuse', () => {
+    const deque = new CircularDeque<number>(4)
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.pushBack(3)
+    deque.pushBack(4)
+    const capacity1 = deque.capacity
+    deque.clear()
+    const capacity2 = deque.capacity
+    expect(capacity1).toBe(capacity2)
+    for (let i = 0; i < 10; i++) deque.pushBack(i)
+    expect(deque.capacity).toBeGreaterThanOrEqual(capacity1)
+  })
+
+  it('pushFront on empty deque then pushBack maintains order', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushFront(2)
+    deque.pushBack(3)
+    expect(deque.toArray()).toEqual([2, 3])
+  })
+
+  it('multiple consecutive clear operations are safe', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.clear()
+    deque.clear()
+    deque.clear()
+    expect(deque.size).toBe(0)
+    expect(deque.isEmpty()).toBe(true)
+  })
+
+  it('wrapping behavior with alternating pop operations', () => {
+    const deque = new CircularDeque<number>(3)
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.pushBack(3)
+    expect(deque.popFront()).toBe(1)
+    expect(deque.popBack()).toBe(3)
+    expect(deque.toArray()).toEqual([2])
+  })
+
+  it('get index returns undefined on empty deque', () => {
+    const deque = new CircularDeque<number>()
+    expect(deque.get(0)).toBeUndefined()
+    expect(deque.get(5)).toBeUndefined()
+  })
+
+  it('handles boolean type correctly', () => {
+    const deque = new CircularDeque<boolean>()
+    deque.pushBack(true)
+    deque.pushBack(false)
+    deque.pushFront(true)
+    expect(deque.get(0)).toBe(true)
+    expect(deque.get(1)).toBe(true)
+    expect(deque.get(2)).toBe(false)
+  })
+
+  it('toArray returns independent array copy', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushBack(1)
+    deque.pushBack(2)
+    const arr1 = deque.toArray()
+    const arr2 = deque.toArray()
+    arr1.push(99)
+    expect(arr1).toEqual([1, 2, 99])
+    expect(arr2).toEqual([1, 2])
+    expect(deque.size).toBe(2)
+  })
 })

@@ -422,3 +422,84 @@ describe('BinaryHeap edge cases', () => {
     expect(heap.pop()).toBe(Number.MAX_SAFE_INTEGER)
   })
 })
+
+describe('BinaryHeap string types', () => {
+  it('works with string values', () => {
+    const heap = new BinaryHeap<string>({
+      comparator: (a, b) => a.localeCompare(b)
+    })
+    heap.push('zebra')
+    heap.push('apple')
+    heap.push('banana')
+    expect(heap.pop()).toBe('apple')
+    expect(heap.pop()).toBe('banana')
+    expect(heap.pop()).toBe('zebra')
+  })
+})
+
+describe('BinaryHeap object references', () => {
+  it('equals uses Object.is for comparison', () => {
+    const heap1 = new BinaryHeap<{ id: number }>()
+    const heap2 = new BinaryHeap<{ id: number }>()
+    const obj1 = { id: 1 }
+    const obj2 = { id: 1 }
+    heap1.push(obj1)
+    heap1.push(obj2)
+    heap2.push(obj1)
+    heap2.push(obj2)
+    expect(heap1.equals(heap2)).toBe(true)
+  })
+})
+
+describe('BinaryHeap heap property validation', () => {
+  it('pop many elements maintains heap property', () => {
+    const heap = new BinaryHeap<number>()
+    for (let i = 0; i < 1000; i++) {
+      heap.push(Math.random() * 1000)
+    }
+    let prev = -Infinity
+    while (!heap.isEmpty()) {
+      const current = heap.pop()!
+      expect(current).toBeGreaterThanOrEqual(prev)
+      prev = current
+    }
+  })
+
+  it('repeated push and pop maintains heap property', () => {
+    const heap = new BinaryHeap<number>()
+    for (let i = 0; i < 50; i++) {
+      heap.push(i)
+      if (i > 10) heap.pop()
+    }
+    while (!heap.isEmpty()) {
+      heap.pop()
+    }
+    expect(heap.isEmpty()).toBe(true)
+  })
+})
+
+describe('BinaryHeap combination tests', () => {
+  it('fromArray with max heap and custom comparator', () => {
+    const heap = BinaryHeap.fromArray(
+      [{ val: 3 }, { val: 1 }, { val: 2 }],
+      { type: 'max', comparator: (a, b) => a.val - b.val }
+    )
+    expect(heap.pop()!.val).toBe(3)
+    expect(heap.pop()!.val).toBe(2)
+    expect(heap.pop()!.val).toBe(1)
+  })
+})
+
+describe('BinaryHeap equals edge cases', () => {
+  it('equals returns false for min vs max heap with same elements', () => {
+    const minHeap = new BinaryHeap<number>({ type: 'min' })
+    const maxHeap = new BinaryHeap<number>({ type: 'max' })
+    minHeap.push(1)
+    minHeap.push(2)
+    minHeap.push(3)
+    maxHeap.push(1)
+    maxHeap.push(2)
+    maxHeap.push(3)
+    expect(minHeap.equals(maxHeap)).toBe(false)
+  })
+})

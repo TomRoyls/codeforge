@@ -908,4 +908,154 @@ describe('MoAlgorithm', () => {
     )
     expect(answers).toEqual([1, 3, 6, 10, 15])
   })
+
+  it('handles empty data with queries', () => {
+    const data: number[] = []
+    const queries = [{ l: 0, r: 0 }]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { if (idx < data.length) s.sum += data[idx]! },
+      (s, idx) => { if (idx < data.length) s.sum += data[idx]! },
+      (s, idx) => { if (idx < data.length) s.sum -= data[idx]! },
+      (s, idx) => { if (idx < data.length) s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers).toEqual([0])
+  })
+
+  it('handles single element data', () => {
+    const data = [42]
+    const queries = [{ l: 0, r: 0 }, { l: 0, r: 0 }]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers).toEqual([42, 42])
+  })
+
+  it('handles large number of queries', () => {
+    const data = [1, 2, 3, 4, 5]
+    const queries = Array.from({ length: 100 }, (_, i) => ({
+      l: i % 5,
+      r: (i % 5)
+    }))
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers).toHaveLength(100)
+    answers.forEach(ans => {
+      expect([1, 2, 3, 4, 5]).toContain(ans)
+    })
+  })
+
+  it('handles very large numbers', () => {
+    const data = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER]
+    const queries = [{ l: 0, r: 2 }]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers[0]).toBe(Number.MAX_SAFE_INTEGER * 3)
+  })
+
+  it('handles minimum and maximum values', () => {
+    const data = [Number.MIN_SAFE_INTEGER, 0, Number.MAX_SAFE_INTEGER]
+    const queries = [{ l: 0, r: 2 }]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers[0]).toBe(Number.MIN_SAFE_INTEGER + Number.MAX_SAFE_INTEGER)
+  })
+
+  it('handles queries with single element data and complex state', () => {
+    const data = [7]
+    const queries = [{ l: 0, r: 0 }]
+    const state = { freq: new Map<number, number>() }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => {
+        const val = data[idx]!
+        s.freq.set(val, (s.freq.get(val) || 0) + 1)
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.freq.set(val, (s.freq.get(val) || 0) + 1)
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.freq.set(val, s.freq.get(val)! - 1)
+        if (s.freq.get(val) === 0) s.freq.delete(val)
+      },
+      (s, idx) => {
+        const val = data[idx]!
+        s.freq.set(val, s.freq.get(val)! - 1)
+        if (s.freq.get(val) === 0) s.freq.delete(val)
+      },
+      (s) => {
+        let maxFreq = 0
+        for (const freq of s.freq.values()) {
+          if (freq > maxFreq) maxFreq = freq
+        }
+        return maxFreq
+      },
+      state
+    )
+    expect(answers[0]).toBe(1)
+  })
+
+  it('handles range sum with mixed format queries', () => {
+    const data = [10, 20, 30, 40, 50]
+    const queries = [
+      { l: 0, r: 2 },
+      { left: 1, right: 3 },
+      { l: 2, r: 4 },
+      { left: 0, right: 4 }
+    ]
+    const state = { sum: 0 }
+    const answers = MoAlgorithm.solve(
+      data,
+      queries,
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum += data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s, idx) => { s.sum -= data[idx]! },
+      (s) => s.sum,
+      state
+    )
+    expect(answers).toEqual([60, 90, 120, 150])
+  })
 })

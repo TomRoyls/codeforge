@@ -399,4 +399,78 @@ describe('DoubleBuffer', () => {
     const swapped = db.swap()
     expect(swapped).toBe(db.frontBuffer)
   })
+
+  it('clone with different types preserves type safety', () => {
+    const db = new DoubleBuffer<{ id: number; name: string }>()
+    db.push({ id: 1, name: 'first' })
+    db.push({ id: 2, name: 'second' })
+    db.swap()
+    const copy = db.clone()
+    expect(copy.frontBuffer.length).toBe(2)
+    expect(copy.frontBuffer[0]!.id).toBe(1)
+  })
+
+  it('equals returns true for clones', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.push(2)
+    db.swap()
+    const copy = db.clone()
+    expect(db.equals(copy)).toBe(true)
+  })
+
+  it('equals with same instance returns true', () => {
+    const db = new DoubleBuffer<number>()
+    expect(db.equals(db)).toBe(true)
+  })
+
+  it('toJSON after multiple operations', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.push(2)
+    db.swap()
+    db.push(3)
+    db.swap()
+    db.push(4)
+    const json = db.toJSON()
+    expect(json.front).toEqual([3])
+    expect(json.back).toEqual([4])
+    expect(json.swaps).toBe(2)
+  })
+
+  it('toString with large buffers', () => {
+    const db = new DoubleBuffer<number>()
+    for (let i = 0; i < 1000; i++) {
+      db.push(i)
+    }
+    db.swap()
+    expect(db.toString()).toBe('DoubleBuffer(front=1000, back=0)')
+  })
+
+  it('hasPending after clear', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.push(2)
+    db.clear()
+    expect(db.hasPending).toBe(false)
+  })
+
+  it('swap returns new front buffer reference', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.push(2)
+    const beforeSwap = db.frontBuffer
+    const afterSwap = db.swap()
+    expect(beforeSwap).not.toBe(afterSwap)
+  })
+
+  it('drainFront returns all items even when mutated during iteration', () => {
+    const db = new DoubleBuffer<number>()
+    db.push(1)
+    db.push(2)
+    db.push(3)
+    db.swap()
+    const result = db.drainFront()
+    expect(result).toEqual([1, 2, 3])
+  })
 })

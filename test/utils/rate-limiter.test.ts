@@ -321,4 +321,34 @@ describe('RateLimiter', () => {
     rl.tryAcquire()
     expect(rl.getAvailableTokens()).toBe(4)
   })
+
+  it('tryAcquire with count exceeds available returns false', () => {
+    const rl = new RateLimiter({ maxTokens: 3, refillRate: 1, refillIntervalMs: 1000 })
+    expect(rl.tryAcquire(5)).toBe(false)
+  })
+
+  it('getStats returns totalAcquired', () => {
+    const rl = new RateLimiter({ maxTokens: 10, refillRate: 1, refillIntervalMs: 1000 })
+    rl.tryAcquire()
+    rl.tryAcquire()
+    expect(rl.getStats().totalAcquired).toBe(2)
+  })
+
+  it('toString returns string', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    expect(typeof rl.toString()).toBe('string')
+  })
+
+  it('toJSON returns object', () => {
+    const rl = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    const json = rl.toJSON()
+    expect(json).toBeDefined()
+    expect(typeof json).toBe('object')
+  })
+
+  it('equals returns true for same config', () => {
+    const rl1 = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    const rl2 = new RateLimiter({ maxTokens: 5, refillRate: 1, refillIntervalMs: 1000 })
+    expect(rl1.equals(rl2)).toBe(true)
+  })
 })

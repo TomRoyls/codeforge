@@ -279,4 +279,43 @@ describe('ChineseRemainderTheorem', () => {
     expect(result!.remainder % 3).toBe(1)
     expect(result!.remainder % 5).toBe(1)
   })
+
+  it('modularInverse handles larger a', () => {
+    const inv = ChineseRemainderTheorem.modularInverse(17, 7)
+    expect(inv).not.toBeNull()
+    expect((17 * inv!) % 7).toBe(1)
+  })
+
+  it('lcm handles zero values', () => {
+    expect(ChineseRemainderTheorem.lcm(0, 5)).toBe(0)
+    expect(ChineseRemainderTheorem.lcm(5, 0)).toBe(0)
+  })
+
+  it('handles remainders larger than moduli', () => {
+    const result = ChineseRemainderTheorem.solve([7, 8], [5, 9])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % 5).toBe(2)
+    expect(result!.remainder % 9).toBe(8)
+  })
+
+  it('solves single congruence with zero remainder', () => {
+    const result = ChineseRemainderTheorem.solve([0], [13])
+    expect(result).not.toBeNull()
+    expect(result!.remainder).toBe(0)
+    expect(result!.modulus).toBe(13)
+  })
+
+  it('handles large prime product moduli', () => {
+    const p1 = 999983
+    const p2 = 999979
+    const result = ChineseRemainderTheorem.solve([10, 20], [p1, p2])
+    expect(result).not.toBeNull()
+    expect(result!.remainder % p1).toBe(10)
+    expect(result!.remainder % p2).toBe(20)
+  })
+
+  it('modularInverse with modulus 2 and a=1', () => {
+    const inv = ChineseRemainderTheorem.modularInverse(1, 2)
+    expect(inv).toBe(1)
+  })
 })

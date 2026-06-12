@@ -371,4 +371,98 @@ describe('ChinesePostman', () => {
       expect(cp.solve()).toBe(2000)
     })
   })
+
+  describe('Graphs with 4 odd vertices', () => {
+    it('line of 5 nodes (4 odd vertices)', () => {
+      const cp = new ChinesePostman(5)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(2, 3, 1)
+      cp.addEdge(3, 4, 1)
+      const result = cp.solve()
+      expect(result).toBe(8)
+    })
+
+    it('graph with 4 odd vertices and varying weights', () => {
+      const cp = new ChinesePostman(4)
+      cp.addEdge(0, 1, 2)
+      cp.addEdge(0, 2, 3)
+      cp.addEdge(1, 3, 4)
+      cp.addEdge(2, 3, 5)
+      const result = cp.solve()
+      expect(result).toBe(14)
+    })
+
+    it('T-shape graph (4 odd vertices)', () => {
+      const cp = new ChinesePostman(4)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 1)
+      cp.addEdge(1, 3, 1)
+      const result = cp.solve()
+      expect(result).toBe(6)
+    })
+  })
+
+  describe('Linear graphs', () => {
+    it('linear graph of 6 nodes', () => {
+      const cp = new ChinesePostman(6)
+      for (let i = 0; i < 5; i++) {
+        cp.addEdge(i, i + 1, 2)
+      }
+      const result = cp.solve()
+      expect(result).toBe(20)
+    })
+
+    it('linear graph with decreasing weights', () => {
+      const cp = new ChinesePostman(4)
+      cp.addEdge(0, 1, 10)
+      cp.addEdge(1, 2, 5)
+      cp.addEdge(2, 3, 2)
+      const result = cp.solve()
+      expect(result).toBe(34)
+    })
+  })
+
+  describe('Diamond and cycle graphs', () => {
+    it('diamond graph (4 nodes)', () => {
+      const cp = new ChinesePostman(4)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(0, 2, 1)
+      cp.addEdge(1, 3, 1)
+      cp.addEdge(2, 3, 1)
+      cp.addEdge(1, 2, 2)
+      const result = cp.solve()
+      expect(result).toBeGreaterThan(0)
+    })
+
+    it('pentagon (eulerian)', () => {
+      const cp = new ChinesePostman(5)
+      for (let i = 0; i < 5; i++) {
+        cp.addEdge(i, (i + 1) % 5, 3)
+      }
+      expect(cp.solve()).toBe(15)
+    })
+  })
+
+  describe('Complex weight distributions', () => {
+    it('graph with alternating high and low weights', () => {
+      const cp = new ChinesePostman(5)
+      cp.addEdge(0, 1, 1)
+      cp.addEdge(1, 2, 100)
+      cp.addEdge(2, 3, 1)
+      cp.addEdge(3, 4, 100)
+      const result = cp.solve()
+      expect(result).toBeGreaterThan(200)
+    })
+
+    it('bipartite graph with asymmetric weights', () => {
+      const cp = new ChinesePostman(4)
+      cp.addEdge(0, 2, 10)
+      cp.addEdge(0, 3, 20)
+      cp.addEdge(1, 2, 30)
+      cp.addEdge(1, 3, 40)
+      const result = cp.solve()
+      expect(result).toBeGreaterThan(0)
+    })
+  })
 })

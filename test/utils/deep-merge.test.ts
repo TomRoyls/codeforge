@@ -303,4 +303,44 @@ describe('deepMerge edge cases', () => {
     const result = deepMerge(base, override)
     expect(result.a).toBe(date)
   })
+
+  it('deeply nested 3 levels', () => {
+    const base = { a: { b: { c: 1 } } }
+    const override = { a: { b: { d: 2 } } }
+    expect(deepMerge(base, override)).toEqual({ a: { b: { c: 1, d: 2 } } })
+  })
+
+  it('maxDepth limits recursion', () => {
+    const base = { a: { b: { c: 1 } } }
+    const override = { a: { b: { c: 2 } } }
+    const result = deepMerge(base, override, { maxDepth: 1 })
+    expect(result).toEqual({ a: { b: { c: 2 } } })
+  })
+
+  it('array strategy replace', () => {
+    const base = { arr: [1, 2, 3] }
+    const override = { arr: [4, 5] }
+    const result = deepMerge(base, override, { arrayStrategy: 'replace' })
+    expect(result.arr).toEqual([4, 5])
+  })
+
+  it('handles null override values', () => {
+    const base = { a: 1, b: 2 }
+    const override = { a: null }
+    expect(deepMerge(base, override)).toEqual({ a: null, b: 2 })
+  })
+
+  it('handles undefined override values', () => {
+    const base = { a: 1, b: 2 }
+    const override = { a: undefined }
+    const result = deepMerge(base, override)
+    expect(result.a).toBeUndefined()
+  })
+
+  it('merges objects with symbol keys in override', () => {
+    const base = { a: 1 }
+    const override = { b: 2 }
+    const result = deepMerge(base, override)
+    expect(result).toEqual({ a: 1, b: 2 })
+  })
 })
