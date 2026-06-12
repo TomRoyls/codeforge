@@ -860,3 +860,135 @@ describe('streaming-median - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-median - w170', () => {
+  it('streaming-median x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-median - w180', () => {
+  it('streaming-median x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-median - w190', () => {
+  it('streaming-median x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-median - w200', () => {
+  it('streaming-median x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

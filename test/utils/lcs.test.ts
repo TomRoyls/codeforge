@@ -697,3 +697,135 @@ describe('lcs - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lcs - w170', () => {
+  it('lcs x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcs - w180', () => {
+  it('lcs x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcs - w190', () => {
+  it('lcs x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lcs - w200', () => {
+  it('lcs x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

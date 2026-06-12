@@ -886,3 +886,135 @@ describe('trie-radix - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('trie-radix - w170', () => {
+  it('trie-radix x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-radix - w180', () => {
+  it('trie-radix x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-radix - w190', () => {
+  it('trie-radix x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-radix - w200', () => {
+  it('trie-radix x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

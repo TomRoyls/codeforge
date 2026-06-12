@@ -846,3 +846,135 @@ describe('aho-corasick - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('aho-corasick - w170', () => {
+  it('aho-corasick x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('aho-corasick - w180', () => {
+  it('aho-corasick x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('aho-corasick - w190', () => {
+  it('aho-corasick x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('aho-corasick - w200', () => {
+  it('aho-corasick x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

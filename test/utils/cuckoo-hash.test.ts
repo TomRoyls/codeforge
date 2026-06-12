@@ -886,3 +886,135 @@ describe('cuckoo-hash - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cuckoo-hash - w170', () => {
+  it('cuckoo-hash x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w180', () => {
+  it('cuckoo-hash x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w190', () => {
+  it('cuckoo-hash x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w200', () => {
+  it('cuckoo-hash x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

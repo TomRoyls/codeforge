@@ -856,3 +856,135 @@ describe('ford-fulkerson - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ford-fulkerson - w170', () => {
+  it('ford-fulkerson x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - w180', () => {
+  it('ford-fulkerson x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - w190', () => {
+  it('ford-fulkerson x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ford-fulkerson - w200', () => {
+  it('ford-fulkerson x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

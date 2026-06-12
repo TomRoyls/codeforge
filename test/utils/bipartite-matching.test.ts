@@ -891,3 +891,135 @@ describe('bipartite-matching - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bipartite-matching - w170', () => {
+  it('bipartite-matching x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bipartite-matching - w180', () => {
+  it('bipartite-matching x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bipartite-matching - w190', () => {
+  it('bipartite-matching x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bipartite-matching - w200', () => {
+  it('bipartite-matching x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

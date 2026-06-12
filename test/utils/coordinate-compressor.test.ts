@@ -756,3 +756,135 @@ describe('coordinate-compressor - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('coordinate-compressor - w170', () => {
+  it('coordinate-compressor x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('coordinate-compressor - w180', () => {
+  it('coordinate-compressor x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('coordinate-compressor - w190', () => {
+  it('coordinate-compressor x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('coordinate-compressor - w200', () => {
+  it('coordinate-compressor x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

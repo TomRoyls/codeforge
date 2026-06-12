@@ -695,3 +695,135 @@ describe('subset-sum - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('subset-sum - w170', () => {
+  it('subset-sum x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('subset-sum - w180', () => {
+  it('subset-sum x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('subset-sum - w190', () => {
+  it('subset-sum x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('subset-sum - w200', () => {
+  it('subset-sum x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

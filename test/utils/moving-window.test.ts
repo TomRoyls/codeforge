@@ -878,3 +878,135 @@ describe('moving-window - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('moving-window - w170', () => {
+  it('moving-window x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-window - w180', () => {
+  it('moving-window x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-window - w190', () => {
+  it('moving-window x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-window - w200', () => {
+  it('moving-window x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-window x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

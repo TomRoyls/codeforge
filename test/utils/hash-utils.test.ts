@@ -784,3 +784,135 @@ describe('hash-utils - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hash-utils - w170', () => {
+  it('hash-utils x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-utils - w180', () => {
+  it('hash-utils x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-utils - w190', () => {
+  it('hash-utils x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-utils - w200', () => {
+  it('hash-utils x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

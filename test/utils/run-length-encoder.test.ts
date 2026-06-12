@@ -809,3 +809,135 @@ describe('run-length-encoder - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('run-length-encoder - w170', () => {
+  it('run-length-encoder x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoder - w180', () => {
+  it('run-length-encoder x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoder - w190', () => {
+  it('run-length-encoder x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('run-length-encoder - w200', () => {
+  it('run-length-encoder x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

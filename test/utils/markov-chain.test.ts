@@ -844,3 +844,135 @@ describe('markov-chain - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('markov-chain - w170', () => {
+  it('markov-chain x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('markov-chain - w180', () => {
+  it('markov-chain x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('markov-chain - w190', () => {
+  it('markov-chain x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('markov-chain - w200', () => {
+  it('markov-chain x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('markov-chain x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

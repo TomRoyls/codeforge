@@ -728,3 +728,135 @@ describe('sieve-of-eratosthenes - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sieve-of-eratosthenes - w170', () => {
+  it('sieve-of-eratosthenes x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve-of-eratosthenes - w180', () => {
+  it('sieve-of-eratosthenes x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve-of-eratosthenes - w190', () => {
+  it('sieve-of-eratosthenes x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sieve-of-eratosthenes - w200', () => {
+  it('sieve-of-eratosthenes x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

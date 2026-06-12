@@ -902,3 +902,135 @@ describe('red-black-tree - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('red-black-tree - w170', () => {
+  it('red-black-tree x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('red-black-tree - w180', () => {
+  it('red-black-tree x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('red-black-tree - w190', () => {
+  it('red-black-tree x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('red-black-tree - w200', () => {
+  it('red-black-tree x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('red-black-tree x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

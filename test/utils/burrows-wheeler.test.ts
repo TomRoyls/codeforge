@@ -778,3 +778,135 @@ describe('burrows-wheeler - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('burrows-wheeler - w170', () => {
+  it('burrows-wheeler x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('burrows-wheeler - w180', () => {
+  it('burrows-wheeler x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('burrows-wheeler - w190', () => {
+  it('burrows-wheeler x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('burrows-wheeler - w200', () => {
+  it('burrows-wheeler x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

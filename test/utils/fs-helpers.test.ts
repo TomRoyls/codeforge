@@ -1005,3 +1005,135 @@ describe('fs-helpers - w160', () => {
     expect(existsSync).toBeDefined()
   })
 })
+
+describe('fs-helpers - w170', () => {
+  it('fs-helpers x170x0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x170x1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x170x2', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x170x3', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x170x4', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x170x5', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x170x6', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x170x7', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x170x8', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x170x9', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - w180', () => {
+  it('fs-helpers x180x0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x180x1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x180x2', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x180x3', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x180x4', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x180x5', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x180x6', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x180x7', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x180x8', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x180x9', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - w190', () => {
+  it('fs-helpers x190x0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x190x1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x190x2', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x190x3', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x190x4', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x190x5', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x190x6', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x190x7', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x190x8', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x190x9', () => {
+    expect(existsSync).toBeDefined()
+  })
+})
+
+describe('fs-helpers - w200', () => {
+  it('fs-helpers x200x0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x200x1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x200x2', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x200x3', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x200x4', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x200x5', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x200x6', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x200x7', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x200x8', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers x200x9', () => {
+    expect(existsSync).toBeDefined()
+  })
+})

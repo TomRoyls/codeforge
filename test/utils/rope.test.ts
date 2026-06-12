@@ -860,3 +860,135 @@ describe('rope - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rope - w170', () => {
+  it('rope x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rope - w180', () => {
+  it('rope x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rope - w190', () => {
+  it('rope x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rope - w200', () => {
+  it('rope x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rope x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

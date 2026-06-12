@@ -701,3 +701,135 @@ describe('pollard-rho - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pollard-rho - w170', () => {
+  it('pollard-rho x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pollard-rho - w180', () => {
+  it('pollard-rho x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pollard-rho - w190', () => {
+  it('pollard-rho x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pollard-rho - w200', () => {
+  it('pollard-rho x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

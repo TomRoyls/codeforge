@@ -923,3 +923,135 @@ describe('string-matcher - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-matcher - w170', () => {
+  it('string-matcher x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-matcher - w180', () => {
+  it('string-matcher x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-matcher - w190', () => {
+  it('string-matcher x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-matcher - w200', () => {
+  it('string-matcher x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

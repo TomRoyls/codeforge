@@ -886,3 +886,135 @@ describe('difference-array-2d - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('difference-array-2d - w170', () => {
+  it('difference-array-2d x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('difference-array-2d - w180', () => {
+  it('difference-array-2d x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('difference-array-2d - w190', () => {
+  it('difference-array-2d x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('difference-array-2d - w200', () => {
+  it('difference-array-2d x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

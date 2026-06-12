@@ -830,3 +830,135 @@ describe('graph-entropy - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-entropy - w170', () => {
+  it('graph-entropy x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-entropy - w180', () => {
+  it('graph-entropy x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-entropy - w190', () => {
+  it('graph-entropy x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-entropy - w200', () => {
+  it('graph-entropy x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

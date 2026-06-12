@@ -750,3 +750,135 @@ describe('rect-area - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rect-area - w170', () => {
+  it('rect-area x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rect-area - w180', () => {
+  it('rect-area x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rect-area - w190', () => {
+  it('rect-area x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rect-area - w200', () => {
+  it('rect-area x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

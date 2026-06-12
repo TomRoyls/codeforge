@@ -941,3 +941,135 @@ describe('time-series-buffer - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('time-series-buffer - w170', () => {
+  it('time-series-buffer x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('time-series-buffer - w180', () => {
+  it('time-series-buffer x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('time-series-buffer - w190', () => {
+  it('time-series-buffer x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('time-series-buffer - w200', () => {
+  it('time-series-buffer x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

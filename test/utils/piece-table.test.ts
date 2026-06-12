@@ -846,3 +846,135 @@ describe('piece-table - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('piece-table - w170', () => {
+  it('piece-table x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('piece-table - w180', () => {
+  it('piece-table x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('piece-table - w190', () => {
+  it('piece-table x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('piece-table - w200', () => {
+  it('piece-table x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

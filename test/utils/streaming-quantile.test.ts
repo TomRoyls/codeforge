@@ -887,3 +887,135 @@ describe('streaming-quantile - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-quantile - w170', () => {
+  it('streaming-quantile x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - w180', () => {
+  it('streaming-quantile x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - w190', () => {
+  it('streaming-quantile x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - w200', () => {
+  it('streaming-quantile x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

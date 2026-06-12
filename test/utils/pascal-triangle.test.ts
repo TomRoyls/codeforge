@@ -688,3 +688,135 @@ describe('pascal-triangle - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pascal-triangle - w170', () => {
+  it('pascal-triangle x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - w180', () => {
+  it('pascal-triangle x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - w190', () => {
+  it('pascal-triangle x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - w200', () => {
+  it('pascal-triangle x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

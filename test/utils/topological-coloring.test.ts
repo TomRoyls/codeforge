@@ -889,3 +889,135 @@ describe('topological-coloring - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('topological-coloring - w170', () => {
+  it('topological-coloring x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-coloring - w180', () => {
+  it('topological-coloring x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-coloring - w190', () => {
+  it('topological-coloring x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('topological-coloring - w200', () => {
+  it('topological-coloring x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

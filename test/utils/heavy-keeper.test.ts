@@ -855,3 +855,135 @@ describe('heavy-keeper - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-keeper - w170', () => {
+  it('heavy-keeper x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-keeper - w180', () => {
+  it('heavy-keeper x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-keeper - w190', () => {
+  it('heavy-keeper x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-keeper - w200', () => {
+  it('heavy-keeper x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

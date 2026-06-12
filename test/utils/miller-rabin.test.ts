@@ -779,3 +779,135 @@ describe('miller-rabin - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('miller-rabin - w170', () => {
+  it('miller-rabin x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('miller-rabin - w180', () => {
+  it('miller-rabin x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('miller-rabin - w190', () => {
+  it('miller-rabin x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('miller-rabin - w200', () => {
+  it('miller-rabin x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

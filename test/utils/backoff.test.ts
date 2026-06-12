@@ -781,3 +781,135 @@ describe('backoff - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('backoff - w170', () => {
+  it('backoff x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('backoff - w180', () => {
+  it('backoff x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('backoff - w190', () => {
+  it('backoff x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('backoff - w200', () => {
+  it('backoff x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

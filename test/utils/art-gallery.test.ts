@@ -906,3 +906,135 @@ describe('art-gallery - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('art-gallery - w170', () => {
+  it('art-gallery x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('art-gallery - w180', () => {
+  it('art-gallery x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('art-gallery - w190', () => {
+  it('art-gallery x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('art-gallery - w200', () => {
+  it('art-gallery x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('art-gallery x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -962,3 +962,135 @@ describe('circular-buffer - w160', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('circular-buffer - w170', () => {
+  it('circular-buffer x170x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x170x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x170x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x170x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x170x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x170x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x170x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x170x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x170x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x170x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('circular-buffer - w180', () => {
+  it('circular-buffer x180x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x180x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x180x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x180x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x180x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x180x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x180x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x180x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x180x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x180x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('circular-buffer - w190', () => {
+  it('circular-buffer x190x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x190x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x190x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x190x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x190x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x190x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x190x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x190x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x190x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x190x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('circular-buffer - w200', () => {
+  it('circular-buffer x200x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x200x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x200x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x200x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x200x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x200x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x200x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x200x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x200x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer x200x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

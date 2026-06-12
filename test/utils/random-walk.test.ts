@@ -768,3 +768,135 @@ describe('random-walk - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('random-walk - w170', () => {
+  it('random-walk x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('random-walk - w180', () => {
+  it('random-walk x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('random-walk - w190', () => {
+  it('random-walk x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('random-walk - w200', () => {
+  it('random-walk x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

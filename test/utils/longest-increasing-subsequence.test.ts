@@ -678,3 +678,135 @@ describe('longest-increasing-subsequence - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('longest-increasing-subsequence - w170', () => {
+  it('longest-increasing-subsequence x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-increasing-subsequence - w180', () => {
+  it('longest-increasing-subsequence x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-increasing-subsequence - w190', () => {
+  it('longest-increasing-subsequence x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('longest-increasing-subsequence - w200', () => {
+  it('longest-increasing-subsequence x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

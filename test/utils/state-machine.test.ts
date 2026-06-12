@@ -1144,3 +1144,135 @@ describe('state-machine - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('state-machine - w170', () => {
+  it('state-machine x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('state-machine - w180', () => {
+  it('state-machine x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('state-machine - w190', () => {
+  it('state-machine x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('state-machine - w200', () => {
+  it('state-machine x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

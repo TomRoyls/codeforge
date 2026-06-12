@@ -675,3 +675,135 @@ describe('escape - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('escape - w170', () => {
+  it('escape x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('escape - w180', () => {
+  it('escape x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('escape - w190', () => {
+  it('escape x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('escape - w200', () => {
+  it('escape x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('escape x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

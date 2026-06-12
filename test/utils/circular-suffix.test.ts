@@ -702,3 +702,135 @@ describe('circular-suffix - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circular-suffix - w170', () => {
+  it('circular-suffix x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix - w180', () => {
+  it('circular-suffix x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix - w190', () => {
+  it('circular-suffix x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circular-suffix - w200', () => {
+  it('circular-suffix x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

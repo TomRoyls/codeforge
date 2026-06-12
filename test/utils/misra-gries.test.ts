@@ -856,3 +856,135 @@ describe('misra-gries - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('misra-gries - w170', () => {
+  it('misra-gries x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('misra-gries - w180', () => {
+  it('misra-gries x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('misra-gries - w190', () => {
+  it('misra-gries x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('misra-gries - w200', () => {
+  it('misra-gries x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

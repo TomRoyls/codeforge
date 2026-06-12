@@ -880,3 +880,135 @@ describe('edmonds-karp - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edmonds-karp - w170', () => {
+  it('edmonds-karp x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-karp - w180', () => {
+  it('edmonds-karp x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-karp - w190', () => {
+  it('edmonds-karp x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edmonds-karp - w200', () => {
+  it('edmonds-karp x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

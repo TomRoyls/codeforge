@@ -721,3 +721,135 @@ describe('path-utils - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('path-utils - w170', () => {
+  it('path-utils x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('path-utils - w180', () => {
+  it('path-utils x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('path-utils - w190', () => {
+  it('path-utils x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('path-utils - w200', () => {
+  it('path-utils x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('path-utils x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

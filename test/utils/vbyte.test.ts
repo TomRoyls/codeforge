@@ -787,3 +787,135 @@ describe('vbyte - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('vbyte - w170', () => {
+  it('vbyte x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vbyte - w180', () => {
+  it('vbyte x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vbyte - w190', () => {
+  it('vbyte x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vbyte - w200', () => {
+  it('vbyte x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

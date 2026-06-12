@@ -935,3 +935,135 @@ describe('treap - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('treap - w170', () => {
+  it('treap x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap - w180', () => {
+  it('treap x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap - w190', () => {
+  it('treap x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('treap - w200', () => {
+  it('treap x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

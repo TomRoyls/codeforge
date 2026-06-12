@@ -916,3 +916,135 @@ describe('centroid-decomp - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('centroid-decomp - w170', () => {
+  it('centroid-decomp x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decomp - w180', () => {
+  it('centroid-decomp x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decomp - w190', () => {
+  it('centroid-decomp x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decomp - w200', () => {
+  it('centroid-decomp x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

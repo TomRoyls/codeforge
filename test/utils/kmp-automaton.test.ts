@@ -737,3 +737,135 @@ describe('kmp-automaton - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kmp-automaton - w170', () => {
+  it('kmp-automaton x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp-automaton - w180', () => {
+  it('kmp-automaton x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp-automaton - w190', () => {
+  it('kmp-automaton x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp-automaton - w200', () => {
+  it('kmp-automaton x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

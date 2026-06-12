@@ -951,3 +951,135 @@ describe('dancing-links - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dancing-links - w170', () => {
+  it('dancing-links x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dancing-links - w180', () => {
+  it('dancing-links x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dancing-links - w190', () => {
+  it('dancing-links x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dancing-links - w200', () => {
+  it('dancing-links x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

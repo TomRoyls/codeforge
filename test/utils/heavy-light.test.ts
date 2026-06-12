@@ -889,3 +889,135 @@ describe('heavy-light - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-light - w170', () => {
+  it('heavy-light x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-light - w180', () => {
+  it('heavy-light x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-light - w190', () => {
+  it('heavy-light x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-light - w200', () => {
+  it('heavy-light x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

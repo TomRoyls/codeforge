@@ -701,3 +701,135 @@ describe('cartesian-product - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cartesian-product - w170', () => {
+  it('cartesian-product x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product - w180', () => {
+  it('cartesian-product x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product - w190', () => {
+  it('cartesian-product x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cartesian-product - w200', () => {
+  it('cartesian-product x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-product x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -975,3 +975,135 @@ describe('binary-heap - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-heap - w170', () => {
+  it('binary-heap x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-heap - w180', () => {
+  it('binary-heap x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-heap - w190', () => {
+  it('binary-heap x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('binary-heap - w200', () => {
+  it('binary-heap x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-heap x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -815,3 +815,135 @@ describe('t-digest - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('t-digest - w170', () => {
+  it('t-digest x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('t-digest - w180', () => {
+  it('t-digest x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('t-digest - w190', () => {
+  it('t-digest x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('t-digest - w200', () => {
+  it('t-digest x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('t-digest x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

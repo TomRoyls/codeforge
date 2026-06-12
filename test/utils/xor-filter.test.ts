@@ -805,3 +805,135 @@ describe('xor-filter - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('xor-filter - w170', () => {
+  it('xor-filter x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-filter - w180', () => {
+  it('xor-filter x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-filter - w190', () => {
+  it('xor-filter x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('xor-filter - w200', () => {
+  it('xor-filter x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

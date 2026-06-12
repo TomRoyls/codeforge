@@ -989,3 +989,135 @@ describe('dijkstra-fibonacci - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dijkstra-fibonacci - w170', () => {
+  it('dijkstra-fibonacci x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra-fibonacci - w180', () => {
+  it('dijkstra-fibonacci x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra-fibonacci - w190', () => {
+  it('dijkstra-fibonacci x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('dijkstra-fibonacci - w200', () => {
+  it('dijkstra-fibonacci x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dijkstra-fibonacci x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

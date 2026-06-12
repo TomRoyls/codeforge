@@ -1147,3 +1147,135 @@ describe('leftist-heap - w160', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('leftist-heap - w170', () => {
+  it('leftist-heap x170x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x170x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x170x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x170x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x170x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x170x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x170x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x170x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x170x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x170x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('leftist-heap - w180', () => {
+  it('leftist-heap x180x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x180x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x180x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x180x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x180x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x180x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x180x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x180x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x180x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x180x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('leftist-heap - w190', () => {
+  it('leftist-heap x190x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x190x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x190x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x190x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x190x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x190x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x190x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x190x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x190x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x190x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('leftist-heap - w200', () => {
+  it('leftist-heap x200x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x200x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x200x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x200x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x200x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x200x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x200x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x200x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x200x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap x200x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

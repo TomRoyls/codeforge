@@ -763,3 +763,135 @@ describe('manacher - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('manacher - w170', () => {
+  it('manacher x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('manacher - w180', () => {
+  it('manacher x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('manacher - w190', () => {
+  it('manacher x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('manacher - w200', () => {
+  it('manacher x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

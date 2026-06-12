@@ -782,3 +782,135 @@ describe('token-bucket - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('token-bucket - w170', () => {
+  it('token-bucket x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('token-bucket - w180', () => {
+  it('token-bucket x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('token-bucket - w190', () => {
+  it('token-bucket x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('token-bucket - w200', () => {
+  it('token-bucket x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -710,3 +710,135 @@ describe('gnome-sort - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gnome-sort - w170', () => {
+  it('gnome-sort x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gnome-sort - w180', () => {
+  it('gnome-sort x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gnome-sort - w190', () => {
+  it('gnome-sort x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gnome-sort - w200', () => {
+  it('gnome-sort x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gnome-sort x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

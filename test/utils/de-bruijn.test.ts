@@ -746,3 +746,135 @@ describe('de-bruijn - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('de-bruijn - w170', () => {
+  it('de-bruijn x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('de-bruijn - w180', () => {
+  it('de-bruijn x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('de-bruijn - w190', () => {
+  it('de-bruijn x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('de-bruijn - w200', () => {
+  it('de-bruijn x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

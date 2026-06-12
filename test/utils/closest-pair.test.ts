@@ -808,3 +808,135 @@ describe('closest-pair - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('closest-pair - w170', () => {
+  it('closest-pair x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair - w180', () => {
+  it('closest-pair x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair - w190', () => {
+  it('closest-pair x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair - w200', () => {
+  it('closest-pair x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

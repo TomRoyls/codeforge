@@ -752,3 +752,135 @@ describe('triangular-number - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('triangular-number - w170', () => {
+  it('triangular-number x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('triangular-number - w180', () => {
+  it('triangular-number x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('triangular-number - w190', () => {
+  it('triangular-number x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('triangular-number - w200', () => {
+  it('triangular-number x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

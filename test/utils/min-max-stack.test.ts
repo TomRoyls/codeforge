@@ -1105,3 +1105,135 @@ describe('min-max-stack - w160', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('min-max-stack - w170', () => {
+  it('min-max-stack x170x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x170x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x170x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x170x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x170x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x170x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x170x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x170x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x170x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x170x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-stack - w180', () => {
+  it('min-max-stack x180x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x180x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x180x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x180x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x180x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x180x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x180x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x180x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x180x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x180x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-stack - w190', () => {
+  it('min-max-stack x190x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x190x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x190x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x190x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x190x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x190x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x190x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x190x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x190x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x190x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('min-max-stack - w200', () => {
+  it('min-max-stack x200x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x200x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x200x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x200x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x200x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x200x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x200x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x200x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x200x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-stack x200x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

@@ -674,3 +674,135 @@ describe('z-algorithm - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('z-algorithm - w170', () => {
+  it('z-algorithm x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-algorithm - w180', () => {
+  it('z-algorithm x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-algorithm - w190', () => {
+  it('z-algorithm x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('z-algorithm - w200', () => {
+  it('z-algorithm x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

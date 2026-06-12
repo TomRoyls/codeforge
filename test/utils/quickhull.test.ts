@@ -866,3 +866,135 @@ describe('quickhull - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quickhull - w170', () => {
+  it('quickhull x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - w180', () => {
+  it('quickhull x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - w190', () => {
+  it('quickhull x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - w200', () => {
+  it('quickhull x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

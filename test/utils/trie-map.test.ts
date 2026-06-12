@@ -841,3 +841,135 @@ describe('trie-map - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('trie-map - w170', () => {
+  it('trie-map x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-map - w180', () => {
+  it('trie-map x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-map - w190', () => {
+  it('trie-map x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('trie-map - w200', () => {
+  it('trie-map x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-map x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

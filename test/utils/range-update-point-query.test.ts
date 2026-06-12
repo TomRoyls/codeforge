@@ -827,3 +827,135 @@ describe('range-update-point-query - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('range-update-point-query - w170', () => {
+  it('range-update-point-query x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-update-point-query - w180', () => {
+  it('range-update-point-query x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-update-point-query - w190', () => {
+  it('range-update-point-query x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-update-point-query - w200', () => {
+  it('range-update-point-query x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-update-point-query x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

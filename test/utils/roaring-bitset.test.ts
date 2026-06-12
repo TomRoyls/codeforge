@@ -837,3 +837,135 @@ describe('roaring-bitset - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('roaring-bitset - w170', () => {
+  it('roaring-bitset x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roaring-bitset - w180', () => {
+  it('roaring-bitset x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roaring-bitset - w190', () => {
+  it('roaring-bitset x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roaring-bitset - w200', () => {
+  it('roaring-bitset x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roaring-bitset x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

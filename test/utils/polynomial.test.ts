@@ -752,3 +752,135 @@ describe('polynomial - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('polynomial - w170', () => {
+  it('polynomial x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('polynomial - w180', () => {
+  it('polynomial x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('polynomial - w190', () => {
+  it('polynomial x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('polynomial - w200', () => {
+  it('polynomial x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

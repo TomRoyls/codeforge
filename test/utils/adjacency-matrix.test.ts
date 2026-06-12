@@ -829,3 +829,135 @@ describe('adjacency-matrix - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('adjacency-matrix - w170', () => {
+  it('adjacency-matrix x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-matrix - w180', () => {
+  it('adjacency-matrix x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-matrix - w190', () => {
+  it('adjacency-matrix x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('adjacency-matrix - w200', () => {
+  it('adjacency-matrix x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

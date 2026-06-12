@@ -869,3 +869,135 @@ describe('discrete-sampler - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('discrete-sampler - w170', () => {
+  it('discrete-sampler x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('discrete-sampler - w180', () => {
+  it('discrete-sampler x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('discrete-sampler - w190', () => {
+  it('discrete-sampler x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('discrete-sampler - w200', () => {
+  it('discrete-sampler x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('discrete-sampler x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

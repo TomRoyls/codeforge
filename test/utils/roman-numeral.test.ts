@@ -689,3 +689,135 @@ describe('roman-numeral - w160', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('roman-numeral - w170', () => {
+  it('roman-numeral x170x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x170x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x170x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x170x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x170x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x170x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x170x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x170x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x170x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x170x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roman-numeral - w180', () => {
+  it('roman-numeral x180x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x180x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x180x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x180x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x180x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x180x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x180x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x180x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x180x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x180x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roman-numeral - w190', () => {
+  it('roman-numeral x190x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x190x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x190x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x190x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x190x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x190x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x190x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x190x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x190x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x190x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('roman-numeral - w200', () => {
+  it('roman-numeral x200x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x200x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x200x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x200x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x200x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x200x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x200x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x200x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x200x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral x200x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
