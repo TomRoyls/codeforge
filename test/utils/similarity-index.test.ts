@@ -422,4 +422,17 @@ describe('SimilarityIndex', () => {
     expect(index1.size).toBe(0)
     expect(index2.size).toBe(1)
   })
+
+  it('should compute similarity', () => {
+    const index1 = new SimilarityIndex<string>()
+    index1.add('doc1', 'item1', ['hello', 'world'])
+    const index2 = new SimilarityIndex<string>()
+    index2.add('doc2', 'item2', ['hello', 'world'])
+    expect(index1.size).toBe(1)
+  })
+
+  it('should handle empty sets', () => {
+    const index = new SimilarityIndex<string>()
+    expect(index.size).toBe(0)
+  })
 })

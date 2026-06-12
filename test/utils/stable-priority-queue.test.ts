@@ -491,4 +491,19 @@ describe('StablePriorityQueue', () => {
     expect(pq.dequeue()).toBe('Banana')
     expect(pq.dequeue()).toBe('Zebra')
   })
+
+  it('should maintain insertion order for equal priorities', () => {
+    const pq = new StablePriorityQueue<string>()
+    pq.enqueue('first', 1)
+    pq.enqueue('second', 1)
+    expect(pq.dequeue()).toBe('first')
+    expect(pq.dequeue()).toBe('second')
+  })
+
+  it('should handle size', () => {
+    const pq = new StablePriorityQueue<number>()
+    pq.enqueue(1, 1)
+    pq.enqueue(2, 2)
+    expect(pq.size).toBe(2)
+  })
 })

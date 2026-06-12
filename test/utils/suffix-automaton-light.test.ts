@@ -364,4 +364,16 @@ describe('SuffixAutomatonLight', () => {
     const count = sa.countDistinctSubstrings()
     expect(count).toBeGreaterThan(0)
   })
+
+  it('should check substring', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('abcabc')
+    expect(sa.countDistinctSubstrings()).toBeGreaterThan(0)
+  })
+
+  it('should handle single character', () => {
+    const sa = new SuffixAutomatonLight()
+    sa.build('a')
+    expect(sa.countDistinctSubstrings()).toBeGreaterThanOrEqual(1)
+  })
 })

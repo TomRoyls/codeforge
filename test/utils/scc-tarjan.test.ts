@@ -503,4 +503,21 @@ describe('SCCTarjan', () => {
     const result = scc.solve()
     expect(result.length).toBe(1)
   })
+
+  it('should handle linear DAG', () => {
+    const scc = new SCCTarjan(4)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 2)
+    scc.addEdge(2, 3)
+    const result = scc.solve()
+    expect(result.length).toBe(4)
+  })
+
+  it('should handle disconnected graph', () => {
+    const scc = new SCCTarjan(4)
+    scc.addEdge(0, 1)
+    scc.addEdge(2, 3)
+    const result = scc.solve()
+    expect(result.length).toBe(4)
+  })
 })

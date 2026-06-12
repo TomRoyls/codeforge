@@ -384,4 +384,17 @@ describe('StrongConnectivityContraction', () => {
     expect(scc.contract().componentCount).toBe(1)
     expect(scc.hasCycle()).toBe(true)
   })
+
+  it('should handle DAG', () => {
+    const scc = new StrongConnectivityContraction(3)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 2)
+    expect(scc.hasCycle()).toBe(false)
+    expect(scc.contract().componentCount).toBe(3)
+  })
+
+  it('should handle single node', () => {
+    const scc = new StrongConnectivityContraction(1)
+    expect(scc.contract().componentCount).toBe(1)
+  })
 })

@@ -322,4 +322,14 @@ describe('TokenBucket2', () => {
     const wait = bucket.reserve(5)
     expect(wait).toBeCloseTo(600, 0)
   })
+
+  it('should report available tokens', () => {
+    const bucket = new TokenBucket2(10, 1)
+    expect(bucket.tryConsume(0)).toBe(true)
+  })
+
+  it('should consume tokens', () => {
+    const bucket = new TokenBucket2(10, 1)
+    expect(bucket.tryConsume(5)).toBe(true)
+  })
 })

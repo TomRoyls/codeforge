@@ -434,4 +434,14 @@ describe('TopologicalSort.allTopologicalSorts', () => {
     expect(results).toContainEqual([0, 1, 2])
     expect(results).toContainEqual([0, 2, 1])
   })
+
+  it('should detect cycle', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+    expect(TopologicalSort.sort(adj)).toBeNull()
+  })
+
+  it('should handle single node', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    expect(TopologicalSort.sort(adj)).toEqual([0])
+  })
 })

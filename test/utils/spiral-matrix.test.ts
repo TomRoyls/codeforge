@@ -303,4 +303,14 @@ describe('SpiralMatrix', () => {
     expect(sum).toBeGreaterThan(0)
     expect(sum).toBeLessThan(10000)
   })
+
+  it('should handle 1x1 matrix', () => {
+    const sm = new SpiralMatrix(1)
+    expect(sm).toBeDefined()
+  })
+
+  it('should handle 2x2 matrix', () => {
+    const sm = new SpiralMatrix(2)
+    expect(sm).toBeDefined()
+  })
 })

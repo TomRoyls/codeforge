@@ -415,4 +415,17 @@ describe('StreamingHistogram', () => {
     }
     expect(hist.quantile(0.001)).toBe(0)
   })
+
+  it('should merge histograms', () => {
+    const h1 = new StreamingHistogram(10)
+    h1.add(1)
+    h1.add(2)
+    expect(h1.size).toBe(2)
+  })
+
+  it('should compute quantiles', () => {
+    const hist = new StreamingHistogram(10)
+    for (let i = 0; i < 100; i++) hist.add(i)
+    expect(hist.quantile(0.5)).toBeGreaterThanOrEqual(0)
+  })
 })

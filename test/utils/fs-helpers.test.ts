@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 
@@ -546,6 +546,20 @@ describe('listFiles - additional', () => {
     await ensureDirectory(dir)
     const exists = await directoryExists(dir)
     expect(exists).toBe(true)
+    rmSync(dir, { recursive: true, force: true })
+  })
+
+  it('should check file existence', async () => {
+    const exists = await fileExists('/nonexistent/file.txt')
+    expect(exists).toBe(false)
+  })
+
+  it('should write and read file', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'fs-test-'))
+    const filePath = join(dir, 'test.txt')
+    await writeFileSafe(filePath, 'hello')
+    const content = await readFileSafe(filePath)
+    expect(content).toBe('hello')
     rmSync(dir, { recursive: true, force: true })
   })
 })

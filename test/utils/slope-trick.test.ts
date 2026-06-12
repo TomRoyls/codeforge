@@ -448,4 +448,18 @@ describe('SlopeTrick', () => {
     expect(typeof st.min).toBe('number')
     expect(st.min).toBeGreaterThanOrEqual(0)
   })
+
+  it('should handle single point', () => {
+    const st = new SlopeTrick()
+    st.addAbsolute()
+    expect(st).toBeDefined()
+  })
+
+  it('should add multiple points', () => {
+    const st = new SlopeTrick()
+    st.addAbsolute()
+    st.addShiftLeft(5)
+    st.addShiftRight(3)
+    expect(typeof st.min).toBe('number')
+  })
 })

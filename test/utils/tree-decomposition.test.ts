@@ -456,4 +456,15 @@ describe('TreeDecomposition', () => {
 
     expect(bags1).toEqual(bags2)
   })
+
+  it('should handle single node', () => {
+    const td = new TreeDecomposition(1)
+    expect(td).toBeDefined()
+  })
+
+  it('should handle two nodes', () => {
+    const td = new TreeDecomposition(2)
+    td.addEdge(0, 1)
+    expect(td).toBeDefined()
+  })
 })

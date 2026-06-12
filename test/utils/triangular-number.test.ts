@@ -299,4 +299,14 @@ describe('TriangularNumber', () => {
     expect(TriangularNumber.generate(-1)).toEqual([])
     expect(TriangularNumber.generate(-10)).toEqual([])
   })
+
+  it('should compute T(n)', () => {
+    expect(TriangularNumber.nth(1)).toBe(1)
+    expect(TriangularNumber.nth(5)).toBe(15)
+  })
+
+  it('should check if triangular', () => {
+    expect(TriangularNumber.isTriangular(6)).toBe(true)
+    expect(TriangularNumber.isTriangular(7)).toBe(false)
+  })
 })

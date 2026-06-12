@@ -405,4 +405,16 @@ describe('TarjanSCC', () => {
     const cond = TarjanSCC.condensation(adj)
     expect(cond.size).toBeGreaterThanOrEqual(1)
   })
+
+  it('should handle single node', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    const sccs = TarjanSCC.findSCCs(adj)
+    expect(sccs.length).toBe(1)
+  })
+
+  it('should handle two-node cycle', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+    const sccs = TarjanSCC.findSCCs(adj)
+    expect(sccs.length).toBe(1)
+  })
 })

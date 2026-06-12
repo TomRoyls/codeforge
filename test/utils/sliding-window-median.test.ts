@@ -459,4 +459,18 @@ describe('SlidingWindowMedian', () => {
     swm.push(20)
     expect(swm.median()).toBe(20)
   })
+
+  it('should handle window size 1', () => {
+    const swm = new SlidingWindowMedian(1)
+    swm.push(5)
+    expect(swm.median()).toBe(5)
+  })
+
+  it('should handle negative values', () => {
+    const swm = new SlidingWindowMedian(3)
+    swm.push(-5)
+    swm.push(-3)
+    swm.push(-1)
+    expect(swm.median()).toBe(-3)
+  })
 })

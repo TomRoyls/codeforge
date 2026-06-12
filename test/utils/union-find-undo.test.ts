@@ -564,4 +564,18 @@ describe('UnionFindUndo', () => {
     dsu.rollback(snap)
     expect(dsu.componentCount).toBe(1)
   })
+
+  it('should track component count', () => {
+    const dsu = new UnionFindUndo(4)
+    expect(dsu.componentCount).toBe(4)
+    dsu.union(0, 1)
+    expect(dsu.componentCount).toBe(3)
+  })
+
+  it('should check connected', () => {
+    const dsu = new UnionFindUndo(3)
+    dsu.union(0, 1)
+    expect(dsu.connected(0, 1)).toBe(true)
+    expect(dsu.connected(0, 2)).toBe(false)
+  })
 })

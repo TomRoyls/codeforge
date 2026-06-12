@@ -507,4 +507,19 @@ describe('TremauxMaze', () => {
     const path = maze.solve([0, 0], [2, 2])
     expect(path).toEqual([])
   })
+
+  it('should handle 1x1 maze', () => {
+    const grid = [[0]]
+    const maze = new TremauxMaze(grid)
+    const path = maze.solve([0, 0], [0, 0])
+    expect(path).toEqual([[0, 0]])
+  })
+
+  it('should handle simple path', () => {
+    const maze = new TremauxMaze(2, 2)
+    maze.addPassage([0, 0], [0, 1])
+    maze.addPassage([0, 1], [1, 1])
+    const path = maze.solve([0, 0], [1, 1])
+    expect(path.length).toBeGreaterThan(0)
+  })
 })

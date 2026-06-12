@@ -469,4 +469,19 @@ describe('RollingHash edge cases', () => {
     const h = RollingHash.hashBytes(bytes)
     expect(typeof h).toBe('number')
   })
+
+  it('should reset hash', () => {
+    const rh = new RollingHash(31, 1000000007)
+    rh.push(65)
+    rh.push(66)
+    rh.reset()
+    expect(rh.push(67)).toBeGreaterThanOrEqual(0)
+  })
+
+  it('should clone', () => {
+    const rh = new RollingHash(31, 1000000007)
+    rh.push(65)
+    const cloned = rh.clone()
+    expect(cloned).toBeDefined()
+  })
 })

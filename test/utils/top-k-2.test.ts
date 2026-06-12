@@ -409,4 +409,20 @@ describe('TopK2', () => {
     expect(result[0]!.count).toBe(4)
     expect(result[1]!.count).toBe(3)
   })
+
+  it('should handle single item', () => {
+    const tk = new TopK2<string>(5)
+    tk.add('only')
+    const result = tk.top(1)
+    expect(result.length).toBe(1)
+    expect(result[0]!.item).toBe('only')
+  })
+
+  it('should handle clear', () => {
+    const tk = new TopK2<string>(5)
+    tk.add('a')
+    tk.add('b')
+    tk.reset()
+    expect(tk.top(10).length).toBe(0)
+  })
 })

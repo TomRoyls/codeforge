@@ -395,4 +395,21 @@ describe('SCCGraph', () => {
     expect(componentMap.has(3)).toBe(true)
     expect(componentMap.size).toBe(4)
   })
+
+  it('should handle single node', () => {
+    const scc = new SCCGraph()
+    scc.addNode(0)
+    const components = scc.findSCCs()
+    expect(components.length).toBe(1)
+  })
+
+  it('should handle two-node cycle', () => {
+    const scc = new SCCGraph()
+    scc.addNode(0)
+    scc.addNode(1)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 0)
+    const components = scc.findSCCs()
+    expect(components.length).toBe(1)
+  })
 })

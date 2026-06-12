@@ -245,4 +245,12 @@ describe('SubsetSum', () => {
     expect(result).not.toBeNull()
     expect(result!.reduce((a, b) => a + b, 0)).toBe(6)
   })
+
+  it('should handle no solution', () => {
+    expect(SubsetSum.hasSubset([5, 10, 15], 7)).toBe(false)
+  })
+
+  it('should handle single element match', () => {
+    expect(SubsetSum.findSubset([5], 5)).toEqual([5])
+  })
 })
