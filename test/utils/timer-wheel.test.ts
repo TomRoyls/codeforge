@@ -416,3 +416,16 @@ describe('TimerWheel', () => {
     expect(() => new TimerWheel(17)).toThrow()
   })
 })
+
+  it('advance on empty returns empty', () => {
+    const tw = new TimerWheel<string>(4)
+    expect(tw.advance()).toEqual([])
+  })
+
+  it('schedule and advance', () => {
+    const tw = new TimerWheel<string>(4)
+    tw.schedule(1, 'hello')
+    tw.advance()
+    const result = tw.advance()
+    expect(result).toContain('hello')
+  })

@@ -442,3 +442,7 @@ describe('TopKStream', () => {
     expect(result.length).toBeLessThanOrEqual(3)
   })
 })
+  it('getTopK returns empty for no offers', () => {
+    const tks = new TopKStream<number>({ k: 5 })
+    expect(tks.getTopK()).toEqual([])
+  })

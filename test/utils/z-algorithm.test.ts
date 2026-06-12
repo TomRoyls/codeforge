@@ -238,3 +238,11 @@ describe('ZAlgorithm', () => {
     expect(ZAlgorithm.search('prefixpattern', 'pattern')).toEqual([6])
   })
 })
+
+  it('contains returns true for substring', () => {
+    expect(ZAlgorithm.contains('hello world', 'world')).toBe(true)
+  })
+
+  it('contains returns false for missing', () => {
+    expect(ZAlgorithm.contains('hello', 'xyz')).toBe(false)
+  })

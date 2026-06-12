@@ -599,3 +599,8 @@ describe('VanEmdeBoas successor/predecessor edge cases', () => {
     expect(tree.successor(8)).toBeUndefined()
   })
 })
+
+  it('universeSize returns configured size', () => {
+    const veb = new VanEmdeBoas(16)
+    expect(veb.universeSize).toBe(16)
+  })

@@ -893,4 +893,9 @@ describe('createWatcher', () => {
     await w.stop()
     rmSync(TEMP_DIR, { recursive: true, force: true })
   })
+
+  it('isActive returns false before watch', () => {
+    const w = new FileWatcher()
+    expect(w.isActive()).toBe(false)
+  })
 })

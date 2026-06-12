@@ -337,3 +337,18 @@ describe('Welford', () => {
     expect(w.meanValue).toBe(2)
   })
 })
+
+  it('n returns count', () => {
+    const w = new Welford()
+    w.update(10)
+    w.update(20)
+    expect(w.n).toBe(2)
+  })
+
+  it('stdDev returns number', () => {
+    const w = new Welford()
+    w.update(1)
+    w.update(2)
+    w.update(3)
+    expect(typeof w.stdDev).toBe('number')
+  })

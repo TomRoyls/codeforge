@@ -374,3 +374,16 @@ describe('TDigest', () => {
     expect(td.percentile(100)).toBe(5)
   })
 })
+
+  it('pushBatch adds multiple values', () => {
+    const td = new TDigest()
+    td.pushBatch([1, 2, 3, 4, 5])
+    expect(td.size).toBe(5)
+  })
+
+  it('size tracks count', () => {
+    const td = new TDigest()
+    td.push(1)
+    td.push(2)
+    expect(td.size).toBe(2)
+  })

@@ -487,3 +487,15 @@ describe('ZigguratNormal', () => {
     expect(zn.sampleN(0)).toHaveLength(0)
   })
 })
+
+  it('sampleN returns correct count', () => {
+    const zn = new ZigguratNormal()
+    const samples = zn.sampleN(100)
+    expect(samples.length).toBe(100)
+  })
+
+  it('sample returns finite number', () => {
+    const zn = new ZigguratNormal()
+    const s = zn.sample()
+    expect(Number.isFinite(s)).toBe(true)
+  })

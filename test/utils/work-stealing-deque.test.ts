@@ -485,3 +485,7 @@ describe('WorkStealingDeque', () => {
     })
   })
 })
+  it('isEmpty on new deque', () => {
+    const dq = new WorkStealingDeque<number>()
+    expect(dq.isEmpty()).toBe(true)
+  })

@@ -477,3 +477,16 @@ describe('TreapImplicit complex operations', () => {
     expect(treap.size).toBe(0)
   })
 })
+
+  it('empty treap size is 0', () => {
+    const t = new TreapImplicit<number>()
+    expect(t.size).toBe(0)
+  })
+
+  it('push and get', () => {
+    const t = new TreapImplicit<number>()
+    t.push(1)
+    t.push(2)
+    expect(t.get(0)).toBe(1)
+    expect(t.get(1)).toBe(2)
+  })
