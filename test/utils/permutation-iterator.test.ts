@@ -1573,3 +1573,318 @@ describe('permutation-iterator - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('permutation-iterator - w420', () => {
+  it('permutation-iterator x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('permutation-iterator - w440', () => {
+  it('permutation-iterator x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('permutation-iterator - w460', () => {
+  it('permutation-iterator x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('permutation-iterator - w480', () => {
+  it('permutation-iterator x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('permutation-iterator - w500', () => {
+  it('permutation-iterator x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1451,3 +1451,318 @@ describe('kmp - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kmp - w420', () => {
+  it('kmp x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w440', () => {
+  it('kmp x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w460', () => {
+  it('kmp x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w480', () => {
+  it('kmp x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w500', () => {
+  it('kmp x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

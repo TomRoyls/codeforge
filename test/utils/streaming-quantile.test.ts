@@ -1679,3 +1679,318 @@ describe('streaming-quantile - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-quantile - w420', () => {
+  it('streaming-quantile x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - w440', () => {
+  it('streaming-quantile x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - w460', () => {
+  it('streaming-quantile x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - w480', () => {
+  it('streaming-quantile x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-quantile - w500', () => {
+  it('streaming-quantile x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

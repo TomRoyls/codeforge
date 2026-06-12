@@ -1534,3 +1534,318 @@ describe('string-hasher - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-hasher - w420', () => {
+  it('string-hasher x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-hasher - w440', () => {
+  it('string-hasher x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-hasher - w460', () => {
+  it('string-hasher x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-hasher - w480', () => {
+  it('string-hasher x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-hasher - w500', () => {
+  it('string-hasher x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

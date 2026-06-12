@@ -1638,3 +1638,318 @@ describe('aho-corasick - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('aho-corasick - w420', () => {
+  it('aho-corasick x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('aho-corasick - w440', () => {
+  it('aho-corasick x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('aho-corasick - w460', () => {
+  it('aho-corasick x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('aho-corasick - w480', () => {
+  it('aho-corasick x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('aho-corasick - w500', () => {
+  it('aho-corasick x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

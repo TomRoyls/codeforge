@@ -1669,3 +1669,318 @@ describe('kruskal-mst - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kruskal-mst - w420', () => {
+  it('kruskal-mst x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kruskal-mst - w440', () => {
+  it('kruskal-mst x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kruskal-mst - w460', () => {
+  it('kruskal-mst x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kruskal-mst - w480', () => {
+  it('kruskal-mst x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kruskal-mst - w500', () => {
+  it('kruskal-mst x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

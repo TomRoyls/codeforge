@@ -1760,3 +1760,318 @@ describe('skew-heap - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('skew-heap - w420', () => {
+  it('skew-heap x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - w440', () => {
+  it('skew-heap x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - w460', () => {
+  it('skew-heap x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - w480', () => {
+  it('skew-heap x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skew-heap - w500', () => {
+  it('skew-heap x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skew-heap x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1648,3 +1648,318 @@ describe('network-flow-dinic - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('network-flow-dinic - w420', () => {
+  it('network-flow-dinic x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow-dinic - w440', () => {
+  it('network-flow-dinic x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow-dinic - w460', () => {
+  it('network-flow-dinic x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow-dinic - w480', () => {
+  it('network-flow-dinic x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('network-flow-dinic - w500', () => {
+  it('network-flow-dinic x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

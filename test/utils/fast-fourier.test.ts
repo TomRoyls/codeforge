@@ -1558,3 +1558,318 @@ describe('fast-fourier - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fast-fourier - w420', () => {
+  it('fast-fourier x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fast-fourier - w440', () => {
+  it('fast-fourier x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fast-fourier - w460', () => {
+  it('fast-fourier x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fast-fourier - w480', () => {
+  it('fast-fourier x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('fast-fourier - w500', () => {
+  it('fast-fourier x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

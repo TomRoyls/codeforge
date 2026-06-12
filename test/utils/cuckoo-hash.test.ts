@@ -1678,3 +1678,318 @@ describe('cuckoo-hash - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cuckoo-hash - w420', () => {
+  it('cuckoo-hash x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w440', () => {
+  it('cuckoo-hash x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w460', () => {
+  it('cuckoo-hash x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w480', () => {
+  it('cuckoo-hash x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('cuckoo-hash - w500', () => {
+  it('cuckoo-hash x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

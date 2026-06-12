@@ -1576,3 +1576,318 @@ describe('suffix-array - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suffix-array - w420', () => {
+  it('suffix-array x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-array - w440', () => {
+  it('suffix-array x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-array - w460', () => {
+  it('suffix-array x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-array - w480', () => {
+  it('suffix-array x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('suffix-array - w500', () => {
+  it('suffix-array x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

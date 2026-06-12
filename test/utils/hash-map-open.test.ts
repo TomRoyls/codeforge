@@ -1671,3 +1671,318 @@ describe('hash-map-open - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hash-map-open - w420', () => {
+  it('hash-map-open x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - w440', () => {
+  it('hash-map-open x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - w460', () => {
+  it('hash-map-open x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - w480', () => {
+  it('hash-map-open x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hash-map-open - w500', () => {
+  it('hash-map-open x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

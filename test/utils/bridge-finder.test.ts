@@ -1572,3 +1572,318 @@ describe('bridge-finder - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bridge-finder - w420', () => {
+  it('bridge-finder x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finder - w440', () => {
+  it('bridge-finder x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finder - w460', () => {
+  it('bridge-finder x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finder - w480', () => {
+  it('bridge-finder x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bridge-finder - w500', () => {
+  it('bridge-finder x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

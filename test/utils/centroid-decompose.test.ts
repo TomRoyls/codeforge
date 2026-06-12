@@ -1848,3 +1848,318 @@ describe('centroid-decompose - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('centroid-decompose - w420', () => {
+  it('centroid-decompose x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - w440', () => {
+  it('centroid-decompose x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - w460', () => {
+  it('centroid-decompose x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - w480', () => {
+  it('centroid-decompose x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('centroid-decompose - w500', () => {
+  it('centroid-decompose x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

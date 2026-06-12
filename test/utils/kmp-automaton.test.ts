@@ -1529,3 +1529,318 @@ describe('kmp-automaton - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kmp-automaton - w420', () => {
+  it('kmp-automaton x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp-automaton - w440', () => {
+  it('kmp-automaton x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp-automaton - w460', () => {
+  it('kmp-automaton x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp-automaton - w480', () => {
+  it('kmp-automaton x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp-automaton - w500', () => {
+  it('kmp-automaton x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

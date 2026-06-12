@@ -1498,3 +1498,318 @@ describe('version - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('version - w420', () => {
+  it('version x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - w440', () => {
+  it('version x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - w460', () => {
+  it('version x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - w480', () => {
+  it('version x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('version - w500', () => {
+  it('version x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

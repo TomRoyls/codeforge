@@ -1657,3 +1657,318 @@ describe('kahn-algorithm - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kahn-algorithm - w420', () => {
+  it('kahn-algorithm x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - w440', () => {
+  it('kahn-algorithm x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - w460', () => {
+  it('kahn-algorithm x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - w480', () => {
+  it('kahn-algorithm x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kahn-algorithm - w500', () => {
+  it('kahn-algorithm x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

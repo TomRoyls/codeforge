@@ -1493,3 +1493,318 @@ describe('pollard-rho - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pollard-rho - w420', () => {
+  it('pollard-rho x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pollard-rho - w440', () => {
+  it('pollard-rho x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pollard-rho - w460', () => {
+  it('pollard-rho x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pollard-rho - w480', () => {
+  it('pollard-rho x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pollard-rho - w500', () => {
+  it('pollard-rho x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

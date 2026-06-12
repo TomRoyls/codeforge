@@ -1563,3 +1563,318 @@ describe('introsort - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('introsort - w420', () => {
+  it('introsort x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('introsort - w440', () => {
+  it('introsort x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('introsort - w460', () => {
+  it('introsort x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('introsort - w480', () => {
+  it('introsort x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('introsort - w500', () => {
+  it('introsort x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

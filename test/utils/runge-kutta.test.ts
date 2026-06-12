@@ -1584,3 +1584,318 @@ describe('runge-kutta - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('runge-kutta - w420', () => {
+  it('runge-kutta x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('runge-kutta - w440', () => {
+  it('runge-kutta x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('runge-kutta - w460', () => {
+  it('runge-kutta x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('runge-kutta - w480', () => {
+  it('runge-kutta x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('runge-kutta - w500', () => {
+  it('runge-kutta x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

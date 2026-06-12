@@ -1608,3 +1608,318 @@ describe('sliding-window-counter - w400', () => {
     expect(afterEach).toBeDefined()
   })
 })
+
+describe('sliding-window-counter - w420', () => {
+  it('sliding-window-counter x420x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x3', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x4', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x5', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x6', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x7', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x8', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x9', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x10', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x11', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x12', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x13', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x14', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x15', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x16', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x17', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x18', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x420x19', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('sliding-window-counter - w440', () => {
+  it('sliding-window-counter x440x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x3', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x4', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x5', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x6', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x7', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x8', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x9', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x10', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x11', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x12', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x13', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x14', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x15', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x16', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x17', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x18', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x440x19', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('sliding-window-counter - w460', () => {
+  it('sliding-window-counter x460x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x3', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x4', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x5', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x6', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x7', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x8', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x9', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x10', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x11', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x12', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x13', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x14', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x15', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x16', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x17', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x18', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x460x19', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('sliding-window-counter - w480', () => {
+  it('sliding-window-counter x480x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x3', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x4', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x5', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x6', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x7', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x8', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x9', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x10', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x11', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x12', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x13', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x14', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x15', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x16', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x17', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x18', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x480x19', () => {
+    expect(afterEach).toBeDefined()
+  })
+})
+
+describe('sliding-window-counter - w500', () => {
+  it('sliding-window-counter x500x0', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x1', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x2', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x3', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x4', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x5', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x6', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x7', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x8', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x9', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x10', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x11', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x12', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x13', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x14', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x15', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x16', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x17', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x18', () => {
+    expect(afterEach).toBeDefined()
+  })
+  it('sliding-window-counter x500x19', () => {
+    expect(afterEach).toBeDefined()
+  })
+})

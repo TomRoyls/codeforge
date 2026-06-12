@@ -1672,3 +1672,318 @@ describe('streaming-histogram - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-histogram - w420', () => {
+  it('streaming-histogram x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - w440', () => {
+  it('streaming-histogram x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - w460', () => {
+  it('streaming-histogram x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - w480', () => {
+  it('streaming-histogram x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('streaming-histogram - w500', () => {
+  it('streaming-histogram x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-histogram x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

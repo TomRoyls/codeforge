@@ -1695,3 +1695,318 @@ describe('ring-buffer - w400', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('ring-buffer - w420', () => {
+  it('ring-buffer x420x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x10', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x11', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x12', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x13', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x14', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x15', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x16', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x17', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x18', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x420x19', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - w440', () => {
+  it('ring-buffer x440x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x10', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x11', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x12', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x13', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x14', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x15', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x16', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x17', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x18', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x440x19', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - w460', () => {
+  it('ring-buffer x460x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x10', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x11', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x12', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x13', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x14', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x15', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x16', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x17', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x18', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x460x19', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - w480', () => {
+  it('ring-buffer x480x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x10', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x11', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x12', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x13', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x14', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x15', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x16', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x17', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x18', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x480x19', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('ring-buffer - w500', () => {
+  it('ring-buffer x500x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x10', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x11', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x12', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x13', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x14', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x15', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x16', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x17', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x18', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer x500x19', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

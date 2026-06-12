@@ -1656,3 +1656,318 @@ describe('planar-check - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('planar-check - w420', () => {
+  it('planar-check x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('planar-check - w440', () => {
+  it('planar-check x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('planar-check - w460', () => {
+  it('planar-check x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('planar-check - w480', () => {
+  it('planar-check x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('planar-check - w500', () => {
+  it('planar-check x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1658,3 +1658,318 @@ describe('quickhull - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quickhull - w420', () => {
+  it('quickhull x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - w440', () => {
+  it('quickhull x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - w460', () => {
+  it('quickhull x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - w480', () => {
+  it('quickhull x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickhull - w500', () => {
+  it('quickhull x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

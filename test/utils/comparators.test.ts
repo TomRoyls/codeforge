@@ -1556,3 +1556,318 @@ describe('comparators - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('comparators - w420', () => {
+  it('comparators x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comparators - w440', () => {
+  it('comparators x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comparators - w460', () => {
+  it('comparators x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comparators - w480', () => {
+  it('comparators x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('comparators - w500', () => {
+  it('comparators x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

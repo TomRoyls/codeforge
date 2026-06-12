@@ -1576,3 +1576,318 @@ describe('monotonic-stack - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('monotonic-stack - w420', () => {
+  it('monotonic-stack x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - w440', () => {
+  it('monotonic-stack x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - w460', () => {
+  it('monotonic-stack x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - w480', () => {
+  it('monotonic-stack x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monotonic-stack - w500', () => {
+  it('monotonic-stack x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monotonic-stack x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

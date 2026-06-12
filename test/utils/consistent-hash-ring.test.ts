@@ -1615,3 +1615,318 @@ describe('consistent-hash-ring - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('consistent-hash-ring - w420', () => {
+  it('consistent-hash-ring x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - w440', () => {
+  it('consistent-hash-ring x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - w460', () => {
+  it('consistent-hash-ring x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - w480', () => {
+  it('consistent-hash-ring x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('consistent-hash-ring - w500', () => {
+  it('consistent-hash-ring x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

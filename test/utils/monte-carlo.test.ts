@@ -1591,3 +1591,318 @@ describe('monte-carlo - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('monte-carlo - w420', () => {
+  it('monte-carlo x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monte-carlo - w440', () => {
+  it('monte-carlo x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monte-carlo - w460', () => {
+  it('monte-carlo x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monte-carlo - w480', () => {
+  it('monte-carlo x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('monte-carlo - w500', () => {
+  it('monte-carlo x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

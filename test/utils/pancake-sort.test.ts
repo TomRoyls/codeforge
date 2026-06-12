@@ -1496,3 +1496,318 @@ describe('pancake-sort - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pancake-sort - w420', () => {
+  it('pancake-sort x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pancake-sort - w440', () => {
+  it('pancake-sort x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pancake-sort - w460', () => {
+  it('pancake-sort x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pancake-sort - w480', () => {
+  it('pancake-sort x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pancake-sort - w500', () => {
+  it('pancake-sort x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pancake-sort x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

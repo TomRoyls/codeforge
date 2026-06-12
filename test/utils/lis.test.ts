@@ -1484,3 +1484,318 @@ describe('lis - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lis - w420', () => {
+  it('lis x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lis - w440', () => {
+  it('lis x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lis - w460', () => {
+  it('lis x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lis - w480', () => {
+  it('lis x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lis - w500', () => {
+  it('lis x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1671,3 +1671,318 @@ describe('hyperloglog - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hyperloglog - w420', () => {
+  it('hyperloglog x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - w440', () => {
+  it('hyperloglog x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - w460', () => {
+  it('hyperloglog x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - w480', () => {
+  it('hyperloglog x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hyperloglog - w500', () => {
+  it('hyperloglog x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})

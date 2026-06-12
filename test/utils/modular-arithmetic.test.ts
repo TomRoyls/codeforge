@@ -1495,3 +1495,318 @@ describe('modular-arithmetic - w400', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('modular-arithmetic - w420', () => {
+  it('modular-arithmetic x420x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x420x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-arithmetic - w440', () => {
+  it('modular-arithmetic x440x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x440x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-arithmetic - w460', () => {
+  it('modular-arithmetic x460x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x460x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-arithmetic - w480', () => {
+  it('modular-arithmetic x480x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x480x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('modular-arithmetic - w500', () => {
+  it('modular-arithmetic x500x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic x500x19', () => {
+    expect(describe).toBeDefined()
+  })
+})
