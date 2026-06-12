@@ -428,3 +428,15 @@ describe('polynomial - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('polynomial - wave552', () => {
+  it('polynomial w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

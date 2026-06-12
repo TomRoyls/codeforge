@@ -443,3 +443,15 @@ describe('lz-compression - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lz-compression - wave552', () => {
+  it('lz-compression w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lz-compression w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

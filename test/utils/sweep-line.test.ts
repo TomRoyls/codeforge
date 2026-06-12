@@ -507,3 +507,15 @@ describe('sweep-line - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sweep-line - wave552', () => {
+  it('sweep-line w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sweep-line w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sweep-line w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

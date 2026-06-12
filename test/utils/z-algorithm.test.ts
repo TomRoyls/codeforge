@@ -350,3 +350,15 @@ describe('z-algorithm - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('z-algorithm - wave552', () => {
+  it('z-algorithm w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

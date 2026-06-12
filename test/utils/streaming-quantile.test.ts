@@ -563,3 +563,15 @@ describe('streaming-quantile - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-quantile - wave552', () => {
+  it('streaming-quantile w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

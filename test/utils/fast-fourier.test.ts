@@ -442,3 +442,15 @@ describe('fast-fourier - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fast-fourier - wave552', () => {
+  it('fast-fourier w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

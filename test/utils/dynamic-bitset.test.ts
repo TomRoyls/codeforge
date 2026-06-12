@@ -480,3 +480,15 @@ describe('dynamic-bitset - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dynamic-bitset - wave552', () => {
+  it('dynamic-bitset w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-bitset w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-bitset w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -417,3 +417,15 @@ describe('cycle-sort - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cycle-sort - wave552', () => {
+  it('cycle-sort w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-sort w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-sort w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

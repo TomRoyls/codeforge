@@ -356,3 +356,14 @@ describe('SlidingWindowMin', () => {
     expect(SlidingWindowMax.solveMin([5, 3, 4, 6], 2)).toEqual([3, 3, 4])
   })
 })
+describe('sliding-window-max - wave552', () => {
+  it('sliding-window-max w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

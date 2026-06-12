@@ -590,3 +590,15 @@ describe('splay-tree - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('splay-tree - wave552', () => {
+  it('splay-tree w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

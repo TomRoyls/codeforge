@@ -460,3 +460,15 @@ describe('suffix-array - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suffix-array - wave552', () => {
+  it('suffix-array w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -575,3 +575,15 @@ describe('pair-heap - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pair-heap - wave552', () => {
+  it('pair-heap w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

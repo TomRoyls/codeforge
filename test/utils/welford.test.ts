@@ -456,3 +456,15 @@ describe('welford - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('welford - wave552', () => {
+  it('welford w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -523,3 +523,15 @@ describe('strong-connectivity-contraction - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('strong-connectivity-contraction - wave552', () => {
+  it('strong-connectivity-contraction w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

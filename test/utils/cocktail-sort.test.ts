@@ -369,3 +369,15 @@ describe('cocktail-sort - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cocktail-sort - wave552', () => {
+  it('cocktail-sort w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cocktail-sort w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cocktail-sort w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

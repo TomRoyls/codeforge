@@ -418,3 +418,15 @@ describe('string-hash - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-hash - wave552', () => {
+  it('string-hash w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hash w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hash w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

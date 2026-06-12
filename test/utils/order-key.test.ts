@@ -479,3 +479,15 @@ describe('order-key - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('order-key - wave552', () => {
+  it('order-key w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('order-key w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('order-key w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

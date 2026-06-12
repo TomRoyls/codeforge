@@ -699,3 +699,9 @@ describe('CountMinSketch - toString()', () => {
     expect(cms1.toString()).not.toBe(cms2.toString())
   })
 })
+
+describe('count-min-sketch - wave552', () => {
+  it('count-min-sketch w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+})

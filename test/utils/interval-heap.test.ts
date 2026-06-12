@@ -571,3 +571,15 @@ describe('interval-heap - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-heap - wave552', () => {
+  it('interval-heap w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-heap w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-heap w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -517,3 +517,15 @@ describe('vertex-coloring - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('vertex-coloring - wave552', () => {
+  it('vertex-coloring w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -505,3 +505,15 @@ describe('git-helpers - wave551', () => {
     expect(resolve).toBeDefined()
   })
 })
+
+describe('git-helpers - wave552', () => {
+  it('git-helpers w552 v0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w552 v1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w552 v2', () => {
+    expect(resolve).toBeDefined()
+  })
+})

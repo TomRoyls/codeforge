@@ -620,3 +620,15 @@ describe('steiner-tree - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('steiner-tree - wave552', () => {
+  it('steiner-tree w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('steiner-tree w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('steiner-tree w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

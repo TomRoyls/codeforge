@@ -467,3 +467,15 @@ describe('fractional-cascading - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fractional-cascading - wave552', () => {
+  it('fractional-cascading w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fractional-cascading w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

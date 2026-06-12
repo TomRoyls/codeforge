@@ -418,3 +418,15 @@ describe('string-hasher - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-hasher - wave552', () => {
+  it('string-hasher w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-hasher w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

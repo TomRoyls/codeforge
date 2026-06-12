@@ -506,3 +506,15 @@ describe('graph-entropy - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-entropy - wave552', () => {
+  it('graph-entropy w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-entropy w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

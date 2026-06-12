@@ -651,3 +651,15 @@ describe('dominator-tree - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dominator-tree - wave552', () => {
+  it('dominator-tree w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

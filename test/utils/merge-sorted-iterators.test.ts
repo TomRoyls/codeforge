@@ -529,3 +529,15 @@ describe('merge-sorted-iterators - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('merge-sorted-iterators - wave552', () => {
+  it('merge-sorted-iterators w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

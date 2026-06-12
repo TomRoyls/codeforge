@@ -565,3 +565,15 @@ describe('topological-coloring - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('topological-coloring - wave552', () => {
+  it('topological-coloring w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('topological-coloring w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

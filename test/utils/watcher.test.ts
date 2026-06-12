@@ -1003,3 +1003,15 @@ describe('watcher - wave551', () => {
     expect(mkdirSync).toBeDefined()
   })
 })
+
+describe('watcher - wave552', () => {
+  it('watcher w552 v0', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher w552 v1', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher w552 v2', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+})

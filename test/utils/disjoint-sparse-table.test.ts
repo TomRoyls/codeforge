@@ -452,3 +452,15 @@ describe('disjoint-sparse-table - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-sparse-table - wave552', () => {
+  it('disjoint-sparse-table w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

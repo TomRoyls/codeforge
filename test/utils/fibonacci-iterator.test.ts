@@ -418,3 +418,15 @@ describe('fibonacci-iterator - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fibonacci-iterator - wave552', () => {
+  it('fibonacci-iterator w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

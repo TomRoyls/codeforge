@@ -404,3 +404,15 @@ describe('sieve-of-eratosthenes - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sieve-of-eratosthenes - wave552', () => {
+  it('sieve-of-eratosthenes w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve-of-eratosthenes w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

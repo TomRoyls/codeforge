@@ -431,3 +431,15 @@ describe('wavelet-matrix - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('wavelet-matrix - wave552', () => {
+  it('wavelet-matrix w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

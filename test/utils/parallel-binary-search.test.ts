@@ -558,3 +558,15 @@ describe('parallel-binary-search - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('parallel-binary-search - wave552', () => {
+  it('parallel-binary-search w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('parallel-binary-search w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

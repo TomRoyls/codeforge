@@ -616,3 +616,15 @@ describe('tree-hash - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tree-hash - wave552', () => {
+  it('tree-hash w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-hash w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

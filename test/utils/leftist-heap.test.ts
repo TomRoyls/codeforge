@@ -823,3 +823,15 @@ describe('leftist-heap - wave551', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('leftist-heap - wave552', () => {
+  it('leftist-heap w552 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w552 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w552 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

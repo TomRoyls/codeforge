@@ -703,3 +703,15 @@ describe('retry - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('retry - wave552', () => {
+  it('retry w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

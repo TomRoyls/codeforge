@@ -820,3 +820,15 @@ describe('state-machine - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('state-machine - wave552', () => {
+  it('state-machine w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

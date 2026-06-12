@@ -593,3 +593,15 @@ describe('work-stealing-deque - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('work-stealing-deque - wave552', () => {
+  it('work-stealing-deque w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

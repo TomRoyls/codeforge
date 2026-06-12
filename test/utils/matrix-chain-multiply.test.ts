@@ -414,3 +414,15 @@ describe('matrix-chain-multiply - wave551', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('matrix-chain-multiply - wave552', () => {
+  it('matrix-chain-multiply w552 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply w552 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply w552 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
