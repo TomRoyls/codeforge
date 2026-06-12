@@ -457,4 +457,16 @@ describe('RollingHash edge cases', () => {
     expect(hashes[0]).toBe(hashes[1])
     expect(hashes[1]).toBe(hashes[2])
   })
+
+  it('should hash string', () => {
+    const h = RollingHash.hashString('hello')
+    expect(typeof h).toBe('number')
+    expect(h).toBeGreaterThan(0)
+  })
+
+  it('should hash bytes', () => {
+    const bytes = new Uint8Array([1, 2, 3])
+    const h = RollingHash.hashBytes(bytes)
+    expect(typeof h).toBe('number')
+  })
 })

@@ -397,4 +397,20 @@ describe('HashMapOpen', () => {
     }
     expect(map.size).toBe(13)
   })
+
+  it('should return entries', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    const entries = map.entries()
+    expect(entries.length).toBe(2)
+  })
+
+  it('should iterate keys and values', () => {
+    const map = new HashMapOpen<number, string>()
+    map.set(1, 'one')
+    map.set(2, 'two')
+    expect(map.keys().length).toBe(2)
+    expect(map.values().length).toBe(2)
+  })
 })

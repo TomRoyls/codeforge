@@ -488,4 +488,19 @@ describe('SCCTarjan', () => {
       expect(comps.length).toBe(4)
     })
   })
+
+  it('should handle single node', () => {
+    const scc = new SCCTarjan(1)
+    const result = scc.solve()
+    expect(result.length).toBe(1)
+    expect(result[0]).toEqual([0])
+  })
+
+  it('should handle two node cycle', () => {
+    const scc = new SCCTarjan(2)
+    scc.addEdge(0, 1)
+    scc.addEdge(1, 0)
+    const result = scc.solve()
+    expect(result.length).toBe(1)
+  })
 })

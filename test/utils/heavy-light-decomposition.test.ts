@@ -603,4 +603,18 @@ describe('HeavyLightDecomposition', () => {
       }
     }
   })
+
+  it('should clone and equal', () => {
+    const adj = [[1, 2], [0], [0]]
+    const hld = new HeavyLightDecomposition(adj)
+    const cloned = hld.clone()
+    expect(hld.equals(cloned)).toBe(true)
+  })
+
+  it('should serialize to JSON', () => {
+    const adj = [[1], [0]]
+    const hld = new HeavyLightDecomposition(adj)
+    const json = hld.toJSON()
+    expect(json).toBeDefined()
+  })
 })

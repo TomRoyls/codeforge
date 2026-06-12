@@ -1,4 +1,4 @@
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 
@@ -60,13 +60,14 @@ describe('FileWatcher isActive', () => {
     rmSync(TEMP_DIR, { recursive: true, force: true })
   })
 
-  it('returns false after stop', async () => {
-    mkdirSync(TEMP_DIR, { recursive: true })
-    const w = new FileWatcher()
-    await w.watch(TEMP_DIR)
-    await w.stop()
-    expect(w.isActive()).toBe(false)
-    rmSync(TEMP_DIR, { recursive: true, force: true })
+  it('should report inactive after close', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'watcher-test-'))
+    const watcher = new FileWatcher({ path: dir })
+    await watcher.start()
+    expect(watcher.isActive()).toBe(true)
+    await watcher.stop()
+    expect(watcher.isActive()).toBe(false)
+    rmSync(dir, { recursive: true, force: true })
   })
 })
 

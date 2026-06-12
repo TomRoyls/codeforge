@@ -337,4 +337,14 @@ describe('KosarajuSCC', () => {
     const dag = KosarajuSCC.condensation(adj)
     expect(dag.get(0)).toEqual([])
   })
+
+  it('should count SCCs', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]], [2, []]])
+    expect(KosarajuSCC.countSCCs(adj)).toBe(2)
+  })
+
+  it('should check strong connectivity', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+    expect(KosarajuSCC.isStronglyConnected(adj)).toBe(true)
+  })
 })

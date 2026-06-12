@@ -386,4 +386,20 @@ describe('PlanarCheck', () => {
         if (!(i === 0 && j === 3)) pc.addEdge(i, j)
     expect(pc.isPlanar()).toBe(true)
   })
+
+  it('should detect non-planar K5', () => {
+    const pc = new PlanarCheck(5)
+    for (let i = 0; i < 5; i++)
+      for (let j = i + 1; j < 5; j++)
+        pc.addEdge(i, j)
+    expect(pc.isPlanar()).toBe(false)
+  })
+
+  it('should accept K4 as planar', () => {
+    const pc = new PlanarCheck(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        pc.addEdge(i, j)
+    expect(pc.isPlanar()).toBe(true)
+  })
 })

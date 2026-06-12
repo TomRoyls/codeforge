@@ -326,4 +326,25 @@ describe('EliasFano - edge cases', () => {
     expect(ef.get(1)).toBe(1000)
     expect(ef.get(3)).toBe(1000000000)
   })
+
+  it('should find indexOf', () => {
+    const ef = new EliasFano([10, 20, 30, 40])
+    expect(ef.indexOf(20)).toBe(1)
+    expect(ef.indexOf(99)).toBe(-1)
+  })
+
+  it('should find nextGEQ', () => {
+    const ef = new EliasFano([10, 20, 30, 40])
+    const idx = ef.nextGEQ(25)
+    expect(idx).toBeGreaterThanOrEqual(0)
+    expect(ef.get(idx)).toBe(30)
+    expect(ef.nextGEQ(10)).toBeGreaterThanOrEqual(0)
+  })
+
+  it('should iterate forEach', () => {
+    const ef = new EliasFano([5, 15, 25])
+    const vals: number[] = []
+    ef.forEach((v) => vals.push(v))
+    expect(vals).toEqual([5, 15, 25])
+  })
 })

@@ -399,4 +399,20 @@ describe('BinaryLifting', () => {
     expect(bl.distance(5, 6)).toBe(4)
     expect(bl.lca(5, 6)).toBe(2)
   })
+
+  it('should check ancestor relationship', () => {
+    const adj = [[1, 2], [3, 4], [5], [], [], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.isAncestor(0, 1)).toBe(true)
+    expect(bl.isAncestor(0, 3)).toBe(true)
+    expect(bl.isAncestor(1, 3)).toBe(true)
+  })
+
+  it('should get depth of nodes', () => {
+    const adj = [[1], [2], []]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.getDepth(0)).toBe(0)
+    expect(bl.getDepth(1)).toBe(1)
+    expect(bl.getDepth(2)).toBe(2)
+  })
 })

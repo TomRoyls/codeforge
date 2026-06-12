@@ -468,4 +468,17 @@ describe('DancingLinks', () => {
     const solutions = dlx.solve()
     expect(solutions.length).toBe(2)
   })
+
+  it('should handle empty matrix', () => {
+    const dl = new DancingLinks(0)
+    const solutions = dl.solve()
+    expect(solutions).toEqual([[]])
+  })
+
+  it('should handle single constraint single row', () => {
+    const dl = new DancingLinks(1)
+    dl.addRow(0, [0])
+    const solutions = dl.solve()
+    expect(solutions.length).toBe(1)
+  })
 })

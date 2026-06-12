@@ -235,4 +235,22 @@ describe('ModularArithmetic', () => {
   it('nCr C(1,1)', () => {
     expect(ModularArithmetic.nCr(1, 1, 1000000007)).toBe(1)
   })
+
+  it('should compute modInverse', () => {
+    const inv = ModularArithmetic.modInverse(3, 7)
+    expect(inv).not.toBeNull()
+    expect((3 * inv!) % 7).toBe(1)
+  })
+
+  it('should compute modDiv', () => {
+    const result = ModularArithmetic.modDiv(6, 3, 7)
+    expect(result).not.toBeNull()
+    expect(result).toBe(2)
+  })
+
+  it('should compute extended GCD', () => {
+    const { gcd, x, y } = ModularArithmetic.extendedGcd(12, 8)
+    expect(gcd).toBe(4)
+    expect(12 * x + 8 * y).toBe(4)
+  })
 })

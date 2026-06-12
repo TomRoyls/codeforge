@@ -318,4 +318,14 @@ describe('KahnTopologicalSort', () => {
     expect(sort.toString()).toContain('order.length=0')
     expect(sort.toString()).toContain('hasCycle=false')
   })
+
+  it('should detect DAG correctly', () => {
+    const adj = [[1], [2], []]
+    expect(KahnTopologicalSort.isDAG(adj)).toBe(true)
+  })
+
+  it('should detect non-DAG', () => {
+    const adj = [[1], [0]]
+    expect(KahnTopologicalSort.isDAG(adj)).toBe(false)
+  })
 })

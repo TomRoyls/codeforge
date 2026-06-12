@@ -434,4 +434,22 @@ describe('BiconnectedComponents', () => {
     const comps = bc.findComponents()
     expect(comps.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('should find articulation points in simple graph', () => {
+    const bc = new BiconnectedComponents(4)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(2, 3)
+    const articulation = bc.findArticulationPoints()
+    expect(articulation.length).toBeGreaterThan(0)
+  })
+
+  it('should handle triangle graph with no articulation points', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    bc.addEdge(0, 2)
+    const articulation = bc.findArticulationPoints()
+    expect(articulation.length).toBe(0)
+  })
 })

@@ -229,4 +229,14 @@ describe('CountingInversions', () => {
   it('handles negative and positive mix', () => {
     expect(CountingInversions.count([-5, 10, -3, 8, -1])).toBe(CountingInversions.countBruteForce([-5, 10, -3, 8, -1]))
   })
+
+  it('should return sorted array with count', () => {
+    const { sorted, inversions } = CountingInversions.sortedWithCount([3, 1, 2])
+    expect(sorted).toEqual([1, 2, 3])
+    expect(inversions).toBe(2)
+  })
+
+  it('should handle single element', () => {
+    expect(CountingInversions.count([42])).toBe(0)
+  })
 })

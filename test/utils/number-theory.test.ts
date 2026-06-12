@@ -259,4 +259,18 @@ describe('NumberTheory', () => {
     expect(NumberTheory.divisorCount(100)).toBe(9)
     expect(NumberTheory.divisorCount(60)).toBe(12)
   })
+
+  it('should compute euler totient', () => {
+    expect(NumberTheory.eulerTotient(1)).toBe(1)
+    expect(NumberTheory.eulerTotient(10)).toBe(4)
+  })
+
+  it('should compute mobius function', () => {
+    expect(NumberTheory.mobius(1)).toBe(1)
+    expect(NumberTheory.mobius(4)).toBe(0)
+  })
+
+  it('should compute fibonacci', () => {
+    expect(NumberTheory.fibonacci(10)).toBe(55n)
+  })
 })

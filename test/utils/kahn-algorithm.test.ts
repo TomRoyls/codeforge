@@ -381,4 +381,16 @@ describe('KahnAlgorithm', () => {
       expect(result!.indexOf(4)).toBeLessThan(result!.indexOf(5))
     })
   })
+
+  it('should detect cycle in graph', () => {
+    const ka = new KahnAlgorithm(2)
+    ka.addEdge(0, 1)
+    ka.addEdge(1, 0)
+    expect(ka.sort()).toBeNull()
+  })
+
+  it('should handle single node', () => {
+    const ka = new KahnAlgorithm(1)
+    expect(ka.sort()).toEqual([0])
+  })
 })

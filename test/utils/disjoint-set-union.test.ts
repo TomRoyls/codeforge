@@ -435,4 +435,19 @@ describe('DisjointSetUnion - edge cases', () => {
     }
     expect(dsu.rank(0)).toBeLessThan(15)
   })
+
+  it('should reset DSU', () => {
+    const dsu = new DisjointSetUnion(3)
+    dsu.union(0, 1)
+    expect(dsu.connected(0, 1)).toBe(true)
+    dsu.reset()
+    expect(dsu.connected(0, 1)).toBe(false)
+  })
+
+  it('should report set size', () => {
+    const dsu = new DisjointSetUnion(4)
+    dsu.union(0, 1)
+    dsu.union(0, 2)
+    expect(dsu.setSize(0)).toBe(3)
+  })
 })

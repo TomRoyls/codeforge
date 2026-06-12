@@ -222,4 +222,13 @@ describe('LongestIncreasingSubsequence', () => {
   it('length handles array with single negative number', () => {
     expect(LongestIncreasingSubsequence.length([-42])).toBe(1)
   })
+
+  it('should count number of LIS', () => {
+    const count = LongestIncreasingSubsequence.countLIS([1, 3, 5, 4, 7])
+    expect(count).toBeGreaterThanOrEqual(1)
+  })
+
+  it('should find non-decreasing length', () => {
+    expect(LongestIncreasingSubsequence.lengthNonDecreasing([1, 2, 2, 3])).toBe(4)
+  })
 })

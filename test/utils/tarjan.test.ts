@@ -394,4 +394,15 @@ describe('TarjanSCC', () => {
     const sccs = TarjanSCC.findSCCs(adj)
     expect(sccs[0]!.length).toBe(new Set(sccs[0]!).size)
   })
+
+  it('should count SCCs', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]], [2, []]])
+    expect(TarjanSCC.countSCCs(adj)).toBe(2)
+  })
+
+  it('should build condensation graph', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]], [2, [0]]])
+    const cond = TarjanSCC.condensation(adj)
+    expect(cond.size).toBeGreaterThanOrEqual(1)
+  })
 })

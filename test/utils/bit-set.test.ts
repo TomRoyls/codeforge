@@ -398,4 +398,21 @@ describe('BitSet - large scale', () => {
     bs.flipRange(2, 6)
     expect(bs.toArray()).toEqual([])
   })
+
+  it('should flip bits', () => {
+    const bs = new BitSet(8)
+    bs.set(3)
+    expect(bs.get(3)).toBe(1)
+    bs.flip(3)
+    expect(bs.get(3)).toBe(0)
+  })
+
+  it('should set and clear ranges', () => {
+    const bs = new BitSet(16)
+    bs.setRange(2, 6)
+    expect(bs.get(2)).toBe(1)
+    expect(bs.get(4)).toBe(1)
+    bs.clearRange(2, 6)
+    expect(bs.get(4)).toBe(0)
+  })
 })

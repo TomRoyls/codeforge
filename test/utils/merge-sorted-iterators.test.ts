@@ -377,4 +377,19 @@ describe('MergeSortedIterators', () => {
     const result = merger.toArray()
     expect(result).toEqual(['A', 'B', 'C', 'D', 'E', 'F'])
   })
+
+  it('should handle empty iterators', () => {
+    const iter = new MergeSortedIterators<string>([
+      [][Symbol.iterator](),
+    ])
+    expect(iter.next().done).toBe(true)
+  })
+
+  it('should handle single element iterators', () => {
+    const iter = new MergeSortedIterators<number>([
+      [1][Symbol.iterator](),
+      [2][Symbol.iterator](),
+    ])
+    expect(iter.toArray()).toEqual([1, 2])
+  })
 })

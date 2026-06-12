@@ -412,4 +412,22 @@ describe('ChordalCheck', () => {
     cc.addEdge(3, 6)
     expect(cc.isChordal()).toBe(true)
   })
+
+  it('should detect non-chordal graph (cycle of 4)', () => {
+    const cc = new ChordalCheck(4)
+    cc.addEdge(0, 1)
+    cc.addEdge(1, 2)
+    cc.addEdge(2, 3)
+    cc.addEdge(3, 0)
+    expect(cc.isChordal()).toBe(false)
+  })
+
+  it('should confirm tree is chordal', () => {
+    const cc = new ChordalCheck(5)
+    cc.addEdge(0, 1)
+    cc.addEdge(0, 2)
+    cc.addEdge(1, 3)
+    cc.addEdge(1, 4)
+    expect(cc.isChordal()).toBe(true)
+  })
 })

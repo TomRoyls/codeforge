@@ -535,4 +535,17 @@ describe('listFiles - additional', () => {
     const files = await listFiles(TEMP_DIR, 'test.*')
     expect(files.length).toBe(2)
   })
+
+  it('should check directory existence', async () => {
+    const exists = await directoryExists(tmpdir())
+    expect(exists).toBe(true)
+  })
+
+  it('should ensure directory exists', async () => {
+    const dir = join(tmpdir(), 'fs-test-ensure-' + Date.now())
+    await ensureDirectory(dir)
+    const exists = await directoryExists(dir)
+    expect(exists).toBe(true)
+    rmSync(dir, { recursive: true, force: true })
+  })
 })

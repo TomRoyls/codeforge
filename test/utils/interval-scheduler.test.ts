@@ -431,4 +431,14 @@ describe('greedyIntervalSchedule', () => {
     const result = greedyIntervalSchedule(intervals)
     expect(result.length).toBe(3)
   })
+
+  it('should handle greedy scheduling with empty input', () => {
+    const result = greedyIntervalSchedule([])
+    expect(result).toEqual([])
+  })
+
+  it('should handle single interval', () => {
+    const result = greedyIntervalSchedule([{ start: 0, end: 5 }])
+    expect(result.length).toBe(1)
+  })
 })

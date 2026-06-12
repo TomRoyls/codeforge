@@ -386,4 +386,18 @@ describe('Centroid2D', () => {
     expect(c.x).toBeCloseTo(6.25, 5)
     expect(c.y).toBeCloseTo(2.5, 5)
   })
+
+  it('should compute weighted centroid', () => {
+    const points = [{ x: 0, y: 0, weight: 1 }, { x: 4, y: 4, weight: 3 }]
+    const c = Centroid2D.weightedCentroid(points)
+    expect(c.x).toBeCloseTo(3)
+    expect(c.y).toBeCloseTo(3)
+  })
+
+  it('should compute polygon centroid for triangle', () => {
+    const vertices = [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 0, y: 4 }]
+    const c = Centroid2D.polygonCentroid(vertices)
+    expect(c.x).toBeCloseTo(4 / 3, 3)
+    expect(c.y).toBeCloseTo(4 / 3, 3)
+  })
 })

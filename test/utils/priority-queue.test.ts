@@ -511,4 +511,20 @@ describe('PriorityQueue - size consistency', () => {
       expect(pq.size).toBe(i - 1)
     }
   })
+
+  it('should handle clear operation', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(1)
+    pq.enqueue(2)
+    pq.clear()
+    expect(pq.size).toBe(0)
+  })
+
+  it('should peek without removing', () => {
+    const pq = new PriorityQueue<number>()
+    pq.enqueue(5)
+    pq.enqueue(3)
+    expect(pq.peek()).toBe(3)
+    expect(pq.size).toBe(2)
+  })
 })

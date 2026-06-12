@@ -366,4 +366,15 @@ describe('PersistentQueue', () => {
     expect(arr1).not.toBe(arr2)
     expect(arr1).toEqual(arr2)
   })
+
+  it('should peek at front element', () => {
+    const q = PersistentQueue.create<number>()
+    const q2 = q.enqueue(42)
+    expect(q2.peek()).toBe(42)
+  })
+
+  it('should return undefined peek on empty', () => {
+    const q = PersistentQueue.create<number>()
+    expect(q.peek()).toBeUndefined()
+  })
 })

@@ -395,4 +395,29 @@ describe('TopK - edge cases', () => {
     expect(tk.has(obj1)).toBe(true)
     expect(tk.has(obj2)).toBe(true)
   })
+
+  it('should clear all elements', () => {
+    const tk = new TopK<string>(10)
+    tk.add('a', 5)
+    tk.add('b', 3)
+    tk.clear()
+    expect(tk.has('a')).toBe(false)
+  })
+
+  it('should remove elements', () => {
+    const tk = new TopK<string>(10)
+    tk.add('a', 5)
+    expect(tk.remove('a')).toBe(true)
+    expect(tk.has('a')).toBe(false)
+  })
+
+  it('should merge two TopK instances', () => {
+    const tk1 = new TopK<string>(10)
+    tk1.add('a', 5)
+    const tk2 = new TopK<string>(10)
+    tk2.add('b', 3)
+    const merged = tk1.merge(tk2)
+    expect(merged.has('a')).toBe(true)
+    expect(merged.has('b')).toBe(true)
+  })
 })

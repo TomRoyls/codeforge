@@ -447,4 +447,20 @@ describe('FloydWarshall', () => {
     const dist = FloydWarshall.allPairsShortestPath(edges, 3)
     expect(dist[0]![2]).toBe(0.003)
   })
+
+  it('should detect negative cycles', () => {
+    const edges = [{ from: 0, to: 1, weight: -1 }, { from: 1, to: 0, weight: -1 }]
+    expect(FloydWarshall.hasNegativeCycle(edges, 2)).toBe(true)
+  })
+
+  it('should compute transitive closure', () => {
+    const edges = [{ from: 0, to: 1, weight: 1 }, { from: 1, to: 2, weight: 1 }]
+    const tc = FloydWarshall.transitiveClosure(edges, 3)
+    expect(tc[0]![2]).toBe(true)
+  })
+
+  it('should handle single node', () => {
+    const dist = FloydWarshall.allPairsShortestPath([], 1)
+    expect(dist[0]![0]).toBe(0)
+  })
 })
