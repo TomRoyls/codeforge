@@ -432,4 +432,25 @@ describe('DifferenceArray2D', () => {
     expect(flat[1]).toBe(5)
     expect(flat[5]).toBe(10)
   })
+
+  it('addPoint adds to single cell', () => {
+    const da = new DifferenceArray2D(3, 3)
+    da.addPoint(1, 1, 7)
+    const grid = da.buildGrid()
+    expect(grid[1]![1]).toBe(7)
+  })
+
+  it('clone produces equal object', () => {
+    const da = new DifferenceArray2D(2, 2)
+    da.add(0, 0, 1, 1, 5)
+    const c = da.clone()
+    expect(c.buildGrid()).toEqual(da.buildGrid())
+  })
+
+  it('buildGrid returns correct dimensions', () => {
+    const da = new DifferenceArray2D(3, 4)
+    const grid = da.buildGrid()
+    expect(grid.length).toBe(3)
+    expect(grid[0]!.length).toBe(4)
+  })
 })

@@ -588,4 +588,22 @@ describe('Dijkstra', () => {
     const { distances } = Dijkstra.shortestPath(adj, 0)
     expect(distances.get(0)).toBe(0)
   })
+
+  it('reconstructPath returns null for unreachable', () => {
+    const parents = new Map<number, number | null>([[0, null], [1, null]])
+    expect(Dijkstra.reconstructPath(parents, 0, 1)).toBeNull()
+  })
+
+  it('reconstructPath for direct connection', () => {
+    const parents = new Map<number, number | null>([[0, null], [1, 0]])
+    expect(Dijkstra.reconstructPath(parents, 0, 1)).toEqual([0, 1])
+  })
+
+  it('handles self-loop', () => {
+    const adj = new Map<number, { to: number; weight: number }[]>([
+      [0, [{ to: 0, weight: 1 }]],
+    ])
+    const { distances } = Dijkstra.shortestPath(adj, 0)
+    expect(distances.get(0)).toBe(0)
+  })
 })

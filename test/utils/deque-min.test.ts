@@ -466,4 +466,25 @@ describe('DequeMin', () => {
     dq.popFront()
     expect(dq.min).toBe(3)
   })
+
+  it('toArray returns elements in order', () => {
+    const dq = new DequeMin()
+    dq.pushBack(5)
+    dq.pushBack(3)
+    dq.pushBack(7)
+    expect(dq.toArray()).toEqual([5, 3, 7])
+  })
+
+  it('popFront removes first element', () => {
+    const dq = new DequeMin()
+    dq.pushBack(10)
+    dq.pushBack(20)
+    expect(dq.popFront()).toBe(10)
+    expect(dq.min).toBe(20)
+  })
+
+  it('empty deque has undefined min', () => {
+    const dq = new DequeMin()
+    expect(dq.min).toBeUndefined()
+  })
 })

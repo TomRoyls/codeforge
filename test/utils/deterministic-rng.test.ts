@@ -394,4 +394,27 @@ describe('DeterministicRng', () => {
     const rng = new DeterministicRng(42)
     expect(rng.nextBool(0)).toBe(false)
   })
+
+  it('nextInt stays in range', () => {
+    const rng = new DeterministicRNG(42)
+    for (let i = 0; i < 100; i++) {
+      const v = rng.nextInt(5, 10)
+      expect(v).toBeGreaterThanOrEqual(5)
+      expect(v).toBeLessThanOrEqual(10)
+    }
+  })
+
+  it('nextGaussian returns finite number', () => {
+    const rng = new DeterministicRNG()
+    const v = rng.nextGaussian()
+    expect(isFinite(v)).toBe(true)
+  })
+
+  it('reset changes sequence', () => {
+    const rng = new DeterministicRNG(1)
+    const a = rng.next()
+    rng.reset(1)
+    const b = rng.next()
+    expect(a).toBe(b)
+  })
 })

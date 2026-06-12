@@ -417,4 +417,23 @@ describe('DifferenceArray', () => {
     da.rangeAdd(1, 3, 3)
     expect(da.get(1)).toBe(8)
   })
+
+  it('pointAdd adds value to single index', () => {
+    const da = new DifferenceArray(5)
+    da.pointAdd(2, 10)
+    expect(da.get(2)).toBe(10)
+    expect(da.get(1)).toBe(0)
+  })
+
+  it('clone produces equal object', () => {
+    const da = new DifferenceArray(3)
+    da.rangeAdd(0, 2, 5)
+    const c = da.clone()
+    expect(c.toArray()).toEqual(da.toArray())
+  })
+
+  it('toString returns string', () => {
+    const da = new DifferenceArray(3)
+    expect(typeof da.toString()).toBe('string')
+  })
 })

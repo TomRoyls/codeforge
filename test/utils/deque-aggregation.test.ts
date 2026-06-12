@@ -499,4 +499,25 @@ describe('DequeAggregation', () => {
     deque.popFront()
     expect(deque.aggregate()).toBe(5)
   })
+
+  it('isEmpty is true for new deque', () => {
+    const deque = new DequeAggregation<number>((a, b) => a + b)
+    expect(deque.isEmpty()).toBe(true)
+  })
+
+  it('clear empties the deque', () => {
+    const deque = new DequeAggregation<number>((a, b) => Math.max(a, b))
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.clear()
+    expect(deque.isEmpty()).toBe(true)
+  })
+
+  it('aggregate with max function', () => {
+    const deque = new DequeAggregation<number>((a, b) => Math.max(a, b))
+    deque.pushBack(3)
+    deque.pushBack(7)
+    deque.pushBack(1)
+    expect(deque.aggregate()).toBe(7)
+  })
 })

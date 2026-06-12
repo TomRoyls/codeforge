@@ -465,4 +465,24 @@ describe('DisjointSetUnion - edge cases', () => {
     expect(dsu.union(0, 1)).toBe(true)
     expect(dsu.union(0, 1)).toBe(false)
   })
+
+  it('setSize returns component size', () => {
+    const dsu = new DisjointSetUnion(4)
+    dsu.union(0, 1)
+    dsu.union(2, 3)
+    expect(dsu.setSize(0)).toBe(2)
+    expect(dsu.setSize(2)).toBe(2)
+  })
+
+  it('reset clears all unions', () => {
+    const dsu = new DisjointSetUnion(3)
+    dsu.union(0, 1)
+    dsu.reset()
+    expect(dsu.connected(0, 1)).toBe(false)
+  })
+
+  it('toString returns string', () => {
+    const dsu = new DisjointSetUnion(3)
+    expect(typeof dsu.toString()).toBe('string')
+  })
 })

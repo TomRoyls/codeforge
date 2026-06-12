@@ -366,4 +366,24 @@ describe('EulerianPath', () => {
     const adj = [[1], [0, 2], [1]]
     expect(EulerianPath.hasEulerianPath(adj)).toBe(true)
   })
+
+  it('clone produces equal instance', () => {
+    const adj = [[1], [0, 2], [1]]
+    const ep = new EulerianPath(adj)
+    expect(ep.clone().equals(ep)).toBe(true)
+  })
+
+  it('toString returns string', () => {
+    const adj = [[1], [0]]
+    const ep = new EulerianPath(adj)
+    expect(typeof ep.toString()).toBe('string')
+  })
+
+  it('toJSON returns structured data', () => {
+    const adj = [[1], [0]]
+    const ep = new EulerianPath(adj)
+    const json = ep.toJSON() as any
+    expect(json).toHaveProperty('path')
+    expect(json).toHaveProperty('isEulerian')
+  })
 })

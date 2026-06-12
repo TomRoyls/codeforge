@@ -502,4 +502,30 @@ describe('BloomierFilter stats additional', () => {
     expect(bf.has('a')).toBe(true)
     expect(bf.get('a')).toBe(1)
   })
+
+  it('toString includes size and capacity', () => {
+    const entries = new Map<string, number>()
+    entries.set('k1', 10); entries.set('k2', 20)
+    const bf = BloomierFilter.create(entries)
+    const str = bf.toString()
+    expect(str).toContain('size=2')
+    expect(str).toContain('capacity=')
+    expect(str).toContain('hashCount=')
+  })
+
+  it('toJSON keys array matches original entries', () => {
+    const entries = new Map<string, number>()
+    entries.set('alpha', 1); entries.set('beta', 2)
+    const bf = BloomierFilter.create(entries)
+    const json = bf.toJSON() as { keys: string[] }
+    expect(json.keys).toContain('alpha')
+    expect(json.keys).toContain('beta')
+  })
+
+  it('capacity is always >= size for non-empty filter', () => {
+    const entries = new Map<string, number>()
+    for (let i = 0; i < 20; i++) entries.set(`key${i}`, i)
+    const bf = BloomierFilter.create(entries)
+    expect(bf.capacity).toBeGreaterThanOrEqual(bf.size)
+  })
 })

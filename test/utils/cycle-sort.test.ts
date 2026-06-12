@@ -298,4 +298,20 @@ describe('CycleSort', () => {
     const result = CycleSort.sort([1, 2, 3])
     expect(result.sorted).toEqual([1, 2, 3])
   })
+
+  it('sortInPlace modifies array and returns writes', () => {
+    const arr = [3, 1, 2]
+    const writes = CycleSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3])
+    expect(writes).toBeGreaterThanOrEqual(0)
+  })
+
+  it('minWrites returns 0 for sorted array', () => {
+    expect(CycleSort.minWrites(0)).toBe(0)
+  })
+
+  it('sort handles duplicates', () => {
+    const result = CycleSort.sort([2, 1, 2, 1])
+    expect(result.sorted).toEqual([1, 1, 2, 2])
+  })
 })

@@ -416,4 +416,26 @@ describe('BoundedDeque', () => {
     expect(dq.front()).toBeUndefined()
     expect(dq.size).toBe(1)
   })
+
+  it('toJSON matches toArray output', () => {
+    const dq = new BoundedDeque<number>(3)
+    dq.pushBack(10); dq.pushBack(20)
+    expect(dq.toJSON()).toEqual(dq.toArray())
+  })
+
+  it('clear preserves evictions count', () => {
+    const dq = new BoundedDeque<number>(2)
+    dq.pushBack(1); dq.pushBack(2); dq.pushBack(3)
+    expect(dq.evictions).toBeGreaterThan(0)
+    dq.clear()
+    expect(dq.evictions).toBeGreaterThan(0)
+  })
+
+  it('equals returns false when evictions differ', () => {
+    const dq1 = new BoundedDeque<number>(2)
+    const dq2 = new BoundedDeque<number>(2)
+    dq1.pushBack(1); dq1.pushBack(2); dq1.pushBack(3)
+    dq2.pushBack(2); dq2.pushBack(3)
+    expect(dq1.equals(dq2)).toBe(false)
+  })
 })

@@ -496,4 +496,25 @@ describe('DancingLinks', () => {
     const solutions = dl.solve()
     expect(solutions.length).toBe(1)
   })
+
+  it('empty matrix has no solutions', () => {
+    const dl = new DancingLinks(3)
+    expect(dl.solve()).toEqual([])
+  })
+
+  it('single row single column exact cover', () => {
+    const dl = new DancingLinks(1)
+    dl.addRow(0, [0])
+    expect(dl.solve()).toEqual([[0]])
+  })
+
+  it('overlapping rows both needed', () => {
+    const dl = new DancingLinks(3)
+    dl.addRow(0, [0, 1])
+    dl.addRow(1, [1, 2])
+    dl.addRow(2, [0])
+    dl.addRow(3, [2])
+    const solutions = dl.solve()
+    expect(solutions.length).toBeGreaterThan(0)
+  })
 })

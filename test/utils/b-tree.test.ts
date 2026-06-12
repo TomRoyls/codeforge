@@ -477,4 +477,26 @@ describe('BTree height', () => {
       expect(tree1.equals(tree2)).toBe(false)
     })
   })
+
+  it('contains returns false after delete', () => {
+    const tree = new BTree<number, string>()
+    tree.insert(1, 'a'); tree.insert(2, 'b')
+    tree.delete(1)
+    expect(tree.contains(1)).toBe(false)
+    expect(tree.contains(2)).toBe(true)
+  })
+
+  it('min and max return undefined after clear', () => {
+    const tree = new BTree<number, string>()
+    tree.insert(1, 'a'); tree.insert(2, 'b')
+    tree.clear()
+    expect(tree.min).toBeUndefined()
+    expect(tree.max).toBeUndefined()
+  })
+
+  it('height increases with more elements', () => {
+    const tree = new BTree<number, number>(2)
+    for (let i = 0; i < 100; i++) tree.insert(i, i)
+    expect(tree.height).toBeGreaterThan(0)
+  })
 })

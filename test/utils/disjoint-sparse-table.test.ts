@@ -331,4 +331,19 @@ describe('DisjointSparseTable', () => {
     expect(copy.query(0, 2)).toBe('xyz')
     expect(copy.toJSON()).toEqual(['x', 'y', 'z'])
   })
+
+  it('clone produces equal table', () => {
+    const t = new DisjointSparseTable([5, 3, 7, 1], (a, b) => Math.min(a, b))
+    expect(t.clone().equals(t)).toBe(true)
+  })
+
+  it('query for single element returns that element', () => {
+    const t = new DisjointSparseTable([10, 20, 30], (a, b) => a + b)
+    expect(t.query(1, 1)).toBe(20)
+  })
+
+  it('toString returns string', () => {
+    const t = new DisjointSparseTable([1, 2], (a, b) => a + b)
+    expect(typeof t.toString()).toBe('string')
+  })
 })

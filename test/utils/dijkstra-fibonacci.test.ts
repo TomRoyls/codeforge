@@ -539,4 +539,25 @@ describe('DijkstraFibonacci', () => {
     const dist = DijkstraFibonacci.shortestPath(edges, 0, 5)
     expect(dist[4]).toBe(5)
   })
+
+  it('handles single node', () => {
+    const { dist } = DijkstraFibonacci.shortestPath([], 0, 1)
+    expect(dist[0]).toBe(0)
+  })
+
+  it('unreachable nodes have Infinity distance', () => {
+    const edges = [{ from: 0, to: 1, weight: 5 }]
+    const { dist } = DijkstraFibonacci.shortestPath(edges, 0, 3)
+    expect(dist[2]).toBe(Infinity)
+  })
+
+  it('returns correct prev array', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 2 },
+    ]
+    const { prev } = DijkstraFibonacci.shortestPath(edges, 0, 3)
+    expect(prev[1]).toBe(0)
+    expect(prev[2]).toBe(1)
+  })
 })

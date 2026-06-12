@@ -405,4 +405,24 @@ describe('ARCCache', () => {
     cache.set('d', 4)
     expect(cache.has('a')).toBe(true)
   })
+
+  it('Capacity getter returns constructor value', () => {
+    const cache = new ARCCache<string, number>(42)
+    expect(cache.Capacity).toBe(42)
+  })
+
+  it('entries returns correct pairs after clear and repopulate', () => {
+    const cache = new ARCCache<string, number>(5)
+    cache.set('x', 10); cache.set('y', 20)
+    cache.clear()
+    cache.set('a', 1); cache.set('b', 2)
+    const ent = cache.entries()
+    expect(ent).toEqual([['a', 1], ['b', 2]])
+  })
+
+  it('equals returns false when compared with null', () => {
+    const cache = new ARCCache<string, number>(5)
+    cache.set('a', 1)
+    expect(cache.equals(null)).toBe(false)
+  })
 })

@@ -371,4 +371,28 @@ describe('FenwickTree - large updates', () => {
     ft.update(2, 3000000)
     expect(ft.query(2)).toBe(6000000)
   })
+
+  it('reset clears all values', () => {
+    const ft = new FenwickTree(5)
+    ft.update(0, 10)
+    ft.update(2, 5)
+    ft.reset()
+    expect(ft.query(4)).toBe(0)
+  })
+
+  it('pointQuery returns value at index', () => {
+    const ft = new FenwickTree(5)
+    ft.update(2, 7)
+    expect(ft.pointQuery(2)).toBe(7)
+    expect(ft.pointQuery(0)).toBe(0)
+  })
+
+  it('toArray returns prefix sums', () => {
+    const ft = new FenwickTree(3)
+    ft.update(0, 1)
+    ft.update(1, 2)
+    ft.update(2, 3)
+    const arr = ft.toArray()
+    expect(arr.length).toBe(3)
+  })
 })

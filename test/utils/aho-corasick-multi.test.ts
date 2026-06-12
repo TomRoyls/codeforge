@@ -357,4 +357,27 @@ describe('AhoCorasickMulti', () => {
     const ac2 = new AhoCorasickMulti(['a'])
     expect(ac1.equals(ac2)).toBe(false)
   })
+
+  it('toJSON contains goto transitions and output arrays', () => {
+    const ac = new AhoCorasickMulti(['ab', 'bc'])
+    const json = ac.toJSON() as { goto: unknown[]; output: unknown[]; fail: unknown[]; stateCount: number }
+    expect(json.goto).toBeInstanceOf(Array)
+    expect(json.output).toBeInstanceOf(Array)
+    expect(json.fail).toBeInstanceOf(Array)
+    expect(json.stateCount).toBeGreaterThan(1)
+    expect(json.goto.length).toBe(json.stateCount)
+    expect(json.output.length).toBe(json.stateCount)
+    expect(json.fail.length).toBe(json.stateCount)
+  })
+
+  it('search with empty patterns array returns empty map for any text', () => {
+    const ac = new AhoCorasickMulti([])
+    const result = ac.search('anything at all')
+    expect(result.size).toBe(0)
+  })
+
+  it('equals returns false when comparing with null', () => {
+    const ac = new AhoCorasickMulti(['test'])
+    expect(ac.equals(null)).toBe(false)
+  })
 })

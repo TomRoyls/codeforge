@@ -398,4 +398,20 @@ describe('EdmondsBlossom', () => {
     eb.addEdge(4, 5)
     expect(eb.maxMatchingSize()).toBe(3)
   })
+
+  it('single node has matching 0', () => {
+    const eb = new EdmondsBlossom(1)
+    expect(eb.maxMatchingSize()).toBe(0)
+  })
+
+  it('two nodes with edge has matching 1', () => {
+    const eb = new EdmondsBlossom(2)
+    eb.addEdge(0, 1)
+    expect(eb.maxMatchingSize()).toBe(1)
+  })
+
+  it('disconnected nodes have matching 0', () => {
+    const eb = new EdmondsBlossom(4)
+    expect(eb.maxMatchingSize()).toBe(0)
+  })
 })

@@ -426,4 +426,27 @@ describe('CycleSpace', () => {
     for (let i = 0; i < 8; i++) cs.addEdge(i, (i + 1) % 8)
     expect(cs.cycleSpaceDimension()).toBe(1)
   })
+
+  it('isTree returns true for tree', () => {
+    const cs = new CycleSpace(4)
+    cs.addEdge(0, 1)
+    cs.addEdge(1, 2)
+    cs.addEdge(2, 3)
+    expect(cs.isTree()).toBe(true)
+  })
+
+  it('isTree returns false with cycle', () => {
+    const cs = new CycleSpace(3)
+    cs.addEdge(0, 1)
+    cs.addEdge(1, 2)
+    cs.addEdge(0, 2)
+    expect(cs.isTree()).toBe(false)
+  })
+
+  it('findCycles returns empty for tree', () => {
+    const cs = new CycleSpace(3)
+    cs.addEdge(0, 1)
+    cs.addEdge(1, 2)
+    expect(cs.findCycles().length).toBe(0)
+  })
 })

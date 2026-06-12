@@ -472,4 +472,31 @@ describe('BiconnectedComponents', () => {
     const articulation = bc.findArticulationPoints()
     expect(articulation).toContain(0)
   })
+
+  it('findComponents returns empty for completely isolated nodes', () => {
+    const bc = new BiconnectedComponents(3)
+    expect(bc.findComponents()).toEqual([])
+  })
+
+  it('toJSON adj lists contain correct neighbors', () => {
+    const bc = new BiconnectedComponents(3)
+    bc.addEdge(0, 1)
+    bc.addEdge(1, 2)
+    const json = bc.toJSON() as { adj: number[][] }
+    expect(json.adj[0]).toContain(1)
+    expect(json.adj[1]).toContain(0)
+    expect(json.adj[1]).toContain(2)
+    expect(json.adj[2]).toContain(1)
+  })
+
+  it('findArticulationPoints in binary tree identifies internal nodes', () => {
+    const bc = new BiconnectedComponents(7)
+    bc.addEdge(0, 1); bc.addEdge(0, 2)
+    bc.addEdge(1, 3); bc.addEdge(1, 4)
+    bc.addEdge(2, 5); bc.addEdge(2, 6)
+    const ap = bc.findArticulationPoints()
+    expect(ap).toContain(0)
+    expect(ap).toContain(1)
+    expect(ap).toContain(2)
+  })
 })

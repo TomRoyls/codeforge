@@ -451,4 +451,27 @@ describe('EventSink', () => {
     sink.emit('click', { x: 0, y: 0 })
     expect(count).toBe(1)
   })
+
+  it('listenerCount returns correct count', () => {
+    const sink = new EventSink<{ click: number }>()
+    const unsub1 = sink.on('click', () => {})
+    sink.on('click', () => {})
+    expect(sink.listenerCount('click')).toBe(2)
+    unsub1()
+    expect(sink.listenerCount('click')).toBe(1)
+  })
+
+  it('removeAllListeners clears all for event', () => {
+    const sink = new EventSink<{ a: void; b: void }>()
+    sink.on('a', () => {})
+    sink.on('b', () => {})
+    sink.removeAllListeners('a')
+    expect(sink.listenerCount('a')).toBe(0)
+    expect(sink.listenerCount('b')).toBe(1)
+  })
+
+  it('clone produces equal instance', () => {
+    const sink = new EventSink<{ x: number }>()
+    expect(sink.clone().equals(sink)).toBe(true)
+  })
 })

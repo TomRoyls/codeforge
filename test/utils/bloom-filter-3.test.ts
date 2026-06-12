@@ -507,4 +507,21 @@ describe('BloomFilter3', () => {
     expect(filter.partitionCount).toBe(1)
     expect(filter.partitionCount).toBeLessThan(partitionsBefore)
   })
+
+  it('fillRatio is 0 for new empty filter', () => {
+    const filter = new BloomFilter3()
+    expect(filter.fillRatio).toBe(0)
+  })
+
+  it('capacity increases when partitions are added', () => {
+    const filter = new BloomFilter3({ initialCapacity: 5, maxFillRatio: 0.3 })
+    const cap1 = filter.capacity
+    for (let i = 0; i < 20; i++) filter.add(`item${i}`)
+    expect(filter.capacity).toBeGreaterThanOrEqual(cap1)
+  })
+
+  it('equals returns false for null', () => {
+    const filter = new BloomFilter3()
+    expect(filter.equals(null)).toBe(false)
+  })
 })

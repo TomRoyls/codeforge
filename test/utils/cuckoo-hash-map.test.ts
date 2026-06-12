@@ -453,4 +453,27 @@ describe('CuckooHashMap', () => {
     expect(map.get(2)).toBe('two')
     expect(map.get(3)).toBeUndefined()
   })
+
+  it('forEach iterates all entries', () => {
+    const map = new CuckooHashMap<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    const entries: string[] = []
+    map.forEach((v, k) => entries.push(v))
+    expect(entries.sort()).toEqual(['a', 'b'])
+  })
+
+  it('keys returns all keys', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('x', 1)
+    map.set('y', 2)
+    expect(map.keys().sort()).toEqual(['x', 'y'])
+  })
+
+  it('values returns all values', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('a', 10)
+    map.set('b', 20)
+    expect(map.values().sort()).toEqual([10, 20])
+  })
 })

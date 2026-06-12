@@ -304,4 +304,17 @@ describe('DeBruijnSequence', () => {
       expect(doubled).toContain(sub)
     }
   })
+
+  it('generateBinary for n=1 returns 01', () => {
+    expect(DeBruijnSequence.generateBinary(1)).toBe('01')
+  })
+
+  it('containsAllSubstrings validates generated sequence', () => {
+    const seq = DeBruijnSequence.generate(2, 3)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 2, 3)).toBe(true)
+  })
+
+  it('generate for k=3 n=1 has length 3', () => {
+    expect(DeBruijnSequence.generate(3, 1).length).toBe(3)
+  })
 })

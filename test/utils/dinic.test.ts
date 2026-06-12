@@ -467,4 +467,23 @@ describe('DinicMaxFlow', () => {
     const edges = [{ from: 0, to: 1, capacity: 5 }]
     expect(DinicMaxFlow.maxFlow(edges, 0, 2, 3)).toBe(0)
   })
+
+  it('handles source equals sink', () => {
+    expect(DinicMaxFlow.maxFlow([], 0, 0, 1)).toBe(0)
+  })
+
+  it('single edge flow', () => {
+    const edges = [{ from: 0, to: 1, capacity: 10 }]
+    expect(DinicMaxFlow.maxFlow(edges, 0, 1, 2)).toBe(10)
+  })
+
+  it('multiple paths to sink', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 0, to: 2, capacity: 5 },
+      { from: 1, to: 3, capacity: 5 },
+      { from: 2, to: 3, capacity: 5 },
+    ]
+    expect(DinicMaxFlow.maxFlow(edges, 0, 3, 4)).toBe(10)
+  })
 })

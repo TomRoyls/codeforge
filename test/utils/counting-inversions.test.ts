@@ -247,4 +247,17 @@ describe('CountingInversions', () => {
   it('should handle reverse sorted array', () => {
     expect(CountingInversions.count([5, 4, 3, 2, 1])).toBe(10)
   })
+
+  it('countBruteForce matches count for small array', () => {
+    const arr = [3, 1, 4, 1, 5]
+    expect(CountingInversions.count(arr)).toBe(CountingInversions.countBruteForce(arr))
+  })
+
+  it('count for sorted array is 0', () => {
+    expect(CountingInversions.count([1, 2, 3, 4, 5])).toBe(0)
+  })
+
+  it('count for single element is 0', () => {
+    expect(CountingInversions.count([42])).toBe(0)
+  })
 })
