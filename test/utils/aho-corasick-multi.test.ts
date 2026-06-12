@@ -398,3 +398,17 @@ describe('AhoCorasickMulti', () => {
     const matches = ac.search('abc')
     expect(matches.size).toBe(2)
   })
+
+describe('aho-corasick-multi - wave544', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

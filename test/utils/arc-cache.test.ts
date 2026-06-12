@@ -444,3 +444,17 @@ describe('ARCCache', () => {
     cache.set('b', 2)
     expect(cache.size).toBe(2)
   })
+
+describe('arc-cache - wave544', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

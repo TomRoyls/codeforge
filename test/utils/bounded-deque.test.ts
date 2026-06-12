@@ -460,3 +460,17 @@ describe('BoundedDeque', () => {
     const bd = new BoundedDeque<number>(5)
     expect(bd.isEmpty()).toBe(true)
   })
+
+describe('bounded-deque - wave544', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

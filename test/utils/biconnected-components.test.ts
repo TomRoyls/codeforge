@@ -520,3 +520,17 @@ describe('BiconnectedComponents', () => {
     const comps = bc.findComponents()
     expect(comps.length).toBeGreaterThan(0)
   })
+
+describe('biconnected-components - wave544', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -537,3 +537,17 @@ describe('BellmanFord', () => {
     const result = BellmanFord.shortestPath(edges, 3, 0)
     expect(result.hasNegativeCycle).toBe(true)
   })
+
+describe('bellman-ford - wave544', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

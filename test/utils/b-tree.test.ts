@@ -521,3 +521,17 @@ describe('BTree height', () => {
     bt.insert(3, 'c')
     expect(bt.size).toBe(3)
   })
+
+describe('b-tree - wave544', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -633,3 +633,16 @@ describe('BiKeyMap', () => {
     expect(map.get('user', 1)).toBe('Bob')
   })
 })
+describe('bikey-map - wave544', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

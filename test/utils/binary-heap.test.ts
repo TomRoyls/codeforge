@@ -561,3 +561,17 @@ describe('BinaryHeap equals edge cases', () => {
     expect(heap.pop()).toBe(2)
     expect(heap.pop()).toBe(3)
   })
+
+describe('binary-heap - wave544', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

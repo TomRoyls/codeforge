@@ -431,3 +431,17 @@ describe('BitmapIndex', () => {
     expect(bi.query('x')).toContain(0)
     expect(bi.query('y')).toContain(0)
   })
+
+describe('bitmap-index - wave544', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

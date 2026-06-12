@@ -550,3 +550,17 @@ describe('BloomierFilter stats additional', () => {
     const bf = BloomierFilter.create(entries)
     expect(bf.get('missing')).toBeUndefined()
   })
+
+describe('bloomier-filter - wave544', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

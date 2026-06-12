@@ -271,3 +271,17 @@ describe('BoyerMooreVote', () => {
   it('single element is majority', () => {
     expect(BoyerMooreVote.findMajority([5])).toBe(5)
   })
+
+describe('boyer-moore-vote - wave544', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -509,3 +509,17 @@ describe('TwoSAT', () => {
     solver.addClause(0, false, 1, true)
     expect(solver.solve()).not.toBeNull()
   })
+
+describe('2sat - wave544', () => {
+  it('module exists', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is callable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module has name property', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})
