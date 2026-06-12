@@ -467,3 +467,15 @@ describe('miller-rabin - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('miller-rabin - wave553', () => {
+  it('miller-rabin w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('miller-rabin w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

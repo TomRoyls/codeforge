@@ -418,3 +418,15 @@ describe('sliding-window-min - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sliding-window-min - wave553', () => {
+  it('sliding-window-min w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-min w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-min w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

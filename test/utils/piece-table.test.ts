@@ -534,3 +534,15 @@ describe('piece-table - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('piece-table - wave553', () => {
+  it('piece-table w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('piece-table w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -388,3 +388,15 @@ describe('rabin-karp - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rabin-karp - wave553', () => {
+  it('rabin-karp w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

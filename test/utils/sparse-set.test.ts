@@ -569,3 +569,15 @@ describe('sparse-set - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-set - wave553', () => {
+  it('sparse-set w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

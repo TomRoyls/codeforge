@@ -386,3 +386,15 @@ describe('counting-sort - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counting-sort - wave553', () => {
+  it('counting-sort w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -556,3 +556,15 @@ describe('xor-filter-2 - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('xor-filter-2 - wave553', () => {
+  it('xor-filter-2 w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter-2 w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-filter-2 w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

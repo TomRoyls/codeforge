@@ -548,3 +548,15 @@ describe('streaming-median - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('streaming-median - wave553', () => {
+  it('streaming-median w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-median w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

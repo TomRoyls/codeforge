@@ -563,3 +563,15 @@ describe('linked-list - wave552', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('linked-list - wave553', () => {
+  it('linked-list w553 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w553 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w553 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

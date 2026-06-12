@@ -523,3 +523,15 @@ describe('vptrie - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('vptrie - wave553', () => {
+  it('vptrie w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vptrie w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

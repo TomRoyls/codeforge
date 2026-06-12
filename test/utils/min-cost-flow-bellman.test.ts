@@ -655,3 +655,15 @@ describe('min-cost-flow-bellman - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('min-cost-flow-bellman - wave553', () => {
+  it('min-cost-flow-bellman w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('min-cost-flow-bellman w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

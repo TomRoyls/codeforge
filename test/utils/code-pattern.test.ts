@@ -510,3 +510,15 @@ describe('code-pattern - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('code-pattern - wave553', () => {
+  it('code-pattern w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

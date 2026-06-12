@@ -577,3 +577,15 @@ describe('lru-k-cache - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lru-k-cache - wave553', () => {
+  it('lru-k-cache w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-k-cache w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-k-cache w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

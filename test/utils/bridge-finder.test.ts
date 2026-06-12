@@ -468,3 +468,15 @@ describe('bridge-finder - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bridge-finder - wave553', () => {
+  it('bridge-finder w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

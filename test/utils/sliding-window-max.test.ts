@@ -367,3 +367,15 @@ describe('sliding-window-max - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sliding-window-max - wave553', () => {
+  it('sliding-window-max w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-max w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

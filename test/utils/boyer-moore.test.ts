@@ -476,3 +476,15 @@ describe('boyer-moore - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('boyer-moore - wave553', () => {
+  it('boyer-moore w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

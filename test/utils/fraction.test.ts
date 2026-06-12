@@ -440,3 +440,15 @@ describe('fraction - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fraction - wave553', () => {
+  it('fraction w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fraction w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fraction w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

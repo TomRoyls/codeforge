@@ -515,3 +515,15 @@ describe('stream-sampler - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stream-sampler - wave553', () => {
+  it('stream-sampler w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

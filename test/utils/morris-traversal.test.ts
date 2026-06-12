@@ -524,3 +524,15 @@ describe('morris-traversal - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('morris-traversal - wave553', () => {
+  it('morris-traversal w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

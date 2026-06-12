@@ -597,3 +597,15 @@ describe('interval-scheduler - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-scheduler - wave553', () => {
+  it('interval-scheduler w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

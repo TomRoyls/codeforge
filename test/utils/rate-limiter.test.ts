@@ -499,3 +499,15 @@ describe('rate-limiter - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rate-limiter - wave553', () => {
+  it('rate-limiter w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

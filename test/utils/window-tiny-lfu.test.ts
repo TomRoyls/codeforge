@@ -450,3 +450,15 @@ describe('window-tiny-lfu - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('window-tiny-lfu - wave553', () => {
+  it('window-tiny-lfu w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

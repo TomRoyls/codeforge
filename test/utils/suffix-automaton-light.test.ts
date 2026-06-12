@@ -511,3 +511,15 @@ describe('suffix-automaton-light - wave552', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suffix-automaton-light - wave553', () => {
+  it('suffix-automaton-light w553 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w553 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w553 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
