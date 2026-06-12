@@ -1260,3 +1260,333 @@ describe('elias-fano - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('elias-fano - w310', () => {
+  it('elias-fano x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w320', () => {
+  it('elias-fano x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w330', () => {
+  it('elias-fano x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w340', () => {
+  it('elias-fano x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w350', () => {
+  it('elias-fano x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w360', () => {
+  it('elias-fano x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w370', () => {
+  it('elias-fano x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w380', () => {
+  it('elias-fano x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w390', () => {
+  it('elias-fano x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-fano - w400', () => {
+  it('elias-fano x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

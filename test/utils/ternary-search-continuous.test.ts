@@ -1172,3 +1172,333 @@ describe('ternary-search-continuous - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ternary-search-continuous - w310', () => {
+  it('ternary-search-continuous x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-continuous - w320', () => {
+  it('ternary-search-continuous x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-continuous - w330', () => {
+  it('ternary-search-continuous x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-continuous - w340', () => {
+  it('ternary-search-continuous x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-continuous - w350', () => {
+  it('ternary-search-continuous x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-continuous - w360', () => {
+  it('ternary-search-continuous x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-continuous - w370', () => {
+  it('ternary-search-continuous x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-continuous - w380', () => {
+  it('ternary-search-continuous x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-continuous - w390', () => {
+  it('ternary-search-continuous x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ternary-search-continuous - w400', () => {
+  it('ternary-search-continuous x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

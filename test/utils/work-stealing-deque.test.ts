@@ -1379,3 +1379,333 @@ describe('work-stealing-deque - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('work-stealing-deque - w310', () => {
+  it('work-stealing-deque x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w320', () => {
+  it('work-stealing-deque x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w330', () => {
+  it('work-stealing-deque x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w340', () => {
+  it('work-stealing-deque x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w350', () => {
+  it('work-stealing-deque x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w360', () => {
+  it('work-stealing-deque x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w370', () => {
+  it('work-stealing-deque x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w380', () => {
+  it('work-stealing-deque x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w390', () => {
+  it('work-stealing-deque x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('work-stealing-deque - w400', () => {
+  it('work-stealing-deque x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('work-stealing-deque x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

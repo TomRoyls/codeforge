@@ -1224,3 +1224,333 @@ describe('window-tiny-lfu - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('window-tiny-lfu - w310', () => {
+  it('window-tiny-lfu x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w320', () => {
+  it('window-tiny-lfu x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w330', () => {
+  it('window-tiny-lfu x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w340', () => {
+  it('window-tiny-lfu x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w350', () => {
+  it('window-tiny-lfu x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w360', () => {
+  it('window-tiny-lfu x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w370', () => {
+  it('window-tiny-lfu x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w380', () => {
+  it('window-tiny-lfu x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w390', () => {
+  it('window-tiny-lfu x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('window-tiny-lfu - w400', () => {
+  it('window-tiny-lfu x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

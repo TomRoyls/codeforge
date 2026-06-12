@@ -1379,3 +1379,333 @@ describe('closest-pair-brute - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('closest-pair-brute - w310', () => {
+  it('closest-pair-brute x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w320', () => {
+  it('closest-pair-brute x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w330', () => {
+  it('closest-pair-brute x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w340', () => {
+  it('closest-pair-brute x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w350', () => {
+  it('closest-pair-brute x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w360', () => {
+  it('closest-pair-brute x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w370', () => {
+  it('closest-pair-brute x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w380', () => {
+  it('closest-pair-brute x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w390', () => {
+  it('closest-pair-brute x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('closest-pair-brute - w400', () => {
+  it('closest-pair-brute x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair-brute x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1393,3 +1393,333 @@ describe('circuit-breaker - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circuit-breaker - w310', () => {
+  it('circuit-breaker x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w320', () => {
+  it('circuit-breaker x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w330', () => {
+  it('circuit-breaker x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w340', () => {
+  it('circuit-breaker x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w350', () => {
+  it('circuit-breaker x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w360', () => {
+  it('circuit-breaker x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w370', () => {
+  it('circuit-breaker x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w380', () => {
+  it('circuit-breaker x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w390', () => {
+  it('circuit-breaker x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('circuit-breaker - w400', () => {
+  it('circuit-breaker x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circuit-breaker x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

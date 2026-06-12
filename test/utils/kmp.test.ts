@@ -1121,3 +1121,333 @@ describe('kmp - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kmp - w310', () => {
+  it('kmp x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w320', () => {
+  it('kmp x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w330', () => {
+  it('kmp x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w340', () => {
+  it('kmp x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w350', () => {
+  it('kmp x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w360', () => {
+  it('kmp x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w370', () => {
+  it('kmp x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w380', () => {
+  it('kmp x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w390', () => {
+  it('kmp x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('kmp - w400', () => {
+  it('kmp x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

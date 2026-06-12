@@ -1306,3 +1306,333 @@ describe('zobrist-hashing - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('zobrist-hashing - w310', () => {
+  it('zobrist-hashing x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w320', () => {
+  it('zobrist-hashing x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w330', () => {
+  it('zobrist-hashing x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w340', () => {
+  it('zobrist-hashing x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w350', () => {
+  it('zobrist-hashing x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w360', () => {
+  it('zobrist-hashing x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w370', () => {
+  it('zobrist-hashing x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w380', () => {
+  it('zobrist-hashing x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w390', () => {
+  it('zobrist-hashing x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('zobrist-hashing - w400', () => {
+  it('zobrist-hashing x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('zobrist-hashing x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

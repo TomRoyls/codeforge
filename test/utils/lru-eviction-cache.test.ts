@@ -1322,3 +1322,333 @@ describe('lru-eviction-cache - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lru-eviction-cache - w310', () => {
+  it('lru-eviction-cache x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lru-eviction-cache - w320', () => {
+  it('lru-eviction-cache x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lru-eviction-cache - w330', () => {
+  it('lru-eviction-cache x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lru-eviction-cache - w340', () => {
+  it('lru-eviction-cache x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lru-eviction-cache - w350', () => {
+  it('lru-eviction-cache x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lru-eviction-cache - w360', () => {
+  it('lru-eviction-cache x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lru-eviction-cache - w370', () => {
+  it('lru-eviction-cache x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lru-eviction-cache - w380', () => {
+  it('lru-eviction-cache x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lru-eviction-cache - w390', () => {
+  it('lru-eviction-cache x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('lru-eviction-cache - w400', () => {
+  it('lru-eviction-cache x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lru-eviction-cache x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

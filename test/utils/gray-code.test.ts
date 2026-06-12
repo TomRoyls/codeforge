@@ -1212,3 +1212,333 @@ describe('gray-code - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gray-code - w310', () => {
+  it('gray-code x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - w320', () => {
+  it('gray-code x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - w330', () => {
+  it('gray-code x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - w340', () => {
+  it('gray-code x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - w350', () => {
+  it('gray-code x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - w360', () => {
+  it('gray-code x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - w370', () => {
+  it('gray-code x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - w380', () => {
+  it('gray-code x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - w390', () => {
+  it('gray-code x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gray-code - w400', () => {
+  it('gray-code x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gray-code x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

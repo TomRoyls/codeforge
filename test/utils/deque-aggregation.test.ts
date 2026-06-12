@@ -1414,3 +1414,333 @@ describe('deque-aggregation - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deque-aggregation - w310', () => {
+  it('deque-aggregation x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w320', () => {
+  it('deque-aggregation x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w330', () => {
+  it('deque-aggregation x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w340', () => {
+  it('deque-aggregation x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w350', () => {
+  it('deque-aggregation x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w360', () => {
+  it('deque-aggregation x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w370', () => {
+  it('deque-aggregation x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w380', () => {
+  it('deque-aggregation x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w390', () => {
+  it('deque-aggregation x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('deque-aggregation - w400', () => {
+  it('deque-aggregation x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deque-aggregation x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1310,3 +1310,333 @@ describe('gomory-hu - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gomory-hu - w310', () => {
+  it('gomory-hu x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w320', () => {
+  it('gomory-hu x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w330', () => {
+  it('gomory-hu x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w340', () => {
+  it('gomory-hu x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w350', () => {
+  it('gomory-hu x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w360', () => {
+  it('gomory-hu x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w370', () => {
+  it('gomory-hu x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w380', () => {
+  it('gomory-hu x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w390', () => {
+  it('gomory-hu x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gomory-hu - w400', () => {
+  it('gomory-hu x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

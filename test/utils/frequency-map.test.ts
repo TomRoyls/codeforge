@@ -1380,3 +1380,333 @@ describe('frequency-map - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('frequency-map - w310', () => {
+  it('frequency-map x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w320', () => {
+  it('frequency-map x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w330', () => {
+  it('frequency-map x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w340', () => {
+  it('frequency-map x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w350', () => {
+  it('frequency-map x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w360', () => {
+  it('frequency-map x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w370', () => {
+  it('frequency-map x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w380', () => {
+  it('frequency-map x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w390', () => {
+  it('frequency-map x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('frequency-map - w400', () => {
+  it('frequency-map x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

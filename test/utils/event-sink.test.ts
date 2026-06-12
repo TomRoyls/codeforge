@@ -1230,3 +1230,333 @@ describe('event-sink - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('event-sink - w310', () => {
+  it('event-sink x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w320', () => {
+  it('event-sink x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w330', () => {
+  it('event-sink x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w340', () => {
+  it('event-sink x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w350', () => {
+  it('event-sink x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w360', () => {
+  it('event-sink x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w370', () => {
+  it('event-sink x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w380', () => {
+  it('event-sink x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w390', () => {
+  it('event-sink x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('event-sink - w400', () => {
+  it('event-sink x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

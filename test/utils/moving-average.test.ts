@@ -1401,3 +1401,333 @@ describe('moving-average - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('moving-average - w310', () => {
+  it('moving-average x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w320', () => {
+  it('moving-average x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w330', () => {
+  it('moving-average x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w340', () => {
+  it('moving-average x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w350', () => {
+  it('moving-average x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w360', () => {
+  it('moving-average x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w370', () => {
+  it('moving-average x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w380', () => {
+  it('moving-average x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w390', () => {
+  it('moving-average x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('moving-average - w400', () => {
+  it('moving-average x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('moving-average x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

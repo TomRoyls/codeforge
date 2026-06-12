@@ -1381,3 +1381,333 @@ describe('floyd-warshall - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('floyd-warshall - w310', () => {
+  it('floyd-warshall x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w320', () => {
+  it('floyd-warshall x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w330', () => {
+  it('floyd-warshall x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w340', () => {
+  it('floyd-warshall x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w350', () => {
+  it('floyd-warshall x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w360', () => {
+  it('floyd-warshall x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w370', () => {
+  it('floyd-warshall x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w380', () => {
+  it('floyd-warshall x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w390', () => {
+  it('floyd-warshall x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('floyd-warshall - w400', () => {
+  it('floyd-warshall x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

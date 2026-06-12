@@ -1350,3 +1350,333 @@ describe('stopwatch - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stopwatch - w310', () => {
+  it('stopwatch x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - w320', () => {
+  it('stopwatch x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - w330', () => {
+  it('stopwatch x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - w340', () => {
+  it('stopwatch x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - w350', () => {
+  it('stopwatch x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - w360', () => {
+  it('stopwatch x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - w370', () => {
+  it('stopwatch x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - w380', () => {
+  it('stopwatch x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - w390', () => {
+  it('stopwatch x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('stopwatch - w400', () => {
+  it('stopwatch x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

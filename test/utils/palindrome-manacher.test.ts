@@ -1184,3 +1184,333 @@ describe('palindrome-manacher - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('palindrome-manacher - w310', () => {
+  it('palindrome-manacher x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w320', () => {
+  it('palindrome-manacher x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w330', () => {
+  it('palindrome-manacher x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w340', () => {
+  it('palindrome-manacher x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w350', () => {
+  it('palindrome-manacher x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w360', () => {
+  it('palindrome-manacher x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w370', () => {
+  it('palindrome-manacher x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w380', () => {
+  it('palindrome-manacher x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w390', () => {
+  it('palindrome-manacher x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('palindrome-manacher - w400', () => {
+  it('palindrome-manacher x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

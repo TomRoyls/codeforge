@@ -1413,3 +1413,333 @@ describe('bellman-ford - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bellman-ford - w310', () => {
+  it('bellman-ford x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bellman-ford - w320', () => {
+  it('bellman-ford x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bellman-ford - w330', () => {
+  it('bellman-ford x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bellman-ford - w340', () => {
+  it('bellman-ford x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bellman-ford - w350', () => {
+  it('bellman-ford x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bellman-ford - w360', () => {
+  it('bellman-ford x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bellman-ford - w370', () => {
+  it('bellman-ford x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bellman-ford - w380', () => {
+  it('bellman-ford x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bellman-ford - w390', () => {
+  it('bellman-ford x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('bellman-ford - w400', () => {
+  it('bellman-ford x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

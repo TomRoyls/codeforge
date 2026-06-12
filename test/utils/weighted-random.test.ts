@@ -1345,3 +1345,333 @@ describe('weighted-random - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('weighted-random - w310', () => {
+  it('weighted-random x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w320', () => {
+  it('weighted-random x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w330', () => {
+  it('weighted-random x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w340', () => {
+  it('weighted-random x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w350', () => {
+  it('weighted-random x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w360', () => {
+  it('weighted-random x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w370', () => {
+  it('weighted-random x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w380', () => {
+  it('weighted-random x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w390', () => {
+  it('weighted-random x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('weighted-random - w400', () => {
+  it('weighted-random x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('weighted-random x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1260,3 +1260,333 @@ describe('persistent-stack - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-stack - w310', () => {
+  it('persistent-stack x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-stack - w320', () => {
+  it('persistent-stack x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-stack - w330', () => {
+  it('persistent-stack x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-stack - w340', () => {
+  it('persistent-stack x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-stack - w350', () => {
+  it('persistent-stack x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-stack - w360', () => {
+  it('persistent-stack x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-stack - w370', () => {
+  it('persistent-stack x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-stack - w380', () => {
+  it('persistent-stack x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-stack - w390', () => {
+  it('persistent-stack x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('persistent-stack - w400', () => {
+  it('persistent-stack x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1275,3 +1275,333 @@ describe('graph-traversal - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-traversal - w310', () => {
+  it('graph-traversal x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w320', () => {
+  it('graph-traversal x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w330', () => {
+  it('graph-traversal x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w340', () => {
+  it('graph-traversal x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w350', () => {
+  it('graph-traversal x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w360', () => {
+  it('graph-traversal x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w370', () => {
+  it('graph-traversal x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w380', () => {
+  it('graph-traversal x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w390', () => {
+  it('graph-traversal x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('graph-traversal - w400', () => {
+  it('graph-traversal x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

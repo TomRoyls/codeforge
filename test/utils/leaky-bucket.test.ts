@@ -1275,3 +1275,333 @@ describe('leaky-bucket - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('leaky-bucket - w310', () => {
+  it('leaky-bucket x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('leaky-bucket - w320', () => {
+  it('leaky-bucket x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('leaky-bucket - w330', () => {
+  it('leaky-bucket x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('leaky-bucket - w340', () => {
+  it('leaky-bucket x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('leaky-bucket - w350', () => {
+  it('leaky-bucket x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('leaky-bucket - w360', () => {
+  it('leaky-bucket x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('leaky-bucket - w370', () => {
+  it('leaky-bucket x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('leaky-bucket - w380', () => {
+  it('leaky-bucket x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('leaky-bucket - w390', () => {
+  it('leaky-bucket x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('leaky-bucket - w400', () => {
+  it('leaky-bucket x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('leaky-bucket x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

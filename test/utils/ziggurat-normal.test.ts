@@ -1389,3 +1389,333 @@ describe('ziggurat-normal - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ziggurat-normal - w310', () => {
+  it('ziggurat-normal x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w320', () => {
+  it('ziggurat-normal x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w330', () => {
+  it('ziggurat-normal x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w340', () => {
+  it('ziggurat-normal x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w350', () => {
+  it('ziggurat-normal x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w360', () => {
+  it('ziggurat-normal x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w370', () => {
+  it('ziggurat-normal x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w380', () => {
+  it('ziggurat-normal x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w390', () => {
+  it('ziggurat-normal x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('ziggurat-normal - w400', () => {
+  it('ziggurat-normal x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

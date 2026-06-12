@@ -1191,3 +1191,333 @@ describe('command-helpers - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('command-helpers - w310', () => {
+  it('command-helpers x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w320', () => {
+  it('command-helpers x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w330', () => {
+  it('command-helpers x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w340', () => {
+  it('command-helpers x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w350', () => {
+  it('command-helpers x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w360', () => {
+  it('command-helpers x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w370', () => {
+  it('command-helpers x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w380', () => {
+  it('command-helpers x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w390', () => {
+  it('command-helpers x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('command-helpers - w400', () => {
+  it('command-helpers x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('command-helpers x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

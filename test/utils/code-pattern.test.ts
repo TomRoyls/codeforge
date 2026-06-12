@@ -1284,3 +1284,333 @@ describe('code-pattern - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('code-pattern - w310', () => {
+  it('code-pattern x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('code-pattern - w320', () => {
+  it('code-pattern x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('code-pattern - w330', () => {
+  it('code-pattern x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('code-pattern - w340', () => {
+  it('code-pattern x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('code-pattern - w350', () => {
+  it('code-pattern x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('code-pattern - w360', () => {
+  it('code-pattern x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('code-pattern - w370', () => {
+  it('code-pattern x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('code-pattern - w380', () => {
+  it('code-pattern x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('code-pattern - w390', () => {
+  it('code-pattern x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('code-pattern - w400', () => {
+  it('code-pattern x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

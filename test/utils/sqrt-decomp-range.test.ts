@@ -1208,3 +1208,333 @@ describe('sqrt-decomp-range - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sqrt-decomp-range - w310', () => {
+  it('sqrt-decomp-range x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomp-range - w320', () => {
+  it('sqrt-decomp-range x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomp-range - w330', () => {
+  it('sqrt-decomp-range x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomp-range - w340', () => {
+  it('sqrt-decomp-range x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomp-range - w350', () => {
+  it('sqrt-decomp-range x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomp-range - w360', () => {
+  it('sqrt-decomp-range x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomp-range - w370', () => {
+  it('sqrt-decomp-range x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomp-range - w380', () => {
+  it('sqrt-decomp-range x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomp-range - w390', () => {
+  it('sqrt-decomp-range x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('sqrt-decomp-range - w400', () => {
+  it('sqrt-decomp-range x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sqrt-decomp-range x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

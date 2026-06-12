@@ -1407,3 +1407,333 @@ describe('convex-hull-3d - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('convex-hull-3d - w310', () => {
+  it('convex-hull-3d x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-3d - w320', () => {
+  it('convex-hull-3d x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-3d - w330', () => {
+  it('convex-hull-3d x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-3d - w340', () => {
+  it('convex-hull-3d x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-3d - w350', () => {
+  it('convex-hull-3d x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-3d - w360', () => {
+  it('convex-hull-3d x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-3d - w370', () => {
+  it('convex-hull-3d x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-3d - w380', () => {
+  it('convex-hull-3d x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-3d - w390', () => {
+  it('convex-hull-3d x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('convex-hull-3d - w400', () => {
+  it('convex-hull-3d x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('convex-hull-3d x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

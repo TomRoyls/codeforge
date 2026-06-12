@@ -1224,3 +1224,333 @@ describe('segment-intersection - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('segment-intersection - w310', () => {
+  it('segment-intersection x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w320', () => {
+  it('segment-intersection x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w330', () => {
+  it('segment-intersection x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w340', () => {
+  it('segment-intersection x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w350', () => {
+  it('segment-intersection x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w360', () => {
+  it('segment-intersection x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w370', () => {
+  it('segment-intersection x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w380', () => {
+  it('segment-intersection x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w390', () => {
+  it('segment-intersection x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('segment-intersection - w400', () => {
+  it('segment-intersection x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

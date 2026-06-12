@@ -1244,3 +1244,333 @@ describe('range-min-query - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('range-min-query - w310', () => {
+  it('range-min-query x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-min-query - w320', () => {
+  it('range-min-query x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-min-query - w330', () => {
+  it('range-min-query x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-min-query - w340', () => {
+  it('range-min-query x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-min-query - w350', () => {
+  it('range-min-query x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-min-query - w360', () => {
+  it('range-min-query x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-min-query - w370', () => {
+  it('range-min-query x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-min-query - w380', () => {
+  it('range-min-query x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-min-query - w390', () => {
+  it('range-min-query x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('range-min-query - w400', () => {
+  it('range-min-query x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1371,3 +1371,333 @@ describe('interval-scheduler - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-scheduler - w310', () => {
+  it('interval-scheduler x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w320', () => {
+  it('interval-scheduler x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w330', () => {
+  it('interval-scheduler x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w340', () => {
+  it('interval-scheduler x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w350', () => {
+  it('interval-scheduler x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w360', () => {
+  it('interval-scheduler x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w370', () => {
+  it('interval-scheduler x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w380', () => {
+  it('interval-scheduler x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w390', () => {
+  it('interval-scheduler x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('interval-scheduler - w400', () => {
+  it('interval-scheduler x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-scheduler x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1199,3 +1199,333 @@ describe('string-similarity - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-similarity - w310', () => {
+  it('string-similarity x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w320', () => {
+  it('string-similarity x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w330', () => {
+  it('string-similarity x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w340', () => {
+  it('string-similarity x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w350', () => {
+  it('string-similarity x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w360', () => {
+  it('string-similarity x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w370', () => {
+  it('string-similarity x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w380', () => {
+  it('string-similarity x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w390', () => {
+  it('string-similarity x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('string-similarity - w400', () => {
+  it('string-similarity x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-similarity x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

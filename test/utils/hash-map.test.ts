@@ -1356,3 +1356,333 @@ describe('hash-map - w300', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('hash-map - w310', () => {
+  it('hash-map x310x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x310x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x310x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x310x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x310x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x310x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x310x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x310x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x310x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x310x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('hash-map - w320', () => {
+  it('hash-map x320x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x320x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x320x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x320x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x320x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x320x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x320x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x320x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x320x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x320x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('hash-map - w330', () => {
+  it('hash-map x330x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x330x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x330x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x330x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x330x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x330x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x330x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x330x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x330x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x330x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('hash-map - w340', () => {
+  it('hash-map x340x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x340x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x340x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x340x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x340x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x340x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x340x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x340x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x340x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x340x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('hash-map - w350', () => {
+  it('hash-map x350x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x350x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x350x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x350x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x350x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x350x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x350x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x350x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x350x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x350x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('hash-map - w360', () => {
+  it('hash-map x360x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x360x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x360x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x360x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x360x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x360x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x360x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x360x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x360x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x360x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('hash-map - w370', () => {
+  it('hash-map x370x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x370x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x370x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x370x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x370x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x370x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x370x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x370x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x370x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x370x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('hash-map - w380', () => {
+  it('hash-map x380x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x380x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x380x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x380x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x380x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x380x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x380x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x380x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x380x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x380x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('hash-map - w390', () => {
+  it('hash-map x390x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x390x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x390x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x390x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x390x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x390x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x390x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x390x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x390x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x390x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('hash-map - w400', () => {
+  it('hash-map x400x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x400x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x400x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x400x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x400x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x400x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x400x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x400x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x400x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map x400x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

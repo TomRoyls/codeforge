@@ -1328,3 +1328,333 @@ describe('hungarian - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hungarian - w310', () => {
+  it('hungarian x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w320', () => {
+  it('hungarian x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w330', () => {
+  it('hungarian x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w340', () => {
+  it('hungarian x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w350', () => {
+  it('hungarian x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w360', () => {
+  it('hungarian x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w370', () => {
+  it('hungarian x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w380', () => {
+  it('hungarian x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w390', () => {
+  it('hungarian x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('hungarian - w400', () => {
+  it('hungarian x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

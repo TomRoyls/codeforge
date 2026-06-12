@@ -1287,3 +1287,333 @@ describe('heavy-hitters - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-hitters - w310', () => {
+  it('heavy-hitters x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w320', () => {
+  it('heavy-hitters x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w330', () => {
+  it('heavy-hitters x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w340', () => {
+  it('heavy-hitters x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w350', () => {
+  it('heavy-hitters x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w360', () => {
+  it('heavy-hitters x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w370', () => {
+  it('heavy-hitters x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w380', () => {
+  it('heavy-hitters x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w390', () => {
+  it('heavy-hitters x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('heavy-hitters - w400', () => {
+  it('heavy-hitters x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

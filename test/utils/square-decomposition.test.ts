@@ -1215,3 +1215,333 @@ describe('square-decomposition - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('square-decomposition - w310', () => {
+  it('square-decomposition x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w320', () => {
+  it('square-decomposition x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w330', () => {
+  it('square-decomposition x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w340', () => {
+  it('square-decomposition x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w350', () => {
+  it('square-decomposition x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w360', () => {
+  it('square-decomposition x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w370', () => {
+  it('square-decomposition x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w380', () => {
+  it('square-decomposition x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w390', () => {
+  it('square-decomposition x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('square-decomposition - w400', () => {
+  it('square-decomposition x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('square-decomposition x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

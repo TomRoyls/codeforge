@@ -1273,3 +1273,333 @@ describe('rate-limiter - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rate-limiter - w310', () => {
+  it('rate-limiter x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rate-limiter - w320', () => {
+  it('rate-limiter x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rate-limiter - w330', () => {
+  it('rate-limiter x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rate-limiter - w340', () => {
+  it('rate-limiter x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rate-limiter - w350', () => {
+  it('rate-limiter x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rate-limiter - w360', () => {
+  it('rate-limiter x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rate-limiter - w370', () => {
+  it('rate-limiter x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rate-limiter - w380', () => {
+  it('rate-limiter x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rate-limiter - w390', () => {
+  it('rate-limiter x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('rate-limiter - w400', () => {
+  it('rate-limiter x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rate-limiter x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

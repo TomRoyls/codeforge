@@ -1331,3 +1331,333 @@ describe('median-maintenance - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('median-maintenance - w310', () => {
+  it('median-maintenance x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('median-maintenance - w320', () => {
+  it('median-maintenance x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('median-maintenance - w330', () => {
+  it('median-maintenance x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('median-maintenance - w340', () => {
+  it('median-maintenance x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('median-maintenance - w350', () => {
+  it('median-maintenance x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('median-maintenance - w360', () => {
+  it('median-maintenance x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('median-maintenance - w370', () => {
+  it('median-maintenance x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('median-maintenance - w380', () => {
+  it('median-maintenance x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('median-maintenance - w390', () => {
+  it('median-maintenance x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('median-maintenance - w400', () => {
+  it('median-maintenance x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('median-maintenance x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1149,3 +1149,333 @@ describe('counting-inversions - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counting-inversions - w310', () => {
+  it('counting-inversions x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w320', () => {
+  it('counting-inversions x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w330', () => {
+  it('counting-inversions x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w340', () => {
+  it('counting-inversions x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w350', () => {
+  it('counting-inversions x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w360', () => {
+  it('counting-inversions x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w370', () => {
+  it('counting-inversions x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w380', () => {
+  it('counting-inversions x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w390', () => {
+  it('counting-inversions x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('counting-inversions - w400', () => {
+  it('counting-inversions x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-inversions x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

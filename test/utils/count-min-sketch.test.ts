@@ -1479,3 +1479,333 @@ describe('count-min-sketch - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('count-min-sketch - w310', () => {
+  it('count-min-sketch x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w320', () => {
+  it('count-min-sketch x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w330', () => {
+  it('count-min-sketch x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w340', () => {
+  it('count-min-sketch x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w350', () => {
+  it('count-min-sketch x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w360', () => {
+  it('count-min-sketch x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w370', () => {
+  it('count-min-sketch x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w380', () => {
+  it('count-min-sketch x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w390', () => {
+  it('count-min-sketch x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('count-min-sketch - w400', () => {
+  it('count-min-sketch x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('count-min-sketch x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

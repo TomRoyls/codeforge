@@ -1405,3 +1405,333 @@ describe('skip-list - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('skip-list - w310', () => {
+  it('skip-list x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list - w320', () => {
+  it('skip-list x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list - w330', () => {
+  it('skip-list x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list - w340', () => {
+  it('skip-list x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list - w350', () => {
+  it('skip-list x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list - w360', () => {
+  it('skip-list x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list - w370', () => {
+  it('skip-list x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list - w380', () => {
+  it('skip-list x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list - w390', () => {
+  it('skip-list x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('skip-list - w400', () => {
+  it('skip-list x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

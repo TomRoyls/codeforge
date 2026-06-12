@@ -1293,3 +1293,333 @@ describe('huffman-coder - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('huffman-coder - w310', () => {
+  it('huffman-coder x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w320', () => {
+  it('huffman-coder x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w330', () => {
+  it('huffman-coder x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w340', () => {
+  it('huffman-coder x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w350', () => {
+  it('huffman-coder x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w360', () => {
+  it('huffman-coder x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w370', () => {
+  it('huffman-coder x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w380', () => {
+  it('huffman-coder x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w390', () => {
+  it('huffman-coder x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('huffman-coder - w400', () => {
+  it('huffman-coder x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

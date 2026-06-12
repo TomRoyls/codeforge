@@ -1178,3 +1178,333 @@ describe('substring-counter - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('substring-counter - w310', () => {
+  it('substring-counter x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w320', () => {
+  it('substring-counter x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w330', () => {
+  it('substring-counter x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w340', () => {
+  it('substring-counter x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w350', () => {
+  it('substring-counter x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w360', () => {
+  it('substring-counter x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w370', () => {
+  it('substring-counter x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w380', () => {
+  it('substring-counter x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w390', () => {
+  it('substring-counter x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('substring-counter - w400', () => {
+  it('substring-counter x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('substring-counter x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

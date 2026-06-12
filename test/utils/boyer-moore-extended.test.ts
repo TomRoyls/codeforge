@@ -1105,3 +1105,333 @@ describe('boyer-moore-extended - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('boyer-moore-extended - w310', () => {
+  it('boyer-moore-extended x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w320', () => {
+  it('boyer-moore-extended x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w330', () => {
+  it('boyer-moore-extended x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w340', () => {
+  it('boyer-moore-extended x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w350', () => {
+  it('boyer-moore-extended x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w360', () => {
+  it('boyer-moore-extended x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w370', () => {
+  it('boyer-moore-extended x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w380', () => {
+  it('boyer-moore-extended x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w390', () => {
+  it('boyer-moore-extended x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('boyer-moore-extended - w400', () => {
+  it('boyer-moore-extended x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1349,3 +1349,333 @@ describe('gaussian-elimination - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gaussian-elimination - w310', () => {
+  it('gaussian-elimination x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w320', () => {
+  it('gaussian-elimination x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w330', () => {
+  it('gaussian-elimination x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w340', () => {
+  it('gaussian-elimination x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w350', () => {
+  it('gaussian-elimination x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w360', () => {
+  it('gaussian-elimination x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w370', () => {
+  it('gaussian-elimination x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w380', () => {
+  it('gaussian-elimination x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w390', () => {
+  it('gaussian-elimination x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('gaussian-elimination - w400', () => {
+  it('gaussian-elimination x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

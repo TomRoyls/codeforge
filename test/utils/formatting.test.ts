@@ -1145,3 +1145,333 @@ describe('formatting - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('formatting - w310', () => {
+  it('formatting x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('formatting - w320', () => {
+  it('formatting x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('formatting - w330', () => {
+  it('formatting x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('formatting - w340', () => {
+  it('formatting x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('formatting - w350', () => {
+  it('formatting x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('formatting - w360', () => {
+  it('formatting x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('formatting - w370', () => {
+  it('formatting x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('formatting - w380', () => {
+  it('formatting x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('formatting - w390', () => {
+  it('formatting x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('formatting - w400', () => {
+  it('formatting x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

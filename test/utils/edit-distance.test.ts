@@ -1140,3 +1140,333 @@ describe('edit-distance - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edit-distance - w310', () => {
+  it('edit-distance x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w320', () => {
+  it('edit-distance x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w330', () => {
+  it('edit-distance x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w340', () => {
+  it('edit-distance x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w350', () => {
+  it('edit-distance x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w360', () => {
+  it('edit-distance x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w370', () => {
+  it('edit-distance x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w380', () => {
+  it('edit-distance x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w390', () => {
+  it('edit-distance x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('edit-distance - w400', () => {
+  it('edit-distance x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

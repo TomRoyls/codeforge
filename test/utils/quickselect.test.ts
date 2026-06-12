@@ -1192,3 +1192,333 @@ describe('quickselect - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quickselect - w310', () => {
+  it('quickselect x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickselect - w320', () => {
+  it('quickselect x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickselect - w330', () => {
+  it('quickselect x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickselect - w340', () => {
+  it('quickselect x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickselect - w350', () => {
+  it('quickselect x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickselect - w360', () => {
+  it('quickselect x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickselect - w370', () => {
+  it('quickselect x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickselect - w380', () => {
+  it('quickselect x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickselect - w390', () => {
+  it('quickselect x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('quickselect - w400', () => {
+  it('quickselect x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickselect x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

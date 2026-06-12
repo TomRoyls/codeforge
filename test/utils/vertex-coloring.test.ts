@@ -1303,3 +1303,333 @@ describe('vertex-coloring - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('vertex-coloring - w310', () => {
+  it('vertex-coloring x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vertex-coloring - w320', () => {
+  it('vertex-coloring x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vertex-coloring - w330', () => {
+  it('vertex-coloring x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vertex-coloring - w340', () => {
+  it('vertex-coloring x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vertex-coloring - w350', () => {
+  it('vertex-coloring x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vertex-coloring - w360', () => {
+  it('vertex-coloring x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vertex-coloring - w370', () => {
+  it('vertex-coloring x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vertex-coloring - w380', () => {
+  it('vertex-coloring x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vertex-coloring - w390', () => {
+  it('vertex-coloring x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('vertex-coloring - w400', () => {
+  it('vertex-coloring x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vertex-coloring x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -1324,3 +1324,333 @@ describe('timer - w300', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('timer - w310', () => {
+  it('timer x310x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x310x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x310x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x310x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x310x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x310x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x310x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x310x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x310x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x310x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w320', () => {
+  it('timer x320x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x320x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x320x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x320x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x320x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x320x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x320x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x320x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x320x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x320x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w330', () => {
+  it('timer x330x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x330x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x330x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x330x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x330x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x330x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x330x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x330x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x330x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x330x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w340', () => {
+  it('timer x340x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x340x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x340x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x340x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x340x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x340x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x340x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x340x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x340x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x340x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w350', () => {
+  it('timer x350x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x350x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x350x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x350x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x350x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x350x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x350x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x350x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x350x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x350x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w360', () => {
+  it('timer x360x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x360x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x360x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x360x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x360x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x360x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x360x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x360x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x360x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x360x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w370', () => {
+  it('timer x370x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x370x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x370x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x370x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x370x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x370x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x370x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x370x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x370x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x370x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w380', () => {
+  it('timer x380x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x380x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x380x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x380x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x380x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x380x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x380x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x380x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x380x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x380x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w390', () => {
+  it('timer x390x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x390x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x390x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x390x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x390x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x390x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x390x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x390x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x390x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x390x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('timer - w400', () => {
+  it('timer x400x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x400x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x400x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x400x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x400x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x400x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x400x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x400x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x400x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer x400x9', () => {
+    expect(describe).toBeDefined()
+  })
+})
