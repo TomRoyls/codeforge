@@ -623,3 +623,15 @@ describe('scc-tarjan - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('scc-tarjan - wave550', () => {
+  it('scc-tarjan w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

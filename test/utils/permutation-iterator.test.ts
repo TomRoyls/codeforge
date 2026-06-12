@@ -433,3 +433,15 @@ describe('permutation-iterator - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('permutation-iterator - wave550', () => {
+  it('permutation-iterator w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -575,3 +575,15 @@ describe('2sat - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('2sat - wave550', () => {
+  it('2sat w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('2sat w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

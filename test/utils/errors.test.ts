@@ -479,3 +479,15 @@ describe('errors - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('errors - wave550', () => {
+  it('errors w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

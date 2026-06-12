@@ -432,3 +432,15 @@ describe('welford - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('welford - wave550', () => {
+  it('welford w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('welford w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

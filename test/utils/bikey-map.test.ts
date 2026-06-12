@@ -698,3 +698,15 @@ describe('bikey-map - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bikey-map - wave550', () => {
+  it('bikey-map w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bikey-map w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

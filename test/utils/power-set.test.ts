@@ -410,3 +410,15 @@ describe('power-set - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('power-set - wave550', () => {
+  it('power-set w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

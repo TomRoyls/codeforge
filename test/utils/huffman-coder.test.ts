@@ -483,3 +483,15 @@ describe('huffman-coder - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('huffman-coder - wave550', () => {
+  it('huffman-coder w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

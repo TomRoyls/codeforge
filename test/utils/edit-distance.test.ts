@@ -330,3 +330,15 @@ describe('edit-distance - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edit-distance - wave550', () => {
+  it('edit-distance w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

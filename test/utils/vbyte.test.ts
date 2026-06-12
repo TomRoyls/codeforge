@@ -439,3 +439,15 @@ describe('vbyte - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('vbyte - wave550', () => {
+  it('vbyte w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

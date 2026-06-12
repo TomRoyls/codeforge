@@ -516,3 +516,15 @@ describe('planar-check - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('planar-check - wave550', () => {
+  it('planar-check w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

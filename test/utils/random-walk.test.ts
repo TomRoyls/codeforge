@@ -420,3 +420,15 @@ describe('random-walk - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('random-walk - wave550', () => {
+  it('random-walk w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

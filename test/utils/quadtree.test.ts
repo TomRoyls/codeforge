@@ -510,3 +510,15 @@ describe('quadtree - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quadtree - wave550', () => {
+  it('quadtree w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quadtree w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quadtree w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

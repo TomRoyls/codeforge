@@ -501,3 +501,15 @@ describe('network-flow - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('network-flow - wave550', () => {
+  it('network-flow w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

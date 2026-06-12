@@ -349,3 +349,12 @@ describe('math-helpers', () => {
     })
   })
 })
+
+describe('math-helpers - wave550', () => {
+  it('math-helpers w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('math-helpers w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+})

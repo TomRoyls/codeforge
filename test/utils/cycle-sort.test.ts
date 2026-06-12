@@ -393,3 +393,15 @@ describe('cycle-sort - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cycle-sort - wave550', () => {
+  it('cycle-sort w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-sort w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cycle-sort w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

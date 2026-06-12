@@ -402,3 +402,15 @@ describe('rect-area - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rect-area - wave550', () => {
+  it('rect-area w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rect-area w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

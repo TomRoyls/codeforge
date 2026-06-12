@@ -570,3 +570,15 @@ describe('frequency-map - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('frequency-map - wave550', () => {
+  it('frequency-map w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('frequency-map w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

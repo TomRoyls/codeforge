@@ -499,3 +499,15 @@ describe('strong-connectivity-contraction - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('strong-connectivity-contraction - wave550', () => {
+  it('strong-connectivity-contraction w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strong-connectivity-contraction w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

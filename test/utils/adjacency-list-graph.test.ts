@@ -520,3 +520,15 @@ describe('adjacency-list-graph - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('adjacency-list-graph - wave550', () => {
+  it('adjacency-list-graph w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-list-graph w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

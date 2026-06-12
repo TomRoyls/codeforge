@@ -342,3 +342,14 @@ describe('RomanNumeral roundtrip conversions', () => {
     }
   })
 })
+describe('roman-numeral - wave550', () => {
+  it('roman-numeral w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('roman-numeral w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

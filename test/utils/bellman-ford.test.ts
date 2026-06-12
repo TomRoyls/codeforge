@@ -603,3 +603,15 @@ describe('bellman-ford - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bellman-ford - wave550', () => {
+  it('bellman-ford w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bellman-ford w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

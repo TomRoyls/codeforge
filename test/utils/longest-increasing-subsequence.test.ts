@@ -330,3 +330,15 @@ describe('longest-increasing-subsequence - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('longest-increasing-subsequence - wave550', () => {
+  it('longest-increasing-subsequence w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

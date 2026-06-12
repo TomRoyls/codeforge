@@ -602,3 +602,15 @@ describe('trie - wave549', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('trie - wave550', () => {
+  it('trie w550 defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w550 is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('trie w550 has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

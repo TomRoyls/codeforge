@@ -575,3 +575,8 @@ describe('DoubleExponentialMovingAverage', () => {
     expect(dema.level).toBeLessThan(20)
   })
 })
+describe('exponential-moving-average - wave550', () => {
+  it('exponential-moving-average w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+})

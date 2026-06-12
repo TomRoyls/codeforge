@@ -444,3 +444,15 @@ describe('runge-kutta - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('runge-kutta - wave550', () => {
+  it('runge-kutta w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

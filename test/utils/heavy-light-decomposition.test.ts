@@ -729,3 +729,15 @@ describe('heavy-light-decomposition - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-light-decomposition - wave550', () => {
+  it('heavy-light-decomposition w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light-decomposition w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

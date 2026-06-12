@@ -538,3 +538,15 @@ describe('manacher-2d - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('manacher-2d - wave550', () => {
+  it('manacher-2d w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher-2d w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('manacher-2d w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

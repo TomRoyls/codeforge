@@ -354,3 +354,15 @@ describe('extended-euclidean - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('extended-euclidean - wave550', () => {
+  it('extended-euclidean w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

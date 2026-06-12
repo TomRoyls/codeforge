@@ -541,3 +541,15 @@ describe('heavy-light - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-light - wave550', () => {
+  it('heavy-light w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

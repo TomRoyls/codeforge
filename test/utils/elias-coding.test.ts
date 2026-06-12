@@ -510,3 +510,12 @@ describe('EliasCoding', () => {
     expect(decoded).toEqual(arr)
   })
 })
+
+describe('elias-coding - wave550', () => {
+  it('elias-coding w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+})

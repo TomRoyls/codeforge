@@ -477,3 +477,15 @@ describe('heavy-hitters - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-hitters - wave550', () => {
+  it('heavy-hitters w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

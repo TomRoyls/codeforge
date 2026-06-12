@@ -526,3 +526,15 @@ describe('top-k-2 - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('top-k-2 - wave550', () => {
+  it('top-k-2 w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-2 w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k-2 w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

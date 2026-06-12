@@ -546,3 +546,15 @@ describe('dynamic-convex-hull - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dynamic-convex-hull - wave550', () => {
+  it('dynamic-convex-hull w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

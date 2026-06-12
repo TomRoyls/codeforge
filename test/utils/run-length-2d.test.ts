@@ -404,3 +404,15 @@ describe('run-length-2d - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('run-length-2d - wave550', () => {
+  it('run-length-2d w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-2d w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

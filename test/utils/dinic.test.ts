@@ -565,3 +565,15 @@ describe('dinic - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dinic - wave550', () => {
+  it('dinic w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

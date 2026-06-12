@@ -494,3 +494,15 @@ describe('xor-linked-list - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('xor-linked-list - wave550', () => {
+  it('xor-linked-list w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

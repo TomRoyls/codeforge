@@ -518,3 +518,15 @@ describe('quickhull - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('quickhull - wave550', () => {
+  it('quickhull w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('quickhull w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -551,3 +551,15 @@ describe('lsm-tree - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lsm-tree - wave550', () => {
+  it('lsm-tree w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lsm-tree w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

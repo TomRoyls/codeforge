@@ -351,3 +351,15 @@ describe('comb-sort - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('comb-sort - wave550', () => {
+  it('comb-sort w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comb-sort w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

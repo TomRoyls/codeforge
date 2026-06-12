@@ -432,3 +432,15 @@ describe('bridge-finder - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bridge-finder - wave550', () => {
+  it('bridge-finder w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

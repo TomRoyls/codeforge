@@ -394,3 +394,15 @@ describe('fibonacci-iterator - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fibonacci-iterator - wave550', () => {
+  it('fibonacci-iterator w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

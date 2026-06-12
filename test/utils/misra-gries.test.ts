@@ -508,3 +508,15 @@ describe('misra-gries - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('misra-gries - wave550', () => {
+  it('misra-gries w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('misra-gries w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

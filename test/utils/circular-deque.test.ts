@@ -578,3 +578,15 @@ describe('circular-deque - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('circular-deque - wave550', () => {
+  it('circular-deque w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-deque w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

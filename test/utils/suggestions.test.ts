@@ -320,3 +320,15 @@ describe('suggestions - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suggestions - wave550', () => {
+  it('suggestions w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suggestions w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

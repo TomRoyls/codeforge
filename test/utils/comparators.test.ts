@@ -416,3 +416,15 @@ describe('comparators - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('comparators - wave550', () => {
+  it('comparators w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

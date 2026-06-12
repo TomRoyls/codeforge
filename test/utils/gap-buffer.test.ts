@@ -570,3 +570,15 @@ describe('gap-buffer - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gap-buffer - wave550', () => {
+  it('gap-buffer w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gap-buffer w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

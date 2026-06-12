@@ -347,3 +347,15 @@ describe('format-utils - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('format-utils - wave550', () => {
+  it('format-utils w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('format-utils w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

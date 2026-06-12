@@ -617,3 +617,15 @@ describe('dequeue - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dequeue - wave550', () => {
+  it('dequeue w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

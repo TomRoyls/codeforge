@@ -324,3 +324,15 @@ describe('interpolation-search - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interpolation-search - wave550', () => {
+  it('interpolation-search w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

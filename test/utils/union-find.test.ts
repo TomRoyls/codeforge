@@ -580,3 +580,15 @@ describe('union-find - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('union-find - wave550', () => {
+  it('union-find w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

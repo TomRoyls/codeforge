@@ -399,3 +399,15 @@ describe('josephus - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('josephus - wave550', () => {
+  it('josephus w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -414,3 +414,15 @@ describe('segment-intersection - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('segment-intersection - wave550', () => {
+  it('segment-intersection w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

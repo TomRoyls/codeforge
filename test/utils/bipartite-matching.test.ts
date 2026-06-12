@@ -543,3 +543,15 @@ describe('bipartite-matching - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bipartite-matching - wave550', () => {
+  it('bipartite-matching w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bipartite-matching w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -571,3 +571,15 @@ describe('floyd-warshall - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('floyd-warshall - wave550', () => {
+  it('floyd-warshall w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

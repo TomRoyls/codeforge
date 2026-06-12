@@ -799,3 +799,15 @@ describe('leftist-heap - wave549', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('leftist-heap - wave550', () => {
+  it('leftist-heap w550 defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w550 is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap w550 has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

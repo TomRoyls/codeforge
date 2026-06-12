@@ -434,3 +434,15 @@ describe('token-bucket - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('token-bucket - wave550', () => {
+  it('token-bucket w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

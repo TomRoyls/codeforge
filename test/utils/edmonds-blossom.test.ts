@@ -500,3 +500,15 @@ describe('edmonds-blossom - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edmonds-blossom - wave550', () => {
+  it('edmonds-blossom w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-blossom w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

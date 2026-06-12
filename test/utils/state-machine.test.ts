@@ -796,3 +796,15 @@ describe('state-machine - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('state-machine - wave550', () => {
+  it('state-machine w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('state-machine w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

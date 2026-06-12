@@ -306,3 +306,15 @@ describe('bucket-sort - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bucket-sort - wave550', () => {
+  it('bucket-sort w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

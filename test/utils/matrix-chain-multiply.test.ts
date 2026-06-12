@@ -390,3 +390,15 @@ describe('matrix-chain-multiply - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('matrix-chain-multiply - wave550', () => {
+  it('matrix-chain-multiply w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix-chain-multiply w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

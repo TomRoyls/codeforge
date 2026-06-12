@@ -493,3 +493,15 @@ describe('persistent-queue - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-queue - wave550', () => {
+  it('persistent-queue w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

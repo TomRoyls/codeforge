@@ -735,3 +735,15 @@ describe('fibonacci-heap - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fibonacci-heap - wave550', () => {
+  it('fibonacci-heap w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

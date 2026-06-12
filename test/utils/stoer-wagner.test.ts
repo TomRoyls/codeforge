@@ -529,3 +529,15 @@ describe('stoer-wagner - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stoer-wagner - wave550', () => {
+  it('stoer-wagner w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

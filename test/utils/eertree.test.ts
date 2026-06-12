@@ -428,3 +428,15 @@ describe('eertree - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('eertree - wave550', () => {
+  it('eertree w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

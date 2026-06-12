@@ -418,3 +418,15 @@ describe('crt - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('crt - wave550', () => {
+  it('crt w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('crt w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

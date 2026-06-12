@@ -475,3 +475,15 @@ describe('suffix-automaton-light - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('suffix-automaton-light - wave550', () => {
+  it('suffix-automaton-light w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

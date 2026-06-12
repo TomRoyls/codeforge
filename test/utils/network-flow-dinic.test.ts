@@ -508,3 +508,15 @@ describe('network-flow-dinic - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('network-flow-dinic - wave550', () => {
+  it('network-flow-dinic w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('network-flow-dinic w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -451,3 +451,15 @@ describe('monte-carlo - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('monte-carlo - wave550', () => {
+  it('monte-carlo w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

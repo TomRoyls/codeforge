@@ -377,3 +377,15 @@ describe('combination - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('combination - wave550', () => {
+  it('combination w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

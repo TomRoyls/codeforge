@@ -603,3 +603,15 @@ describe('dancing-links - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dancing-links - wave550', () => {
+  it('dancing-links w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dancing-links w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

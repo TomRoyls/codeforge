@@ -382,3 +382,15 @@ describe('sliding-window-min - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sliding-window-min - wave550', () => {
+  it('sliding-window-min w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-min w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-min w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

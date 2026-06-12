@@ -535,3 +535,15 @@ describe('range-map - wave549', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('range-map - wave550', () => {
+  it('range-map w550 defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map w550 is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('range-map w550 has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

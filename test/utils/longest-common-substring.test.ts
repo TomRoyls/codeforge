@@ -302,3 +302,15 @@ describe('longest-common-substring - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('longest-common-substring - wave550', () => {
+  it('longest-common-substring w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

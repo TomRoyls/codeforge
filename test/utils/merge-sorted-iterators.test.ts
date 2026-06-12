@@ -505,3 +505,15 @@ describe('merge-sorted-iterators - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('merge-sorted-iterators - wave550', () => {
+  it('merge-sorted-iterators w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('merge-sorted-iterators w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

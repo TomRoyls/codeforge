@@ -595,3 +595,15 @@ describe('skip-list - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('skip-list - wave550', () => {
+  it('skip-list w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

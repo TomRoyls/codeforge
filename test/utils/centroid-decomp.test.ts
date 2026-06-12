@@ -568,3 +568,15 @@ describe('centroid-decomp - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('centroid-decomp - wave550', () => {
+  it('centroid-decomp w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decomp w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

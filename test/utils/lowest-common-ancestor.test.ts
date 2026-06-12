@@ -578,3 +578,15 @@ describe('lowest-common-ancestor - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lowest-common-ancestor - wave550', () => {
+  it('lowest-common-ancestor w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

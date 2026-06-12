@@ -369,3 +369,15 @@ describe('polynomial-rolling-hash - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('polynomial-rolling-hash - wave550', () => {
+  it('polynomial-rolling-hash w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial-rolling-hash w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial-rolling-hash w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

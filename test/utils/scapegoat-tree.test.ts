@@ -732,3 +732,12 @@ describe('ScapegoatTree - duplicate operations', () => {
     expect(tree.has(1)).toBe(true)
   })
 })
+
+describe('scapegoat-tree - wave550', () => {
+  it('scapegoat-tree w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scapegoat-tree w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+})

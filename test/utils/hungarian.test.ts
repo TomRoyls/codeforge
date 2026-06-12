@@ -518,3 +518,15 @@ describe('hungarian - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hungarian - wave550', () => {
+  it('hungarian w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

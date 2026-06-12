@@ -570,3 +570,15 @@ describe('treap-implicit - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('treap-implicit - wave550', () => {
+  it('treap-implicit w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap-implicit w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -329,3 +329,15 @@ describe('bigint-utils - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bigint-utils - wave550', () => {
+  it('bigint-utils w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

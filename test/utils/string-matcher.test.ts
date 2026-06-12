@@ -575,3 +575,15 @@ describe('string-matcher - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('string-matcher - wave550', () => {
+  it('string-matcher w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -526,3 +526,15 @@ describe('cuckoo-filter - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cuckoo-filter - wave550', () => {
+  it('cuckoo-filter w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-filter w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

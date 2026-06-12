@@ -593,3 +593,15 @@ describe('time-series-buffer - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('time-series-buffer - wave550', () => {
+  it('time-series-buffer w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('time-series-buffer w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

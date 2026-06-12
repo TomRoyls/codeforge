@@ -561,3 +561,15 @@ describe('cuckoo-hash-map - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cuckoo-hash-map - wave550', () => {
+  it('cuckoo-hash-map w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

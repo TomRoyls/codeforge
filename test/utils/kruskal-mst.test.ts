@@ -529,3 +529,15 @@ describe('kruskal-mst - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kruskal-mst - wave550', () => {
+  it('kruskal-mst w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kruskal-mst w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

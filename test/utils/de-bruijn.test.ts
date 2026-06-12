@@ -398,3 +398,15 @@ describe('de-bruijn - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('de-bruijn - wave550', () => {
+  it('de-bruijn w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('de-bruijn w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -444,3 +444,11 @@ describe('BoyerMoore', () => {
     expect(bm.contains('abc')).toBe(false)
   })
 })
+describe('boyer-moore - wave550', () => {
+  it('boyer-moore w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+})

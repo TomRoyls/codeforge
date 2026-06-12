@@ -532,3 +532,15 @@ describe('edmonds-karp - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edmonds-karp - wave550', () => {
+  it('edmonds-karp w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

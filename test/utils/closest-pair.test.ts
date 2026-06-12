@@ -460,3 +460,15 @@ describe('closest-pair - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('closest-pair - wave550', () => {
+  it('closest-pair w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

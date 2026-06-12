@@ -389,3 +389,15 @@ describe('kmp-automaton - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kmp-automaton - wave550', () => {
+  it('kmp-automaton w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

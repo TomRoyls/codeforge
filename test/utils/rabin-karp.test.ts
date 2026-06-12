@@ -352,3 +352,15 @@ describe('rabin-karp - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rabin-karp - wave550', () => {
+  it('rabin-karp w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

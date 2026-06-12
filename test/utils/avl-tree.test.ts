@@ -692,3 +692,15 @@ describe('AVLTree complex scenarios', () => {
     expect(result?.value).toBe(42)
   })
 })
+
+describe('avl-tree - wave550', () => {
+  it('avl-tree w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('avl-tree w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

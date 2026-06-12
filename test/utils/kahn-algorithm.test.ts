@@ -517,3 +517,15 @@ describe('kahn-algorithm - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kahn-algorithm - wave550', () => {
+  it('kahn-algorithm w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

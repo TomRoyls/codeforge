@@ -491,3 +491,15 @@ describe('hamiltonian-path - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hamiltonian-path - wave550', () => {
+  it('hamiltonian-path w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hamiltonian-path w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

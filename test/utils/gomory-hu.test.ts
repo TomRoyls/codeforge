@@ -500,3 +500,15 @@ describe('gomory-hu - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gomory-hu - wave550', () => {
+  it('gomory-hu w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

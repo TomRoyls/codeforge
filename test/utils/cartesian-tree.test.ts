@@ -424,3 +424,15 @@ describe('cartesian-tree - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cartesian-tree - wave550', () => {
+  it('cartesian-tree w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

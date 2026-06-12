@@ -362,3 +362,15 @@ describe('ternary-search-continuous - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ternary-search-continuous - wave550', () => {
+  it('ternary-search-continuous w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-continuous w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

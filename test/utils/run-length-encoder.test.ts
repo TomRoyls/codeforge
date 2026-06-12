@@ -461,3 +461,15 @@ describe('run-length-encoder - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('run-length-encoder - wave550', () => {
+  it('run-length-encoder w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoder w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

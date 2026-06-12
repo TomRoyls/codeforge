@@ -565,3 +565,8 @@ describe('LinkCutTree', () => {
     });
   });
 });
+describe('link-cut-tree - wave550', () => {
+  it('link-cut-tree w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+})

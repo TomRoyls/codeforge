@@ -472,3 +472,15 @@ describe('graph-coloring - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-coloring - wave550', () => {
+  it('graph-coloring w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-coloring w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

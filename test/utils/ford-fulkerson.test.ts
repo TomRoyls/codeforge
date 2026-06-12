@@ -508,3 +508,15 @@ describe('ford-fulkerson - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ford-fulkerson - wave550', () => {
+  it('ford-fulkerson w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

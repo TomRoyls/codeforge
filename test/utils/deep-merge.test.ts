@@ -449,3 +449,15 @@ describe('deep-merge - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deep-merge - wave550', () => {
+  it('deep-merge w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

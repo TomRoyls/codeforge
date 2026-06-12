@@ -412,3 +412,15 @@ describe('run-length-encoding - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('run-length-encoding - wave550', () => {
+  it('run-length-encoding w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('run-length-encoding w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

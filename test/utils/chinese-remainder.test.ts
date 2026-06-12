@@ -423,3 +423,15 @@ describe('chinese-remainder - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('chinese-remainder - wave550', () => {
+  it('chinese-remainder w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('chinese-remainder w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

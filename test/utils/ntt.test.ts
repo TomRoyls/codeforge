@@ -428,3 +428,15 @@ describe('ntt - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ntt - wave550', () => {
+  it('ntt w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

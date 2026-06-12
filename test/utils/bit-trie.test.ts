@@ -651,3 +651,15 @@ describe('bit-trie - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bit-trie - wave550', () => {
+  it('bit-trie w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

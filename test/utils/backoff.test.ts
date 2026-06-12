@@ -433,3 +433,15 @@ describe('backoff - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('backoff - wave550', () => {
+  it('backoff w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('backoff w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

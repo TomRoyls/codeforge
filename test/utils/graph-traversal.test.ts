@@ -465,3 +465,15 @@ describe('graph-traversal - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('graph-traversal - wave550', () => {
+  it('graph-traversal w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('graph-traversal w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

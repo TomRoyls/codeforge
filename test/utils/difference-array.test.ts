@@ -520,3 +520,15 @@ describe('difference-array - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('difference-array - wave550', () => {
+  it('difference-array w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

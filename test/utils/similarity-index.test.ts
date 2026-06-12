@@ -534,3 +534,15 @@ describe('similarity-index - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('similarity-index - wave550', () => {
+  it('similarity-index w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

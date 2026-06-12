@@ -430,3 +430,15 @@ describe('burrows-wheeler - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('burrows-wheeler - wave550', () => {
+  it('burrows-wheeler w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

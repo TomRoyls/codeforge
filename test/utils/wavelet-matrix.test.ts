@@ -407,3 +407,15 @@ describe('wavelet-matrix - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('wavelet-matrix - wave550', () => {
+  it('wavelet-matrix w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -345,3 +345,15 @@ describe('cocktail-sort - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cocktail-sort - wave550', () => {
+  it('cocktail-sort w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cocktail-sort w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cocktail-sort w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

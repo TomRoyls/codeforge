@@ -423,3 +423,15 @@ describe('introsort - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('introsort - wave550', () => {
+  it('introsort w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('introsort w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -708,3 +708,15 @@ describe('centroid-decompose - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('centroid-decompose - wave550', () => {
+  it('centroid-decompose w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

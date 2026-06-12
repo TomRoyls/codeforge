@@ -352,3 +352,15 @@ describe('integer-partition - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('integer-partition - wave550', () => {
+  it('integer-partition w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

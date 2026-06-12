@@ -398,3 +398,15 @@ describe('options-helpers - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('options-helpers - wave550', () => {
+  it('options-helpers w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

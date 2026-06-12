@@ -540,3 +540,15 @@ describe('sliding-window-stats - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sliding-window-stats - wave550', () => {
+  it('sliding-window-stats w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-stats w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

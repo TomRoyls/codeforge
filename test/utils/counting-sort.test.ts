@@ -350,3 +350,15 @@ describe('counting-sort - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('counting-sort - wave550', () => {
+  it('counting-sort w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

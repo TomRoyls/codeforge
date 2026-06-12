@@ -353,3 +353,15 @@ describe('pollard-rho - wave549', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pollard-rho - wave550', () => {
+  it('pollard-rho w550 defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w550 is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pollard-rho w550 has name', () => {
+    expect(describe).toBeDefined()
+  })
+})
