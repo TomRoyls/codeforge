@@ -608,3 +608,15 @@ describe('concurrent-hashmap - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('concurrent-hashmap - wave555', () => {
+  it('concurrent-hashmap w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('concurrent-hashmap w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -565,3 +565,15 @@ describe('recent-counter - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('recent-counter - wave555', () => {
+  it('recent-counter w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('recent-counter w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

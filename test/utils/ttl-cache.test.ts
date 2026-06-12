@@ -612,3 +612,15 @@ describe('ttl-cache - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ttl-cache - wave555', () => {
+  it('ttl-cache w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ttl-cache w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ttl-cache w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

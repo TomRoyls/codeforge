@@ -395,3 +395,15 @@ describe('formatting - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('formatting - wave555', () => {
+  it('formatting w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('formatting w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

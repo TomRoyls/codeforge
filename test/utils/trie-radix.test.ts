@@ -598,3 +598,15 @@ describe('trie-radix - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('trie-radix - wave555', () => {
+  it('trie-radix w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('trie-radix w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

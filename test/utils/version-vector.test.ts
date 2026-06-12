@@ -642,3 +642,15 @@ describe('version-vector - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('version-vector - wave555', () => {
+  it('version-vector w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version-vector w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

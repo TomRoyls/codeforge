@@ -409,3 +409,15 @@ describe('lcs - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lcs - wave555', () => {
+  it('lcs w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

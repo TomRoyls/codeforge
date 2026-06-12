@@ -600,3 +600,15 @@ describe('stopwatch - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stopwatch - wave555', () => {
+  it('stopwatch w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stopwatch w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

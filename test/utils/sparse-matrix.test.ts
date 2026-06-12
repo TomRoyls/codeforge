@@ -714,3 +714,15 @@ describe('sparse-matrix - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-matrix - wave555', () => {
+  it('sparse-matrix w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-matrix w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

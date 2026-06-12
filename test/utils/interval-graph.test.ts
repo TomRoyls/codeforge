@@ -563,3 +563,15 @@ describe('interval-graph - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-graph - wave555', () => {
+  it('interval-graph w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

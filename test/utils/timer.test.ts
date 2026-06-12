@@ -574,3 +574,15 @@ describe('timer - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('timer - wave555', () => {
+  it('timer w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('timer w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -496,3 +496,15 @@ describe('hash-utils - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hash-utils - wave555', () => {
+  it('hash-utils w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-utils w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

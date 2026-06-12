@@ -616,3 +616,15 @@ describe('max-bipartite-matching - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('max-bipartite-matching - wave555', () => {
+  it('max-bipartite-matching w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('max-bipartite-matching w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

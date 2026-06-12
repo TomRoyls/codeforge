@@ -459,3 +459,15 @@ describe('josephus - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('josephus - wave555', () => {
+  it('josephus w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('josephus w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

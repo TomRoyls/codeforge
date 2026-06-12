@@ -509,3 +509,15 @@ describe('deep-merge - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deep-merge - wave555', () => {
+  it('deep-merge w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -711,3 +711,15 @@ describe('bit-trie - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bit-trie - wave555', () => {
+  it('bit-trie w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

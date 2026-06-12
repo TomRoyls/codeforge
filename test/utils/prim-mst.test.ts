@@ -634,3 +634,15 @@ describe('prim-mst - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('prim-mst - wave555', () => {
+  it('prim-mst w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prim-mst w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

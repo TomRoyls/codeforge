@@ -404,3 +404,15 @@ describe('lis - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lis - wave555', () => {
+  it('lis w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

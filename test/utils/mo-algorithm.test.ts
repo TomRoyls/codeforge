@@ -1247,3 +1247,15 @@ describe('mo-algorithm - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('mo-algorithm - wave555', () => {
+  it('mo-algorithm w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

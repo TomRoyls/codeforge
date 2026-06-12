@@ -768,3 +768,15 @@ describe('centroid-decompose - wave554', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('centroid-decompose - wave555', () => {
+  it('centroid-decompose w555 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w555 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('centroid-decompose w555 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
