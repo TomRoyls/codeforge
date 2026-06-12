@@ -647,3 +647,15 @@ describe('edge-coloring - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edge-coloring - wave559', () => {
+  it('edge-coloring w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

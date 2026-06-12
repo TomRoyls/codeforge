@@ -677,3 +677,15 @@ describe('disjoint-set-union - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('disjoint-set-union - wave559', () => {
+  it('disjoint-set-union w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set-union w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

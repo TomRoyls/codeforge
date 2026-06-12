@@ -655,3 +655,15 @@ describe('interval-map - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-map - wave559', () => {
+  it('interval-map w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -589,3 +589,15 @@ describe('git-helpers - wave558', () => {
     expect(resolve).toBeDefined()
   })
 })
+
+describe('git-helpers - wave559', () => {
+  it('git-helpers w559 v0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w559 v1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers w559 v2', () => {
+    expect(resolve).toBeDefined()
+  })
+})

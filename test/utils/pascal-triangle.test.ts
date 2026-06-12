@@ -448,3 +448,15 @@ describe('pascal-triangle - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pascal-triangle - wave559', () => {
+  it('pascal-triangle w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

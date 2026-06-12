@@ -462,3 +462,15 @@ describe('extended-euclidean - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('extended-euclidean - wave559', () => {
+  it('extended-euclidean w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

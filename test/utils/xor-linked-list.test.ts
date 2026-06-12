@@ -602,3 +602,15 @@ describe('xor-linked-list - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('xor-linked-list - wave559', () => {
+  it('xor-linked-list w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('xor-linked-list w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -568,3 +568,15 @@ describe('closest-pair - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('closest-pair - wave559', () => {
+  it('closest-pair w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('closest-pair w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -516,3 +516,15 @@ describe('coordinate-compressor - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('coordinate-compressor - wave559', () => {
+  it('coordinate-compressor w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

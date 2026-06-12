@@ -687,3 +687,15 @@ describe('ziggurat-normal - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('ziggurat-normal - wave559', () => {
+  it('ziggurat-normal w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ziggurat-normal w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

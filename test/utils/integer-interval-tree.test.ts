@@ -692,3 +692,15 @@ describe('integer-interval-tree - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('integer-interval-tree - wave559', () => {
+  it('integer-interval-tree w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-interval-tree w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

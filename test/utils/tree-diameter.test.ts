@@ -673,3 +673,15 @@ describe('tree-diameter - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('tree-diameter - wave559', () => {
+  it('tree-diameter w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tree-diameter w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

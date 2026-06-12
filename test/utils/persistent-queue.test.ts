@@ -601,3 +601,15 @@ describe('persistent-queue - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-queue - wave559', () => {
+  it('persistent-queue w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-queue w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

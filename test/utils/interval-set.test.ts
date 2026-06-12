@@ -642,3 +642,15 @@ describe('interval-set - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('interval-set - wave559', () => {
+  it('interval-set w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-set w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-set w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

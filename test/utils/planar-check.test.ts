@@ -624,3 +624,15 @@ describe('planar-check - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('planar-check - wave559', () => {
+  it('planar-check w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('planar-check w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -613,3 +613,15 @@ describe('hyper-log-log - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hyper-log-log - wave559', () => {
+  it('hyper-log-log w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyper-log-log w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

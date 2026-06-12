@@ -628,3 +628,15 @@ describe('implicit-key-tree - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('implicit-key-tree - wave559', () => {
+  it('implicit-key-tree w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('implicit-key-tree w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

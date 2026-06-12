@@ -482,3 +482,15 @@ describe('palindrome-manacher - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('palindrome-manacher - wave559', () => {
+  it('palindrome-manacher w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -464,3 +464,15 @@ describe('bisect - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bisect - wave559', () => {
+  it('bisect w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bisect w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

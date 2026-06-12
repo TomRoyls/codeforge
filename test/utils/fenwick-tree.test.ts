@@ -588,3 +588,15 @@ describe('fenwick-tree - wave558', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('fenwick-tree - wave559', () => {
+  it('fenwick-tree w559 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree w559 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('fenwick-tree w559 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

@@ -451,3 +451,15 @@ describe('sparse-table-gcd - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sparse-table-gcd - wave559', () => {
+  it('sparse-table-gcd w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

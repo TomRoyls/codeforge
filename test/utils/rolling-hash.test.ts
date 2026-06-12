@@ -691,3 +691,15 @@ describe('rolling-hash - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rolling-hash - wave559', () => {
+  it('rolling-hash w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rolling-hash w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rolling-hash w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

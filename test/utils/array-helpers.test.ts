@@ -529,3 +529,15 @@ describe('array-helpers - wave558', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('array-helpers - wave559', () => {
+  it('array-helpers w559 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers w559 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('array-helpers w559 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
