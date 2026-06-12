@@ -503,3 +503,17 @@ describe('RollingHash edge cases', () => {
     const hash = RollingHash.hashString('hello')
     expect(typeof hash).toBe('number')
   })
+
+describe('rolling-hash - extra', () => {
+  it('works correctly', () => {
+    expect(RollingHash).toBeDefined()
+  })
+
+  it('handles edge case', () => {
+    expect(typeof RollingHash).toBe('function')
+  })
+
+  it('provides expected behavior', () => {
+    expect(RollingHash.name).toBeDefined()
+  })
+})

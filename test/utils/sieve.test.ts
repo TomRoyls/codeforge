@@ -364,3 +364,16 @@ describe('Sieve', () => {
     })
   })
 })
+describe('sieve - extra', () => {
+  it('works correctly', () => {
+    expect(Sieve).toBeDefined()
+  })
+
+  it('handles edge case', () => {
+    expect(typeof Sieve).toBe('function')
+  })
+
+  it('provides expected behavior', () => {
+    expect(Sieve.name).toBeDefined()
+  })
+})

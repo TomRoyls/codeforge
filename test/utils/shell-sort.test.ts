@@ -292,3 +292,18 @@ describe('ShellSort', () => {
     ShellSort.sortInPlace(arr)
     expect(arr).toEqual([1, 2, 3, 4, 5])
   })
+
+describe('shell-sort - extra', () => {
+  it('works correctly', () => {
+    expect(ShellSort.sort([])).toEqual([])
+  })
+
+  it('handles edge case', () => {
+    expect(ShellSort.sort([5])).toEqual([5])
+  })
+
+  it('provides expected behavior', () => {
+    expect(ShellSort.sort([3, 1, 2])).toEqual([1, 2, 3])
+  })
+
+})

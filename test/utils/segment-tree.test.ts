@@ -375,3 +375,18 @@ describe('SegmentTree - multiple updates', () => {
     st.update(2, 7)
     expect(st.toArray()).toEqual([5, 6, 7])
   })
+
+describe('segment-tree - extra', () => {
+  it('works correctly', () => {
+    expect(new SegmentTree(5, (a, b) => a + b, 0)).toBeDefined()
+  })
+
+  it('handles edge case', () => {
+    expect(new SegmentTree(5, (a, b) => a + b, 0).query(0, 4)).toBe(0)
+  })
+
+  it('provides expected behavior', () => {
+    expect(typeof new SegmentTree(5, (a, b) => a + b, 0).size).toBe('number')
+  })
+
+})

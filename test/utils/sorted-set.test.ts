@@ -506,3 +506,18 @@ describe('SortedSet', () => {
     const ss = new SortedSet<number>()
     expect(ss.has(99)).toBe(false)
   })
+
+describe('sorted-set - extra', () => {
+  it('works correctly', () => {
+    expect(new SortedSet<number>().size).toBe(0)
+  })
+
+  it('handles edge case', () => {
+    const ss = new SortedSet<number>(); ss.add(5); expect(ss.has(5)).toBe(true)
+  })
+
+  it('provides expected behavior', () => {
+    const ss = new SortedSet<number>(); ss.add(5); ss.delete(5); expect(ss.has(5)).toBe(false)
+  })
+
+})
