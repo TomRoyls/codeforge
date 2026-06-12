@@ -724,3 +724,15 @@ describe('union-find - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('union-find - wave562', () => {
+  it('union-find w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

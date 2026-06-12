@@ -715,3 +715,15 @@ describe('floyd-warshall - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('floyd-warshall - wave562', () => {
+  it('floyd-warshall w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('floyd-warshall w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

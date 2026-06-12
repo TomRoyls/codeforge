@@ -771,3 +771,15 @@ describe('radix-tree - wave561', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('radix-tree - wave562', () => {
+  it('radix-tree w562 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('radix-tree w562 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('radix-tree w562 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

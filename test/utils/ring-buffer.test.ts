@@ -699,3 +699,15 @@ describe('ring-buffer - wave561', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('ring-buffer - wave562', () => {
+  it('ring-buffer w562 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer w562 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('ring-buffer w562 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

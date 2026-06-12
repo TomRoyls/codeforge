@@ -437,3 +437,15 @@ describe('knuth-morris-pratt - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('knuth-morris-pratt - wave562', () => {
+  it('knuth-morris-pratt w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

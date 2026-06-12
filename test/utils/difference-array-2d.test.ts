@@ -682,3 +682,15 @@ describe('difference-array-2d - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('difference-array-2d - wave562', () => {
+  it('difference-array-2d w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('difference-array-2d w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

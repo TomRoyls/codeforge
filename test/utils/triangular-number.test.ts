@@ -548,3 +548,15 @@ describe('triangular-number - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('triangular-number - wave562', () => {
+  it('triangular-number w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('triangular-number w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

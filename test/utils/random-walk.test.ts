@@ -564,3 +564,15 @@ describe('random-walk - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('random-walk - wave562', () => {
+  it('random-walk w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('random-walk w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

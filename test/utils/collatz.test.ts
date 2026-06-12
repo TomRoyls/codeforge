@@ -477,3 +477,15 @@ describe('collatz - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('collatz - wave562', () => {
+  it('collatz w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('collatz w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

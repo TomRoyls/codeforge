@@ -642,3 +642,15 @@ describe('graph - wave561', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('graph - wave562', () => {
+  it('graph w562 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph w562 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('graph w562 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

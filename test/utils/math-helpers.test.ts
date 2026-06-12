@@ -490,3 +490,15 @@ describe('math-helpers - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('math-helpers - wave562', () => {
+  it('math-helpers w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('math-helpers w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('math-helpers w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

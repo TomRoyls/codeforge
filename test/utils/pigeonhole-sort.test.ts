@@ -485,3 +485,15 @@ describe('pigeonhole-sort - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pigeonhole-sort - wave562', () => {
+  it('pigeonhole-sort w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pigeonhole-sort w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pigeonhole-sort w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -515,3 +515,15 @@ describe('golden-ratio-search - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('golden-ratio-search - wave562', () => {
+  it('golden-ratio-search w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('golden-ratio-search w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

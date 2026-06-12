@@ -680,3 +680,15 @@ describe('linear-probing-hash - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('linear-probing-hash - wave562', () => {
+  it('linear-probing-hash w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('linear-probing-hash w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

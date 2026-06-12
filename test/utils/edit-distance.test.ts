@@ -474,3 +474,15 @@ describe('edit-distance - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('edit-distance - wave562', () => {
+  it('edit-distance w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

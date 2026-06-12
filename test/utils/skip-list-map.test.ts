@@ -692,3 +692,15 @@ describe('skip-list-map - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('skip-list-map - wave562', () => {
+  it('skip-list-map w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list-map w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list-map w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

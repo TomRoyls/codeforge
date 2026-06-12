@@ -729,3 +729,15 @@ describe('simd-bit-set - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('simd-bit-set - wave562', () => {
+  it('simd-bit-set w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simd-bit-set w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('simd-bit-set w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

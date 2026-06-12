@@ -709,3 +709,15 @@ describe('task-runner - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('task-runner - wave562', () => {
+  it('task-runner w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

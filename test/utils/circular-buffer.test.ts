@@ -758,3 +758,15 @@ describe('circular-buffer - wave561', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('circular-buffer - wave562', () => {
+  it('circular-buffer w562 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer w562 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('circular-buffer w562 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

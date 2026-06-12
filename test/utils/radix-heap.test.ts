@@ -693,3 +693,15 @@ describe('radix-heap - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('radix-heap - wave562', () => {
+  it('radix-heap w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

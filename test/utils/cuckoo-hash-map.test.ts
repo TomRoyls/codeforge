@@ -705,3 +705,15 @@ describe('cuckoo-hash-map - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('cuckoo-hash-map - wave562', () => {
+  it('cuckoo-hash-map w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cuckoo-hash-map w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

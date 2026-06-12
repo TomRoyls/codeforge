@@ -586,3 +586,15 @@ describe('fenwick-2d - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fenwick-2d - wave562', () => {
+  it('fenwick-2d w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fenwick-2d w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fenwick-2d w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

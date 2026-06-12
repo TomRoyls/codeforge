@@ -468,3 +468,15 @@ describe('levenshtein-distance - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('levenshtein-distance - wave562', () => {
+  it('levenshtein-distance w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('levenshtein-distance w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

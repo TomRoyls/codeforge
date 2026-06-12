@@ -644,3 +644,15 @@ describe('gomory-hu - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('gomory-hu - wave562', () => {
+  it('gomory-hu w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

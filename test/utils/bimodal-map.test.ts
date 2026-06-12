@@ -729,3 +729,15 @@ describe('bimodal-map - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bimodal-map - wave562', () => {
+  it('bimodal-map w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bimodal-map w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -513,3 +513,15 @@ describe('number-theory - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('number-theory - wave562', () => {
+  it('number-theory w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('number-theory w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

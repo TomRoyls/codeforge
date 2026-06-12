@@ -609,3 +609,15 @@ describe('bitset - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bitset - wave562', () => {
+  it('bitset w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitset w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

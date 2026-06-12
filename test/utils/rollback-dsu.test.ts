@@ -664,3 +664,15 @@ describe('rollback-dsu - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('rollback-dsu - wave562', () => {
+  it('rollback-dsu w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

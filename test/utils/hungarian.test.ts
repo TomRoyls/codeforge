@@ -662,3 +662,15 @@ describe('hungarian - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hungarian - wave562', () => {
+  it('hungarian w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hungarian w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

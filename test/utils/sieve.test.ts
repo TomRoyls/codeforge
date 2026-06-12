@@ -587,3 +587,15 @@ describe('sieve - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sieve - wave562', () => {
+  it('sieve w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sieve w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

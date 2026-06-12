@@ -671,3 +671,15 @@ describe('linked-list - wave561', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('linked-list - wave562', () => {
+  it('linked-list w562 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w562 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list w562 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

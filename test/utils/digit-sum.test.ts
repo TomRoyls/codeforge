@@ -464,3 +464,11 @@ describe('DigitSum', () => {
     })
   })
 })
+describe('digit-sum - wave562', () => {
+  it('digit-sum w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('digit-sum w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+})

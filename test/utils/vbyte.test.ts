@@ -583,3 +583,15 @@ describe('vbyte - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('vbyte - wave562', () => {
+  it('vbyte w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('vbyte w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

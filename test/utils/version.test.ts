@@ -502,3 +502,15 @@ describe('version - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('version - wave562', () => {
+  it('version w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('version w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

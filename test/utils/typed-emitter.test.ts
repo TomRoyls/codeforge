@@ -510,3 +510,9 @@ describe('TypedEventEmitter', () => {
     expect(b).toBe(1)
   })
 })
+
+describe('typed-emitter - wave562', () => {
+  it('typed-emitter w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+})

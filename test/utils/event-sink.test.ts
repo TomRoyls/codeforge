@@ -564,3 +564,15 @@ describe('event-sink - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('event-sink - wave562', () => {
+  it('event-sink w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('event-sink w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

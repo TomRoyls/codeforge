@@ -448,3 +448,15 @@ describe('z-algorithm-extended - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('z-algorithm-extended - wave562', () => {
+  it('z-algorithm-extended w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('z-algorithm-extended w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

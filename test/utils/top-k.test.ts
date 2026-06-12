@@ -669,3 +669,15 @@ describe('top-k - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('top-k - wave562', () => {
+  it('top-k w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

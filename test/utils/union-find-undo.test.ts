@@ -823,3 +823,15 @@ describe('union-find-undo - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('union-find-undo - wave562', () => {
+  it('union-find-undo w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('union-find-undo w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

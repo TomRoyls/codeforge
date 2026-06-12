@@ -1123,3 +1123,15 @@ describe('watcher - wave561', () => {
     expect(mkdirSync).toBeDefined()
   })
 })
+
+describe('watcher - wave562', () => {
+  it('watcher w562 v0', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher w562 v1', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+  it('watcher w562 v2', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+})

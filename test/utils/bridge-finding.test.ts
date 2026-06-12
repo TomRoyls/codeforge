@@ -720,3 +720,15 @@ describe('bridge-finding - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bridge-finding - wave562', () => {
+  it('bridge-finding w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finding w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

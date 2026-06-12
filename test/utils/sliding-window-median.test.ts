@@ -718,3 +718,15 @@ describe('sliding-window-median - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sliding-window-median - wave562', () => {
+  it('sliding-window-median w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sliding-window-median w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

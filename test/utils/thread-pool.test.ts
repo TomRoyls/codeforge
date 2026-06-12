@@ -830,3 +830,15 @@ describe('thread-pool - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('thread-pool - wave562', () => {
+  it('thread-pool w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('thread-pool w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

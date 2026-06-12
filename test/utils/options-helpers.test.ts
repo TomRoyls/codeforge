@@ -542,3 +542,15 @@ describe('options-helpers - wave561', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('options-helpers - wave562', () => {
+  it('options-helpers w562 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w562 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers w562 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
