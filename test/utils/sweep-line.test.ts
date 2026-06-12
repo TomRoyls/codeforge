@@ -396,3 +396,10 @@ describe('SweepLine', () => {
     expect(result).toEqual([])
   })
 })
+  it('findIntersections empty returns empty', () => {
+    expect(SweepLine.findIntersections([])).toEqual([])
+  })
+
+  it('closestPair returns null for single point', () => {
+    expect(SweepLine.closestPair([{ x: 0, y: 0 }])).toBeNull()
+  })

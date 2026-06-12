@@ -394,3 +394,13 @@ describe('RoaringBitSet', () => {
     expect(inter.has(3)).toBe(true)
   })
 })
+  it('has returns false for missing', () => {
+    const rb = new RoaringBitSet()
+    expect(rb.has(42)).toBe(false)
+  })
+
+  it('from creates bitset from indices', () => {
+    const rb = RoaringBitSet.from([1, 3, 5])
+    expect(rb.has(1)).toBe(true)
+    expect(rb.has(2)).toBe(false)
+  })

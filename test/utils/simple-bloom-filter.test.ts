@@ -394,3 +394,13 @@ describe('SimpleBloomFilter - edge cases', () => {
     expect(bf.falsePositiveRate).toBeLessThanOrEqual(1)
   })
 })
+  it('has returns false for non-added', () => {
+    const bf = new SimpleBloomFilter(100)
+    expect(bf.has('missing')).toBe(false)
+  })
+
+  it('add then has returns true', () => {
+    const bf = new SimpleBloomFilter(100)
+    bf.add('test')
+    expect(bf.has('test')).toBe(true)
+  })

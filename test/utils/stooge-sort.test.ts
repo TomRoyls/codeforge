@@ -251,3 +251,11 @@ describe('StoogeSort', () => {
        .toEqual([-1e10, -1e-10, 1e-10, 1, 1e10])
    })
 })
+
+  it('sort empty array', () => {
+    expect(StoogeSort.sort([])).toEqual([])
+  })
+
+  it('sortWithComparator sorts descending', () => {
+    expect(StoogeSort.sortWithComparator([3, 1, 2], (a, b) => b - a)).toEqual([3, 2, 1])
+  })

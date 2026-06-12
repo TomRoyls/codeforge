@@ -475,3 +475,7 @@ describe('RingBufferQueue', () => {
     expect(queue.capacity).toBe(32)
   })
 })
+  it('size on empty is 0', () => {
+    const rbq = new RingBufferQueue<number>()
+    expect(rbq.size).toBe(0)
+  })

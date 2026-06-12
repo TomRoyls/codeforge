@@ -352,3 +352,7 @@ describe('SuffixArray', () => {
     expect(['abc', 'xyz'].includes(result)).toBe(true)
   })
 })
+  it('build on empty string', () => {
+    const sa = new SuffixArray('')
+    expect(sa.indices).toEqual([])
+  })

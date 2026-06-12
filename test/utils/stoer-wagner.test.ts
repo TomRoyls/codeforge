@@ -445,3 +445,7 @@ describe('StoerWagner', () => {
     expect(sw.minCut()).toBe(1)
   })
 })
+  it('minCut on single node is 0', () => {
+    const sw = new StoerWagner(1)
+    expect(sw.minCut()).toBe(0)
+  })

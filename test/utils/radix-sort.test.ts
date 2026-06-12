@@ -323,3 +323,6 @@ describe('RadixSort', () => {
     })
   })
 })
+  it('sort empty array', () => {
+    expect(RadixSort.sort([])).toEqual([])
+  })

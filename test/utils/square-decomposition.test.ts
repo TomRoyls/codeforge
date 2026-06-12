@@ -315,3 +315,13 @@ describe('SquareDecomposition', () => {
     expect(sd.query(0, 4)).toBe(14)
   })
 })
+
+  it('get returns element at index', () => {
+    const sd = new SquareDecomposition([5, 3, 7, 1])
+    expect(sd.get(2)).toBe(7)
+  })
+
+  it('length returns array size', () => {
+    const sd = new SquareDecomposition([1, 2, 3, 4, 5])
+    expect(sd.length).toBe(5)
+  })

@@ -278,3 +278,13 @@ describe('SubstringCounter', () => {
     expect(sc.contains('a')).toBe(false)
   })
 })
+
+  it('contains returns false for missing', () => {
+    const sc = new SubstringCounter('hello world')
+    expect(sc.contains('xyz')).toBe(false)
+  })
+
+  it('countNaive counts overlapping', () => {
+    const sc = new SubstringCounter('aaa')
+    expect(sc.countNaive('aa')).toBe(2)
+  })

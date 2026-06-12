@@ -502,3 +502,7 @@ describe('SortedSet', () => {
     })
   })
 })
+  it('has returns false for missing', () => {
+    const ss = new SortedSet<number>()
+    expect(ss.has(99)).toBe(false)
+  })

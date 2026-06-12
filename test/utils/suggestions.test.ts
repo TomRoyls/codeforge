@@ -230,4 +230,13 @@ describe('RULE_SUGGESTIONS known rules', () => {
   it('has noControlRegex suggestion', () => {
     expect(RULE_SUGGESTIONS.noControlRegex).toBeDefined()
   })
+
+  it('RULE_SUGGESTIONS is defined object', () => {
+    expect(RULE_SUGGESTIONS).toBeDefined()
+    expect(typeof RULE_SUGGESTIONS).toBe('object')
+  })
+
+  it('RULE_SUGGESTIONS has entries', () => {
+    expect(Object.keys(RULE_SUGGESTIONS).length).toBeGreaterThan(0)
+  })
 })

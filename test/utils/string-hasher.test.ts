@@ -304,3 +304,13 @@ describe('StringHasher', () => {
     expect(h).toBeGreaterThan(0)
   })
 })
+
+  it('length returns string length', () => {
+    const sh = new StringHasher('hello')
+    expect(sh.length).toBe(5)
+  })
+
+  it('hashFull returns number', () => {
+    const sh = new StringHasher('test')
+    expect(typeof sh.hashFull()).toBe('number')
+  })
