@@ -445,3 +445,20 @@ describe('TopologicalSort.allTopologicalSorts', () => {
     expect(TopologicalSort.sort(adj)).toEqual([0])
   })
 })
+  it('sort empty graph returns empty', () => {
+    expect(TopologicalSort.sort(new Map())).toEqual([])
+  })
+
+  it('sort single node', () => {
+    const adj = new Map<number, number[]>()
+    adj.set(0, [])
+    expect(TopologicalSort.sort(adj)).toEqual([0])
+  })
+
+  it('allTopologicalSorts returns all orderings', () => {
+    const adj = new Map<number, number[]>()
+    adj.set(0, [])
+    adj.set(1, [])
+    const sorts = TopologicalSort.allTopologicalSorts(adj)
+    expect(sorts.length).toBe(2)
+  })

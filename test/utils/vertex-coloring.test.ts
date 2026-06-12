@@ -397,3 +397,19 @@ describe('VertexColoring - larger graphs', () => {
     expect(vc.maxDegree()).toBe(0)
   })
 })
+  it('greedyColor single node', () => {
+    const vc = new VertexColoring(1)
+    expect(vc.greedyColor()).toEqual([0])
+  })
+
+  it('greedyColor disconnected nodes', () => {
+    const vc = new VertexColoring(3)
+    expect(vc.greedyColor()).toEqual([0, 0, 0])
+  })
+
+  it('chromaticNumber returns number', () => {
+    const vc = new VertexColoring(3)
+    vc.addEdge(0, 1)
+    vc.addEdge(1, 2)
+    expect(typeof vc.chromaticNumber()).toBe('number')
+  })

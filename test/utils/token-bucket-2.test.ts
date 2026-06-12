@@ -333,3 +333,20 @@ describe('TokenBucket2', () => {
     expect(bucket.tryConsume(5)).toBe(true)
   })
 })
+
+  it('tryConsume returns true with tokens', () => {
+    const tb = new TokenBucket2(10, 1)
+    expect(tb.tryConsume(5)).toBe(true)
+  })
+
+  it('tryConsume returns false when empty', () => {
+    const tb = new TokenBucket2(10, 1)
+    tb.tryConsume(10)
+    expect(tb.tryConsume(1)).toBe(false)
+  })
+
+  it('consume throws when empty', () => {
+    const tb = new TokenBucket2(10, 1)
+    tb.tryConsume(10)
+    expect(() => tb.consume(1)).toThrow()
+  })

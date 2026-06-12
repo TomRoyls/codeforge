@@ -341,3 +341,21 @@ describe('VByte', () => {
     expect(() => VByte.encode(-1)).toThrow()
   })
 })
+  it('encode decode roundtrip', () => {
+    const encoded = VByte.encode(300)
+    const decoded = VByte.decode(encoded)
+    expect(decoded.value).toBe(300)
+  })
+
+  it('encodeMany decodeMany roundtrip', () => {
+    const values = [1, 127, 128, 300, 16384]
+    const encoded = VByte.encodeMany(values)
+    const decoded = VByte.decodeMany(encoded)
+    expect(decoded.values).toEqual(values)
+  })
+
+  it('encode 0', () => {
+    const encoded = VByte.encode(0)
+    const decoded = VByte.decode(encoded)
+    expect(decoded.value).toBe(0)
+  })

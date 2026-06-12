@@ -579,3 +579,23 @@ describe('UnionFindUndo', () => {
     expect(dsu.connected(0, 2)).toBe(false)
   })
 })
+  it('find returns root', () => {
+    const uf = new UnionFindUndo(3)
+    uf.union(0, 1)
+    expect(uf.find(0)).toBe(uf.find(1))
+  })
+
+  it('connected returns true after union', () => {
+    const uf = new UnionFindUndo(3)
+    uf.union(0, 1)
+    expect(uf.connected(0, 1)).toBe(true)
+  })
+
+  it('snapshot and undo', () => {
+    const uf = new UnionFindUndo(3)
+    const snap = uf.snapshot()
+    uf.union(0, 1)
+    expect(uf.connected(0, 1)).toBe(true)
+    uf.undo(snap)
+    expect(uf.connected(0, 1)).toBe(false)
+  })

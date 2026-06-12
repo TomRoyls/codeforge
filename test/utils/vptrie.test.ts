@@ -385,3 +385,25 @@ describe('VPTrie', () => {
     expect(vp.kNearest([0, 0], 1)).toEqual([[5, 5]])
   })
 })
+
+  it('size returns point count', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([1, 2])
+    vp.addPoint([3, 4])
+    expect(vp.size).toBe(2)
+  })
+
+  it('nearest returns closest point', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([10, 10])
+    expect(vp.nearest([1, 1])).toEqual([0, 0])
+  })
+
+  it('kNearest returns k results', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([1, 1])
+    vp.addPoint([10, 10])
+    expect(vp.kNearest([0, 0], 2).length).toBe(2)
+  })

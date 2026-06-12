@@ -418,3 +418,24 @@ describe('TarjanSCC', () => {
     expect(sccs.length).toBe(1)
   })
 })
+  it('countSCCs returns count', () => {
+    const adj = new Map<number, number[]>()
+    adj.set(0, [1])
+    adj.set(1, [0])
+    adj.set(2, [])
+    expect(TarjanSCC.countSCCs(adj)).toBe(2)
+  })
+
+  it('condensation returns DAG', () => {
+    const adj = new Map<number, number[]>()
+    adj.set(0, [1])
+    adj.set(1, [0])
+    const dag = TarjanSCC.condensation(adj)
+    expect(dag).toBeDefined()
+  })
+
+  it('single node has one SCC', () => {
+    const adj = new Map<number, number[]>()
+    adj.set(0, [])
+    expect(TarjanSCC.findSCCs(adj)).toEqual([[0]])
+  })

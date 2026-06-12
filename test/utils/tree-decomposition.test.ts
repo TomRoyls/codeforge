@@ -468,3 +468,22 @@ describe('TreeDecomposition', () => {
     expect(td).toBeDefined()
   })
 })
+  it('treewidth returns number', () => {
+    const td = new TreeDecomposition(3)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    expect(typeof td.treewidth()).toBe('number')
+  })
+
+  it('bags returns arrays', () => {
+    const td = new TreeDecomposition(3)
+    td.addEdge(0, 1)
+    td.addEdge(1, 2)
+    const b = td.bags()
+    expect(Array.isArray(b)).toBe(true)
+  })
+
+  it('single node has treewidth 0', () => {
+    const td = new TreeDecomposition(1)
+    expect(td.treewidth()).toBe(0)
+  })

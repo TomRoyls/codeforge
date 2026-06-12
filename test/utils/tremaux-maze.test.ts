@@ -523,3 +523,24 @@ describe('TremauxMaze', () => {
     expect(path.length).toBeGreaterThan(0)
   })
 })
+
+  it('solve simple maze', () => {
+    const maze = new TremauxMaze(2, 2)
+    maze.addPassage([0, 0], [1, 0])
+    maze.addPassage([1, 0], [1, 1])
+    const path = maze.solve([0, 0], [1, 1])
+    expect(path.length).toBeGreaterThan(0)
+  })
+
+  it('solve same start and end', () => {
+    const maze = new TremauxMaze(2, 2)
+    maze.addPassage([0, 0], [1, 0])
+    const path = maze.solve([0, 0], [0, 0])
+    expect(path).toEqual([[0, 0]])
+  })
+
+  it('solve with no passages returns empty', () => {
+    const maze = new TremauxMaze(2, 2)
+    const path = maze.solve([0, 0], [1, 1])
+    expect(path).toEqual([])
+  })

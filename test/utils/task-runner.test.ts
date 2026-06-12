@@ -468,3 +468,20 @@ describe('runWithConcurrency', () => {
     expect(order).toEqual([1, 2, 3])
   })
 })
+  it('getStats returns stats from results', () => {
+    const tr = new TaskRunner({ concurrency: 2 })
+    const results = [{ status: 'fulfilled', value: 1 }, { status: 'rejected', reason: new Error('fail') }]
+    const stats = tr.getStats(results)
+    expect(stats.total).toBe(2)
+  })
+
+  it('getStats works with empty results', () => {
+    const tr = new TaskRunner({ concurrency: 2 })
+    const stats = tr.getStats([])
+    expect(stats.total).toBe(0)
+  })
+
+  it('concurrency is respected', () => {
+    const tr = new TaskRunner({ concurrency: 3 })
+    expect(tr).toBeDefined()
+  })

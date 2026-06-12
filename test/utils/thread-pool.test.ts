@@ -591,3 +591,18 @@ describe('ThreadPool', () => {
     }
   })
 })
+  it('default options create pool', () => {
+    const pool = new ThreadPool()
+    expect(pool).toBeDefined()
+  })
+
+  it('submit resolves task', async () => {
+    const pool = new ThreadPool({ maxConcurrency: 2 })
+    const result = await pool.submit(() => Promise.resolve(42))
+    expect(result.error).toBe(false)
+  })
+
+  it('pending starts at 0', () => {
+    const pool = new ThreadPool()
+    expect(pool.pending).toBe(0)
+  })

@@ -426,3 +426,23 @@ describe('TopK2', () => {
     expect(tk.top(10).length).toBe(0)
   })
 })
+  it('top returns sorted by count', () => {
+    const tk = new TopK2<string>(3)
+    tk.add('a', 5)
+    tk.add('b', 3)
+    tk.add('c', 1)
+    const top = tk.top()
+    expect(top[0].item).toBe('a')
+  })
+
+  it('size tracks items', () => {
+    const tk = new TopK2<string>(10)
+    tk.add('x', 1)
+    tk.add('y', 2)
+    expect(tk.size).toBeGreaterThan(0)
+  })
+
+  it('empty top returns empty array', () => {
+    const tk = new TopK2<string>(5)
+    expect(tk.top()).toEqual([])
+  })

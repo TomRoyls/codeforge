@@ -265,3 +265,20 @@ describe('TernarySearchContinuous', () => {
     expect(x).toBeCloseTo(-10, 1)
   })
 })
+  it('minimize finds minimum of parabola', () => {
+    const f = (x: number) => (x - 3) ** 2
+    const result = TernarySearchContinuous.minimize(f, 0, 10)
+    expect(Math.abs(result - 3)).toBeLessThan(0.01)
+  })
+
+  it('maximize finds maximum of inverted parabola', () => {
+    const f = (x: number) => -(x - 2) ** 2 + 10
+    const result = TernarySearchContinuous.maximize(f, 0, 10)
+    expect(Math.abs(result - 2)).toBeLessThan(0.01)
+  })
+
+  it('minimize with custom iterations', () => {
+    const f = (x: number) => x ** 2
+    const result = TernarySearchContinuous.minimize(f, -5, 5, 50)
+    expect(Math.abs(result)).toBeLessThan(0.1)
+  })

@@ -541,3 +541,27 @@ describe('VirtualTree', () => {
     expect(vtree.get(0)).toContain(5)
   })
 })
+
+  it('build with single vertex', () => {
+    const vt = new VirtualTree(3)
+    vt.addEdge(0, 1)
+    vt.addEdge(1, 2)
+    const result = vt.build([0])
+    expect(result.vtree).toBeDefined()
+  })
+
+  it('build returns lca function', () => {
+    const vt = new VirtualTree(3)
+    vt.addEdge(0, 1)
+    vt.addEdge(0, 2)
+    const result = vt.build([1, 2])
+    expect(typeof result.lca).toBe('function')
+  })
+
+  it('build with all vertices', () => {
+    const vt = new VirtualTree(3)
+    vt.addEdge(0, 1)
+    vt.addEdge(1, 2)
+    const result = vt.build([0, 1, 2])
+    expect(result.vtree.size).toBeGreaterThan(0)
+  })

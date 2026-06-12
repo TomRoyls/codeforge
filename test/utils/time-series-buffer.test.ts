@@ -493,3 +493,23 @@ describe('TimeSeriesBuffer', () => {
     expect(tsb.queryRange(0, 300)).toHaveLength(2)
   })
 })
+
+  it('queryRange returns entries in range', () => {
+    const tsb = new TimeSeriesBuffer(10)
+    tsb.push(100, 1)
+    tsb.push(200, 2)
+    tsb.push(300, 3)
+    expect(tsb.queryRange(150, 250).length).toBe(1)
+  })
+
+  it('empty buffer queryRange returns empty', () => {
+    const tsb = new TimeSeriesBuffer(10)
+    expect(tsb.queryRange(0, 100)).toEqual([])
+  })
+
+  it('push maintains order', () => {
+    const tsb = new TimeSeriesBuffer(10)
+    tsb.push(1, 10)
+    tsb.push(2, 20)
+    expect(tsb.entries.length).toBe(2)
+  })

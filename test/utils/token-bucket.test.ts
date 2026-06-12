@@ -338,3 +338,19 @@ describe('TokenBucket - wait', () => {
     expect(tb.available).toBeLessThanOrEqual(10)
   })
 })
+
+  it('consume returns true when tokens available', () => {
+    const tb = new TokenBucket({ capacity: 5, fillRate: 1, refillInterval: 1000 })
+    expect(tb.consume(3)).toBe(true)
+  })
+
+  it('consume throws when empty', () => {
+    const tb = new TokenBucket({ capacity: 2, fillRate: 1, refillInterval: 1000 })
+    tb.consume(2)
+    expect(() => tb.consume(1)).toThrow()
+  })
+
+  it('tryConsume works like consume', () => {
+    const tb = new TokenBucket({ capacity: 5, fillRate: 1, refillInterval: 1000 })
+    expect(tb.tryConsume(1)).toBe(true)
+  })

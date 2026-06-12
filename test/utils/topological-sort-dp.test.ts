@@ -429,3 +429,20 @@ describe('TopologicalSortDP', () => {
     expect(ts.longestPath()).toBe(1)
   })
 })
+  it('longestPath returns 0 for single node', () => {
+    const ts = new TopologicalSortDP(1)
+    expect(ts.longestPath()).toBe(0)
+  })
+
+  it('countPaths returns 1 for single node', () => {
+    const ts = new TopologicalSortDP(1)
+    expect(ts.countPaths()).toBe(1)
+  })
+
+  it('longestPath with chain', () => {
+    const ts = new TopologicalSortDP(4)
+    ts.addEdge(0, 1)
+    ts.addEdge(1, 2)
+    ts.addEdge(2, 3)
+    expect(ts.longestPath()).toBe(3)
+  })

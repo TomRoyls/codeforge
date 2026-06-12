@@ -362,3 +362,18 @@ describe('XorFilter', () => {
     expect(f.has('b')).toBe(false);
   });
 });
+  it('create and has', () => {
+    const xf = XorFilter.create(['a', 'b', 'c'])
+    expect(xf.has('a')).toBe(true)
+    expect(xf.has('b')).toBe(true)
+  })
+
+  it('has returns false for missing', () => {
+    const xf = XorFilter.create(['x', 'y'])
+    expect(xf.has('z')).toBe(false)
+  }),
+
+  it('create with empty array', () => {
+    const xf = XorFilter.create([])
+    expect(xf).toBeDefined()
+  })

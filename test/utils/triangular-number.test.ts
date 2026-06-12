@@ -310,3 +310,17 @@ describe('TriangularNumber', () => {
     expect(TriangularNumber.isTriangular(7)).toBe(false)
   })
 })
+
+  it('nth returns triangular number', () => {
+    expect(TriangularNumber.nth(1)).toBe(1)
+    expect(TriangularNumber.nth(5)).toBe(15)
+  })
+
+  it('isTriangular checks correctly', () => {
+    expect(TriangularNumber.isTriangular(6)).toBe(true)
+    expect(TriangularNumber.isTriangular(7)).toBe(false)
+  })
+
+  it('generate returns correct count', () => {
+    expect(TriangularNumber.generate(5)).toEqual([1, 3, 6, 10, 15])
+  })

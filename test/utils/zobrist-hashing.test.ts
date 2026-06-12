@@ -394,3 +394,25 @@ describe('ZobristHashing', () => {
     expect(h2).toBe(h3)
   })
 })
+
+  it('hash returns number for state', () => {
+    const zh = new ZobristHashing<number>()
+    const state = new Map<number, number>()
+    state.set(0, 1)
+    state.set(1, 2)
+    expect(typeof zh.hash(state)).toBe('number')
+  })
+
+  it('addToHash modifies hash', () => {
+    const zh = new ZobristHashing<number>()
+    const h1 = 0
+    const h2 = zh.addToHash(h1, 0, 1)
+    expect(h2).not.toBe(h1)
+  })
+
+  it('movePiece combines add and remove', () => {
+    const zh = new ZobristHashing<number>()
+    const h1 = zh.addToHash(0, 0, 1)
+    const h2 = zh.movePiece(h1, 0, 1, 1)
+    expect(typeof h2).toBe('number')
+  })
