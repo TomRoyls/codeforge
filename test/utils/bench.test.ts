@@ -606,4 +606,23 @@ describe('bench', () => {
     expect(result.iterations).toBe(500)
     expect(result.totalMs).toBeGreaterThan(0)
   })
+
+  it('bench returns result with name', () => {
+    const result = bench('sync', () => Math.sqrt(4), { iterations: 100 })
+    expect(result.name).toBe('sync')
+    expect(result.totalMs).toBeGreaterThan(0)
+  })
+
+  it('bench returns result object', () => {
+    const result = bench('iter', () => 1 + 1, { iterations: 50 })
+    expect(result).toBeDefined()
+    expect(typeof result.totalMs).toBe('number')
+  })
+
+  it('compareBenchmarks returns suite', () => {
+    const r1 = bench('a', () => 1, { iterations: 50 })
+    const r2 = bench('b', () => 2, { iterations: 50 })
+    const suite = compareBenchmarks([r1, r2])
+    expect(suite.results.length).toBe(2)
+  })
 })

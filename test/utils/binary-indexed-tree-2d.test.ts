@@ -384,4 +384,22 @@ describe('BinaryIndexedTree2D', () => {
     bit.update(1, 1, 42)
     expect(bit.rangeQuery(1, 1, 1, 1)).toBe(42)
   })
+
+  it('rangeQuery on empty grid returns 0', () => {
+    const bit = new BinaryIndexedTree2D(5, 5)
+    expect(bit.rangeQuery(1, 1, 3, 3)).toBe(0)
+  })
+
+  it('multiple updates accumulate', () => {
+    const bit = new BinaryIndexedTree2D(3, 3)
+    bit.update(1, 1, 10)
+    bit.update(1, 1, 5)
+    expect(bit.rangeQuery(1, 1, 1, 1)).toBe(15)
+  })
+
+  it('single cell query', () => {
+    const bit = new BinaryIndexedTree2D(4, 4)
+    bit.update(2, 2, 7)
+    expect(bit.rangeQuery(2, 2, 2, 2)).toBe(7)
+  })
 })

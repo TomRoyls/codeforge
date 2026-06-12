@@ -250,4 +250,21 @@ describe('BinaryExponentiation', () => {
   it('handles zero exponent', () => {
     expect(BinaryExponentiation.powerNoMod(5n, 0n)).toBe(1n)
   })
+
+  it('powerNumber works with small values', () => {
+    expect(BinaryExponentiation.powerNumber(2, 10, 1000000007)).toBe(1024)
+  })
+
+  it('fibonacci returns correct values', () => {
+    expect(BinaryExponentiation.fibonacci(0)).toBe(0n)
+    expect(BinaryExponentiation.fibonacci(1)).toBe(1n)
+    expect(BinaryExponentiation.fibonacci(10)).toBe(55n)
+  })
+
+  it('matrixPower identity matrix', () => {
+    const identity = [[1n, 0n], [0n, 1n]]
+    const result = BinaryExponentiation.matrixPower(identity, 5n, 1000000007n)
+    expect(result[0][0]).toBe(1n)
+    expect(result[1][1]).toBe(1n)
+  })
 })

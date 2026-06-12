@@ -434,4 +434,22 @@ describe('BinaryLifting', () => {
     const bl = new BinaryLifting(adj, 0)
     expect(bl.kthAncestor(1, 5)).toBe(-1)
   })
+
+  it('lca of root with itself is root', () => {
+    const adj = [[1, 2], [0], [0]]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.lca(0, 0)).toBe(0)
+  })
+
+  it('lca of siblings is parent', () => {
+    const adj = [[1, 2], [0], [0]]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.lca(1, 2)).toBe(0)
+  })
+
+  it('kthAncestor of root is -1', () => {
+    const adj = [[1], [0]]
+    const bl = new BinaryLifting(adj, 0)
+    expect(bl.kthAncestor(0, 1)).toBe(-1)
+  })
 })

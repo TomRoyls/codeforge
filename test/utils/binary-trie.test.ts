@@ -436,4 +436,21 @@ describe('BinaryTrie', () => {
     const result = trie.maxXor(8)
     expect(result).toBeGreaterThan(7)
   })
+
+  it('find returns false for missing value', () => {
+    const trie = new BinaryTrie()
+    trie.insert(5)
+    expect(trie.find(10)).toBe(false)
+  })
+
+  it('remove returns false for missing', () => {
+    const trie = new BinaryTrie()
+    expect(trie.remove(99)).toBe(false)
+  })
+
+  it('insert and find zero', () => {
+    const trie = new BinaryTrie()
+    trie.insert(0)
+    expect(trie.find(0)).toBe(true)
+  })
 })

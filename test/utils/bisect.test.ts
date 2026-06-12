@@ -289,4 +289,16 @@ describe('Bisect', () => {
     expect(Bisect.bisectRight([-5, 0, 5], -3)).toBe(1)
     expect(Bisect.bisectRight([-5, 0, 5], 3)).toBe(2)
   })
+
+  it('bisectLeft on empty array returns 0', () => {
+    expect(Bisect.bisectLeft([], 5)).toBe(0)
+  })
+
+  it('bisectRight on empty array returns 0', () => {
+    expect(Bisect.bisectRight([], 5)).toBe(0)
+  })
+
+  it('bisectLeft with duplicates', () => {
+    expect(Bisect.bisectLeft([1, 2, 2, 2, 3], 2)).toBe(1)
+  })
 })

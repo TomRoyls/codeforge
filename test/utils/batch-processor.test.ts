@@ -794,5 +794,22 @@ describe('batch-processor', () => {
       expect(result.successful[1]).toBe(undefined)
       expect(result.successful[2]).toBe(3)
     })
+
+    it('processes empty batch sequentially', async () => {
+      const result = await processBatchSequential([], async (x: number) => x * 2)
+      expect(result.successful).toEqual([])
+    })
+
+    it('handles single item sequentially', async () => {
+      const result = await processBatchSequential([10], async (x: number) => x + 1)
+      expect(result.successful[0]).toBe(11)
+    })
+
+    it('reports failures sequentially', async () => {
+      const result = await processBatchSequential([1, 2], async () => {
+        throw new Error('fail')
+      })
+      expect(result.failed.length).toBeGreaterThan(0)
+    })
   })
 })

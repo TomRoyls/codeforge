@@ -513,4 +513,27 @@ describe('AVLTreeMap - serialization methods', () => {
     const clone = map.clone()
     expect(clone.equals(map)).toBe(true)
   })
+
+  it('first returns smallest key', () => {
+    const map = new AVLTreeMap<number, string>()
+    map.set(3, 'c')
+    map.set(1, 'a')
+    map.set(2, 'b')
+    expect(map.first()).toEqual([1, 'a'])
+  })
+
+  it('last returns largest key', () => {
+    const map = new AVLTreeMap<number, string>()
+    map.set(1, 'a')
+    map.set(3, 'c')
+    expect(map.last()).toEqual([3, 'c'])
+  })
+
+  it('clear removes all entries', () => {
+    const map = new AVLTreeMap<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    map.clear()
+    expect(map.size).toBe(0)
+  })
 })

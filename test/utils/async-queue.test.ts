@@ -475,4 +475,24 @@ describe('AsyncQueue - concurrency patterns', () => {
     expect(json.enqueued).toBe(3)
     expect(json.dequeued).toBe(1)
   })
+
+  it('closed queue throws on enqueue', async () => {
+    const q = new AsyncQueue<number>()
+    q.close()
+    expect(() => q.enqueue(1)).toThrow()
+  })
+
+  it('size tracks items', () => {
+    const q = new AsyncQueue<number>()
+    q.enqueue(1)
+    q.enqueue(2)
+    expect(q.size).toBe(2)
+  })
+
+  it('peek returns first item without removing', () => {
+    const q = new AsyncQueue<number>()
+    q.enqueue(42)
+    expect(q.peek()).toBe(42)
+    expect(q.size).toBe(1)
+  })
 })

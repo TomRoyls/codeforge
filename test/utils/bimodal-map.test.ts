@@ -507,4 +507,24 @@ describe('BimodalMap', () => {
     bm2.set(1, '1')
     expect(bm1.equals(bm2)).toBe(false)
   })
+
+  it('isEmpty on new map', () => {
+    const bm = new BimodalMap<string, number>()
+    expect(bm.isEmpty()).toBe(true)
+  })
+
+  it('clear removes all entries', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('a', 1)
+    bm.set('b', 2)
+    bm.clear()
+    expect(bm.isEmpty()).toBe(true)
+  })
+
+  it('freeze is callable', () => {
+    const bm = new BimodalMap<string, number>()
+    bm.set('x', 42)
+    bm.freeze()
+    expect(bm.get('x')).toBe(42)
+  })
 })

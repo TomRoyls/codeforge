@@ -444,4 +444,24 @@ describe('BandwidthMinimization', () => {
     bm.addEdge(0, 1)
     expect(bm.bandwidth()).toBe(1)
   })
+
+  it('single node has bandwidth 0', () => {
+    const bm = new BandwidthMinimization(1)
+    expect(bm.bandwidth()).toBe(0)
+  })
+
+  it('disconnected nodes have low bandwidth', () => {
+    const bm = new BandwidthMinimization(4)
+    bm.addEdge(0, 1)
+    bm.addEdge(2, 3)
+    expect(bm.bandwidth()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('path graph bandwidth', () => {
+    const bm = new BandwidthMinimization(4)
+    bm.addEdge(0, 1)
+    bm.addEdge(1, 2)
+    bm.addEdge(2, 3)
+    expect(bm.bandwidth()).toBeGreaterThanOrEqual(0)
+  })
 })

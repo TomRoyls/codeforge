@@ -359,4 +359,20 @@ describe('calculateBackoff - edge cases', () => {
     expect(delay).toBeGreaterThanOrEqual(0)
     expect(delay).toBeLessThanOrEqual(400)
   })
+
+  it('calculateUniformBackoff returns valid range', () => {
+    const delay = calculateUniformBackoff(1, 100, 1000)
+    expect(delay).toBeGreaterThanOrEqual(0)
+    expect(delay).toBeLessThanOrEqual(200)
+  })
+
+  it('attempt 0 returns base delay', () => {
+    const delay = calculateBackoff(0, 100, 30000, 'full')
+    expect(delay).toBeGreaterThanOrEqual(0)
+  })
+
+  it('calculateUniformBackoff respects max', () => {
+    const delay = calculateUniformBackoff(100, 100, 500)
+    expect(delay).toBeLessThanOrEqual(500)
+  })
 })

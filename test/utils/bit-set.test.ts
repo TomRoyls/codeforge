@@ -440,4 +440,29 @@ describe('BitSet - large scale', () => {
     expect(arr).toContain(1)
     expect(arr).toContain(3)
   })
+
+  it('count returns number of set bits', () => {
+    const bs = new BitSet(10)
+    bs.set(1)
+    bs.set(3)
+    bs.set(5)
+    expect(bs.count()).toBe(3)
+  })
+
+  it('flip toggles bit', () => {
+    const bs = new BitSet(5)
+    bs.set(2)
+    bs.flip(2)
+    expect(bs.get(2)).toBe(0)
+    bs.flip(2)
+    expect(bs.get(2)).toBe(1)
+  })
+
+  it('clearRange clears multiple bits', () => {
+    const bs = new BitSet(10)
+    bs.setRange(0, 5)
+    bs.clearRange(2, 4)
+    expect(bs.get(0)).toBe(1)
+    expect(bs.get(3)).toBe(0)
+  })
 })

@@ -408,5 +408,22 @@ describe('AdjacencyMatrix', () => {
       expect(g.equals(null)).toBe(false)
       expect(g.equals({})).toBe(false)
     })
+
+    it('neighbors of isolated node is empty', () => {
+      const g = new AdjacencyMatrix(3)
+      expect(g.neighbors(1)).toEqual([])
+    })
+
+    it('degree counts edges correctly', () => {
+      const g = new AdjacencyMatrix(3)
+      g.addEdge(0, 1)
+      g.addEdge(0, 2)
+      expect(g.degree(0)).toBe(2)
+    })
+
+    it('removeEdge returns false for non-existent', () => {
+      const g = new AdjacencyMatrix(3)
+      expect(g.removeEdge(0, 1)).toBe(false)
+    })
   })
 })

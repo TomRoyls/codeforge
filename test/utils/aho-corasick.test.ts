@@ -423,4 +423,21 @@ describe('AhoCorasick - equals', () => {
     expect(ac1.equals(ac2)).toBe(true)
     expect(ac1.equals(ac3)).toBe(false)
   })
+
+  it('clone preserves patterns', () => {
+    const ac = new AhoCorasick(['he', 'she'])
+    const c = ac.clone()
+    expect(c.search('ushers')).toEqual(ac.search('ushers'))
+  })
+
+  it('toJSON returns patterns', () => {
+    const ac = new AhoCorasick(['ab', 'cd'])
+    const json = ac.toJSON()
+    expect(json).toBeDefined()
+  })
+
+  it('search on empty text returns empty', () => {
+    const ac = new AhoCorasick(['a', 'b'])
+    expect(ac.search('')).toEqual([])
+  })
 })
