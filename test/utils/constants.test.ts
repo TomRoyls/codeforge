@@ -597,3 +597,15 @@ describe('constants - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('constants - wave564', () => {
+  it('constants w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('constants w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('constants w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

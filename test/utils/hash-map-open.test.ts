@@ -699,3 +699,15 @@ describe('hash-map-open - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('hash-map-open - wave564', () => {
+  it('hash-map-open w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hash-map-open w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

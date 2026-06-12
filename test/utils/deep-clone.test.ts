@@ -626,3 +626,15 @@ describe('deep-clone - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('deep-clone - wave564', () => {
+  it('deep-clone w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

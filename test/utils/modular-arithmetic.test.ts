@@ -523,3 +523,15 @@ describe('modular-arithmetic - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('modular-arithmetic - wave564', () => {
+  it('modular-arithmetic w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-arithmetic w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

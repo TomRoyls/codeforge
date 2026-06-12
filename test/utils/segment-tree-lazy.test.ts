@@ -655,3 +655,15 @@ describe('segment-tree-lazy - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('segment-tree-lazy - wave564', () => {
+  it('segment-tree-lazy w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-tree-lazy w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

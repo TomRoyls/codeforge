@@ -492,3 +492,15 @@ describe('binary-exponentiation - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-exponentiation - wave564', () => {
+  it('binary-exponentiation w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

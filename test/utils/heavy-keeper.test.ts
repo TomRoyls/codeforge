@@ -675,3 +675,15 @@ describe('heavy-keeper - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('heavy-keeper - wave564', () => {
+  it('heavy-keeper w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-keeper w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

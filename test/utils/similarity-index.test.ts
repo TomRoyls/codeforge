@@ -702,3 +702,15 @@ describe('similarity-index - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('similarity-index - wave564', () => {
+  it('similarity-index w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('similarity-index w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

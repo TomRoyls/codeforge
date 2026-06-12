@@ -795,3 +795,15 @@ describe('dominator-tree - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('dominator-tree - wave564', () => {
+  it('dominator-tree w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dominator-tree w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

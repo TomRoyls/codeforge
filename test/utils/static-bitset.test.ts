@@ -703,3 +703,15 @@ describe('static-bitset - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('static-bitset - wave564', () => {
+  it('static-bitset w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('static-bitset w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

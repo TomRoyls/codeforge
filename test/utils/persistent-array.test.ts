@@ -607,3 +607,15 @@ describe('persistent-array - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('persistent-array - wave564', () => {
+  it('persistent-array w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-array w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

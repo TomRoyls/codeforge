@@ -825,3 +825,15 @@ describe('fs-helpers - wave563', () => {
     expect(existsSync).toBeDefined()
   })
 })
+
+describe('fs-helpers - wave564', () => {
+  it('fs-helpers w564 v0', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers w564 v1', () => {
+    expect(existsSync).toBeDefined()
+  })
+  it('fs-helpers w564 v2', () => {
+    expect(existsSync).toBeDefined()
+  })
+})

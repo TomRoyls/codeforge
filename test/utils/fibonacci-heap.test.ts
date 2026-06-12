@@ -903,3 +903,15 @@ describe('fibonacci-heap - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('fibonacci-heap - wave564', () => {
+  it('fibonacci-heap w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-heap w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

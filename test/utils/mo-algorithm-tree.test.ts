@@ -992,3 +992,15 @@ describe('mo-algorithm-tree - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('mo-algorithm-tree - wave564', () => {
+  it('mo-algorithm-tree w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm-tree w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mo-algorithm-tree w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

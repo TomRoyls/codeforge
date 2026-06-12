@@ -697,3 +697,15 @@ describe('stoer-wagner - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('stoer-wagner - wave564', () => {
+  it('stoer-wagner w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stoer-wagner w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

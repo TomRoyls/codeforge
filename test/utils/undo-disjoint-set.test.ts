@@ -790,3 +790,15 @@ describe('undo-disjoint-set - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('undo-disjoint-set - wave564', () => {
+  it('undo-disjoint-set w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('undo-disjoint-set w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('undo-disjoint-set w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

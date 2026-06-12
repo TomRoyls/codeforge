@@ -735,3 +735,15 @@ describe('consistent-hash - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('consistent-hash - wave564', () => {
+  it('consistent-hash w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

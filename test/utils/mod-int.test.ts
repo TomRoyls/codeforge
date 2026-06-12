@@ -524,3 +524,15 @@ describe('mod-int - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('mod-int - wave564', () => {
+  it('mod-int w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

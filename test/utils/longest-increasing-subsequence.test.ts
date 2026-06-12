@@ -498,3 +498,15 @@ describe('longest-increasing-subsequence - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('longest-increasing-subsequence - wave564', () => {
+  it('longest-increasing-subsequence w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

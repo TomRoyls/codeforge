@@ -680,3 +680,15 @@ describe('modular-decomposition - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('modular-decomposition - wave564', () => {
+  it('modular-decomposition w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

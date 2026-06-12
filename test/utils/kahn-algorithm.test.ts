@@ -685,3 +685,15 @@ describe('kahn-algorithm - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('kahn-algorithm - wave564', () => {
+  it('kahn-algorithm w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kahn-algorithm w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

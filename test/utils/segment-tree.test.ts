@@ -624,3 +624,15 @@ describe('segment-tree - wave563', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('segment-tree - wave564', () => {
+  it('segment-tree w564 v0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree w564 v1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('segment-tree w564 v2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

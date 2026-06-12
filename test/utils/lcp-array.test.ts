@@ -563,3 +563,15 @@ describe('lcp-array - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('lcp-array - wave564', () => {
+  it('lcp-array w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

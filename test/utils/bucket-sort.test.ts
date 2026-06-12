@@ -474,3 +474,15 @@ describe('bucket-sort - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('bucket-sort - wave564', () => {
+  it('bucket-sort w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

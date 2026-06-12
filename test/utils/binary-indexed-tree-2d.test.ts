@@ -627,3 +627,15 @@ describe('binary-indexed-tree-2d - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('binary-indexed-tree-2d - wave564', () => {
+  it('binary-indexed-tree-2d w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

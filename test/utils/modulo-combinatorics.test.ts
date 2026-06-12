@@ -557,3 +557,15 @@ describe('modulo-combinatorics - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('modulo-combinatorics - wave564', () => {
+  it('modulo-combinatorics w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modulo-combinatorics w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

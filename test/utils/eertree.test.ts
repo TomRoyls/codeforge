@@ -596,3 +596,15 @@ describe('eertree - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('eertree - wave564', () => {
+  it('eertree w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

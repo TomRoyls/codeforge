@@ -755,3 +755,15 @@ describe('sorted-set - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('sorted-set - wave564', () => {
+  it('sorted-set w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sorted-set w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})

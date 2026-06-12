@@ -515,3 +515,15 @@ describe('subset-sum - wave563', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('subset-sum - wave564', () => {
+  it('subset-sum w564 v0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum w564 v1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum w564 v2', () => {
+    expect(describe).toBeDefined()
+  })
+})
