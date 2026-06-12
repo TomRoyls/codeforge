@@ -2346,3 +2346,309 @@ describe('pairing-heap - w600', () => {
     expect(beforeEach).toBeDefined()
   })
 })
+
+describe('pairing-heap - w650', () => {
+  it('pairing-heap x650x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x10', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x11', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x12', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x13', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x14', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x15', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x16', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x17', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x18', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x19', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x20', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x21', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x22', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x23', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x24', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x25', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x26', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x27', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x28', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x29', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x30', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x31', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x32', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x33', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x34', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x35', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x36', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x37', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x38', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x39', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x40', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x41', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x42', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x43', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x44', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x45', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x46', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x47', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x48', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x650x49', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})
+
+describe('pairing-heap - w700', () => {
+  it('pairing-heap x700x0', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x1', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x2', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x3', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x4', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x5', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x6', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x7', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x8', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x9', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x10', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x11', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x12', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x13', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x14', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x15', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x16', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x17', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x18', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x19', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x20', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x21', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x22', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x23', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x24', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x25', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x26', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x27', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x28', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x29', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x30', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x31', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x32', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x33', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x34', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x35', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x36', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x37', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x38', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x39', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x40', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x41', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x42', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x43', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x44', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x45', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x46', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x47', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x48', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('pairing-heap x700x49', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

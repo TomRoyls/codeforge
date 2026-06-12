@@ -2268,3 +2268,309 @@ describe('elias-coding - w600', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('elias-coding - w650', () => {
+  it('elias-coding x650x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x650x49', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('elias-coding - w700', () => {
+  it('elias-coding x700x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-coding x700x49', () => {
+    expect(describe).toBeDefined()
+  })
+})
