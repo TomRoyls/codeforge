@@ -392,4 +392,21 @@ describe('PersistentQueue', () => {
     expect(value).toBe(10)
     expect(q3.size).toBe(0)
   })
+
+  it('peek returns front element', () => {
+    const q = PersistentQueue.create<number>()
+    const q2 = q.enqueue(42)
+    expect(q2.peek()).toBe(42)
+  })
+
+  it('toArray returns elements in order', () => {
+    const q = PersistentQueue.create<number>()
+    const q2 = q.enqueue(1).enqueue(2).enqueue(3)
+    expect(q2.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('dequeue from empty returns null', () => {
+    const q = PersistentQueue.create<number>()
+    expect(q.dequeue()).toBeNull()
+  })
 })

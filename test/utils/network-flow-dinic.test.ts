@@ -405,4 +405,24 @@ describe('NetworkFlowDinic', () => {
     nf.addEdge(1, 2, 2.5)
     expect(nf.maxFlow(0, 2)).toBeCloseTo(2.5, 1)
   })
+
+  it('no path returns 0', () => {
+    const nf = new NetworkFlowDinic(4)
+    nf.addEdge(0, 1, 5)
+    nf.addEdge(2, 3, 5)
+    expect(nf.maxFlow(0, 3)).toBe(0)
+  })
+
+  it('single edge flow', () => {
+    const nf = new NetworkFlowDinic(2)
+    nf.addEdge(0, 1, 10)
+    expect(nf.maxFlow(0, 1)).toBe(10)
+  })
+
+  it('parallel edges sum', () => {
+    const nf = new NetworkFlowDinic(2)
+    nf.addEdge(0, 1, 5)
+    nf.addEdge(0, 1, 5)
+    expect(nf.maxFlow(0, 1)).toBe(10)
+  })
 })

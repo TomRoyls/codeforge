@@ -317,4 +317,24 @@ describe('PersistentVector', () => {
     expect(vec.count).toBe(100)
     expect(vec.get(50)).toBe(50)
   })
+
+  it('get on empty returns undefined', () => {
+    const vec = PersistentVector.empty<number>()
+    expect(vec.get(0)).toBeUndefined()
+  })
+
+  it('push returns new vector', () => {
+    const vec = PersistentVector.empty<number>()
+    const vec2 = vec.push(10)
+    expect(vec2.get(0)).toBe(10)
+    expect(vec.size).toBe(0)
+  })
+
+  it('set creates new version', () => {
+    const vec = PersistentVector.empty<number>()
+    const vec2 = vec.push(1).push(2)
+    const vec3 = vec2.set(0, 99)
+    expect(vec2.get(0)).toBe(1)
+    expect(vec3.get(0)).toBe(99)
+  })
 })

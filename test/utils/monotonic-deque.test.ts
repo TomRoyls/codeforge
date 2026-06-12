@@ -485,4 +485,26 @@ describe('MonotonicDeque', () => {
     deque.push(2)
     expect(deque.size).toBe(2)
   })
+
+  it('front returns current extreme', () => {
+    const deque = new MonotonicDeque<number>('min')
+    deque.push(3)
+    deque.push(1)
+    deque.push(2)
+    expect(deque.front()).toBe(1)
+  })
+
+  it('back returns last element', () => {
+    const deque = new MonotonicDeque<number>('min')
+    deque.push(5)
+    expect(deque.back()).toBe(5)
+  })
+
+  it('shift removes from front', () => {
+    const deque = new MonotonicDeque<number>('min')
+    deque.push(1)
+    deque.push(2)
+    deque.shift()
+    expect(deque.size).toBeLessThan(2)
+  })
 })

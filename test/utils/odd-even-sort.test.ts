@@ -269,4 +269,19 @@ describe('OddEvenSort', () => {
   it('should handle empty array', () => {
     expect(OddEvenSort.sort([])).toEqual([])
   })
+
+  it('sortInPlace modifies array', () => {
+    const arr = [3, 1, 2]
+    OddEvenSort.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3])
+  })
+
+  it('sortWithComparator descending', () => {
+    const result = OddEvenSort.sortWithComparator([1, 3, 2], (a, b) => b - a)
+    expect(result).toEqual([3, 2, 1])
+  })
+
+  it('single element', () => {
+    expect(OddEvenSort.sort([42])).toEqual([42])
+  })
 })

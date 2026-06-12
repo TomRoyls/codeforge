@@ -376,4 +376,21 @@ describe('PersistentStack', () => {
     expect(stack.peek()).toBe('only')
     expect(stack.pop().isEmpty()).toBe(true)
   })
+
+  it('isEmpty on new stack', () => {
+    const stack = new PersistentStack<number>()
+    expect(stack.isEmpty()).toBe(true)
+  })
+
+  it('push then peek', () => {
+    const stack = new PersistentStack<number>()
+    const s2 = stack.push(42)
+    expect(s2.peek()).toBe(42)
+  })
+
+  it('push multiple toArray', () => {
+    const stack = new PersistentStack<number>()
+    const s2 = stack.push(1).push(2).push(3)
+    expect(s2.toArray()).toEqual([3, 2, 1])
+  })
 })

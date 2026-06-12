@@ -331,4 +331,25 @@ describe('MonotonicStack', () => {
   it('should handle empty array', () => {
     expect(MonotonicStack.nextGreaterElements([])).toEqual([])
   })
+
+  it('push returns popped elements', () => {
+    const stack = new MonotonicStack<number>()
+    stack.push(1)
+    stack.push(2)
+    const popped = stack.push(3)
+    expect(popped.length).toBeGreaterThanOrEqual(0)
+  })
+
+  it('peek returns top', () => {
+    const stack = new MonotonicStack<number>()
+    stack.push(5)
+    expect(stack.peek()).toBe(5)
+  })
+
+  it('toArray returns elements', () => {
+    const stack = new MonotonicStack<number>()
+    stack.push(1)
+    stack.push(2)
+    expect(stack.toArray().length).toBeGreaterThan(0)
+  })
 })

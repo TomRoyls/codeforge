@@ -467,4 +467,23 @@ describe('OrderedSet', () => {
     const values = [...os]
     expect(values).toEqual([1, 2, 3])
   })
+
+  it('has returns false for missing', () => {
+    const set = new OrderedSet<number>()
+    expect(set.has(99)).toBe(false)
+  })
+
+  it('delete removes element', () => {
+    const set = new OrderedSet<number>()
+    set.add(1)
+    set.add(2)
+    set.delete(1)
+    expect(set.has(1)).toBe(false)
+  })
+
+  it('add returns true for new element', () => {
+    const set = new OrderedSet<number>()
+    expect(set.add(5)).toBe(true)
+    expect(set.add(5)).toBe(false)
+  })
 })

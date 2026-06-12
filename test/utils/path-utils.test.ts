@@ -300,4 +300,19 @@ describe('path-utils', () => {
     const result = resolvePath('/')
     expect(typeof result).toBe('string')
   })
+
+  it('resolvePath handles relative path', () => {
+    const result = resolvePath('./test')
+    expect(result).toContain('test')
+  })
+
+  it('resolvePath handles absolute path', () => {
+    const result = resolvePath('/absolute/path')
+    expect(result).toBe('/absolute/path')
+  })
+
+  it('resolvePath handles parent refs', () => {
+    const result = resolvePath('a/b/../c')
+    expect(result).toContain('c')
+  })
 })

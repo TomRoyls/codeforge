@@ -260,4 +260,21 @@ describe('PancakeSort', () => {
   it('sort handles all same elements', () => {
     expect(PancakeSort.sort([5, 5, 5, 5])).toEqual([5, 5, 5, 5])
   })
+
+  it('sortWithFlips returns flip count', () => {
+    const result = PancakeSort.sortWithFlips([3, 1, 2])
+    expect(result.sorted).toEqual([1, 2, 3])
+    expect(result.flips).toBeGreaterThan(0)
+  })
+
+  it('isSorted detects sorted', () => {
+    expect(PancakeSort.isSorted([1, 2, 3])).toBe(true)
+    expect(PancakeSort.isSorted([3, 1, 2])).toBe(false)
+  })
+
+  it('flip reverses prefix', () => {
+    const arr = [1, 2, 3, 4, 5]
+    PancakeSort.flip(arr, 3)
+    expect(arr).toEqual([3, 2, 1, 4, 5])
+  })
 })

@@ -247,4 +247,8 @@ describe('LongestIncreasingSubsequence', () => {
   it('empty array returns 0', () => {
     expect(LongestIncreasingSubsequence.length([])).toBe(0)
   })
+
+  it('single element returns 1', () => {
+    expect(LongestIncreasingSubsequence.length([42])).toBe(1)
+  })
 })

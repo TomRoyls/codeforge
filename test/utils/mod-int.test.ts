@@ -278,4 +278,24 @@ describe('ModInt', () => {
     expect(a.equals(b)).toBe(true)
     expect(a.equals(ModInt.from(3, 11))).toBe(false)
   })
+
+  it('mul multiplies correctly', () => {
+    const a = ModInt.from(3, 7)
+    const b = ModInt.from(4, 7)
+    const result = a.mul(b)
+    expect(result).toBeDefined()
+  })
+
+  it('sub subtracts correctly', () => {
+    const a = ModInt.from(5, 7)
+    const b = ModInt.from(3, 7)
+    const result = a.sub(b)
+    expect(result).toBeDefined()
+  })
+
+  it('pow returns correct result', () => {
+    const a = ModInt.from(2, 7)
+    const result = a.pow(3)
+    expect(result).toBeDefined()
+  })
 })

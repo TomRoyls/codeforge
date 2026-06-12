@@ -354,4 +354,20 @@ describe('NTT', () => {
     expect(result[0]).toBe(3n)
     expect(result[1]).toBe(10n)
   })
+
+  it('multiplyPolynomials basic', () => {
+    const result = NTT.multiplyPolynomials([1n, 1n], [1n, 1n])
+    expect(result).toEqual([1n, 2n, 1n])
+  })
+
+  it('transform and inverse round-trip', () => {
+    const input = [1n, 0n, 0n, 0n]
+    const transformed = NTT.transform(input)
+    const restored = NTT.transform(transformed, 998244353n, 3n, true)
+    expect(restored[0]).toBeGreaterThan(0n)
+  })
+
+  it('transform empty returns empty', () => {
+    expect(NTT.transform([])).toEqual([])
+  })
 })

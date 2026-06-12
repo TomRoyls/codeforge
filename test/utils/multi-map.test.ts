@@ -439,4 +439,24 @@ describe('MultiMap', () => {
     expect(inv.hasEntry(1, 'a')).toBe(true)
     expect(inv.hasEntry(1, 'b')).toBe(true)
   })
+
+  it('has returns false for missing key', () => {
+    const mm = new MultiMap<string, number>()
+    expect(mm.has('missing')).toBe(false)
+  })
+
+  it('delete removes a value', () => {
+    const mm = new MultiMap<string, number>()
+    mm.set('a', 1)
+    mm.set('a', 2)
+    mm.delete('a', 1)
+    expect(mm.get('a').has(1)).toBe(false)
+  })
+
+  it('keyCount tracks keys', () => {
+    const mm = new MultiMap<string, number>()
+    mm.set('a', 1)
+    mm.set('b', 2)
+    expect(mm.keyCount).toBe(2)
+  })
 })

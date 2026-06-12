@@ -473,4 +473,25 @@ describe('PairHeap', () => {
     heap.push(3)
     expect(heap.pop()).toBe(5)
   })
+
+  it('peek returns min', () => {
+    const heap = new PairHeap<number>()
+    heap.push(3)
+    heap.push(1)
+    heap.push(2)
+    expect(heap.peek()).toBe(1)
+  })
+
+  it('empty heap pop returns undefined', () => {
+    const heap = new PairHeap<number>()
+    expect(heap.pop()).toBeUndefined()
+  })
+
+  it('size increases with pushes', () => {
+    const heap = new PairHeap<number>()
+    heap.push(1)
+    heap.push(2)
+    heap.push(3)
+    expect(heap.size).toBe(3)
+  })
 })

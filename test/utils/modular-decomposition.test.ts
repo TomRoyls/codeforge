@@ -432,4 +432,26 @@ describe('ModularDecomposition', () => {
     const md = new ModularDecomposition(3)
     expect(md.moduleCount()).toBeGreaterThanOrEqual(1)
   })
+
+  it('isModule on same vertex returns true', () => {
+    const md = new ModularDecomposition(3)
+    md.addEdge(0, 1)
+    md.addEdge(1, 2)
+    md.findModules()
+    expect(md.isModule(0, 0)).toBe(true)
+  })
+
+  it('findModules returns modules', () => {
+    const md = new ModularDecomposition(4)
+    md.addEdge(0, 1)
+    md.addEdge(2, 3)
+    const modules = md.findModules()
+    expect(modules.length).toBeGreaterThan(0)
+  })
+
+  it('single vertex graph', () => {
+    const md = new ModularDecomposition(1)
+    const modules = md.findModules()
+    expect(modules.length).toBeGreaterThan(0)
+  })
 })

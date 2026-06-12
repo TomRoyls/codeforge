@@ -443,4 +443,26 @@ describe('OfflineDynamicConnectivity', () => {
     odc.addQuery(0, 1, 5)
     expect(odc.solve()[0]).toBeDefined()
   })
+
+  it('no queries returns empty', () => {
+    const odc = new OfflineDynamicConnectivity(3)
+    odc.addEdge(0, 1, 0, 5)
+    expect(odc.solve()).toEqual([])
+  })
+
+  it('single query', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 0, 10)
+    odc.addQuery(0, 1, 5)
+    const result = odc.solve()
+    expect(result.length).toBe(1)
+  })
+
+  it('query before edge added', () => {
+    const odc = new OfflineDynamicConnectivity(2)
+    odc.addEdge(0, 1, 5, 10)
+    odc.addQuery(0, 1, 0)
+    const result = odc.solve()
+    expect(result[0]).toBe(false)
+  })
 })

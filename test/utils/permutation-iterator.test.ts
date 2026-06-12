@@ -356,4 +356,23 @@ describe('PermutationIterator', () => {
     }
     expect(count).toBe(120)
   })
+
+  it('n=0 returns done immediately', () => {
+    const iter = new PermutationIterator(0)
+    const result = iter.next()
+    expect(result.done).toBe(true)
+  })
+
+  it('n=1 returns [0]', () => {
+    const iter = new PermutationIterator(1)
+    expect(iter.next().value).toEqual([0])
+  })
+
+  it('n=2 returns both orderings', () => {
+    const iter = new PermutationIterator(2)
+    const perms: number[][] = []
+    let r: IteratorResult<number[]>
+    while (!(r = iter.next()).done) perms.push(r.value)
+    expect(perms.length).toBe(2)
+  })
 })

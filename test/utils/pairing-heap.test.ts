@@ -474,5 +474,29 @@ describe('PairingHeap', () => {
       heap.insert(1)
       expect(heap.isEmpty()).toBe(false)
     })
+
+    it('peek returns min', () => {
+      const heap = new PairingHeap<number>()
+      heap.insert(3)
+      heap.insert(1)
+      heap.insert(2)
+      expect(heap.peek()).toBe(1)
+    })
+
+    it('size tracks entries', () => {
+      const heap = new PairingHeap<number>()
+      heap.insert(1)
+      heap.insert(2)
+      expect(heap.size).toBe(2)
+    })
+
+    it('extractMin removes minimum', () => {
+      const heap = new PairingHeap<number>()
+      heap.insert(5)
+      heap.insert(3)
+      heap.insert(7)
+      expect(heap.extractMin()).toBe(3)
+      expect(heap.size).toBe(2)
+    })
   })
 })

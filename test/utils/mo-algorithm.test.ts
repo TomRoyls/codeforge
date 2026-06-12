@@ -1058,4 +1058,46 @@ describe('MoAlgorithm', () => {
     )
     expect(answers).toEqual([60, 90, 120, 150])
   })
+
+  it('empty queries returns empty', () => {
+    const answers = MoAlgorithm.solve(
+      [1, 2, 3],
+      [],
+      (s: { count: number }) => { s.count++ },
+      (s: { count: number }) => { s.count++ },
+      (s: { count: number }) => { s.count-- },
+      (s: { count: number }) => { s.count-- },
+      (s) => s.count,
+      { count: 0 },
+    )
+    expect(answers).toEqual([])
+  })
+
+  it('single element array', () => {
+    const answers = MoAlgorithm.solve(
+      [42],
+      [{ left: 0, right: 0 }],
+      (s: { count: number }) => { s.count++ },
+      (s: { count: number }) => { s.count++ },
+      (s: { count: number }) => { s.count-- },
+      (s: { count: number }) => { s.count-- },
+      (s) => s.count,
+      { count: 0 },
+    )
+    expect(answers[0]).toBe(1)
+  })
+
+  it('full range query', () => {
+    const answers = MoAlgorithm.solve(
+      [10, 20, 30],
+      [{ left: 0, right: 2 }],
+      (s: { count: number }) => { s.count++ },
+      (s: { count: number }) => { s.count++ },
+      (s: { count: number }) => { s.count-- },
+      (s: { count: number }) => { s.count-- },
+      (s) => s.count,
+      { count: 0 },
+    )
+    expect(answers[0]).toBe(3)
+  })
 })
