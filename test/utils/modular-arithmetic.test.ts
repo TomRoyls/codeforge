@@ -276,4 +276,16 @@ describe('ModularArithmetic', () => {
       expect(result % 5).toBe(3)
     }
   })
+
+  it('mod of positive number', () => {
+    expect(ModularArithmetic.mod(7, 5)).toBe(2)
+  })
+
+  it('add modular', () => {
+    expect(ModularArithmetic.add(3, 4, 5)).toBe(2)
+  })
+
+  it('mod handles negative', () => {
+    expect(ModularArithmetic.mod(-1, 5)).toBe(4)
+  })
 })

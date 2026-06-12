@@ -333,4 +333,19 @@ describe('Manacher', () => {
     const all = m.getAllPalindromes()
     expect(all.length).toBeGreaterThan(0)
   })
+
+  it('empty string', () => {
+    const m = new Manacher('')
+    expect(m.countAllPalindromes()).toBe(0)
+  })
+
+  it('single char palindrome', () => {
+    const m = new Manacher('a')
+    expect(m.longestPalindrome().length).toBe(1)
+  })
+
+  it('isPalindrome works', () => {
+    const m = new Manacher('aba')
+    expect(m.isPalindrome(0, 2)).toBe(true)
+  })
 })

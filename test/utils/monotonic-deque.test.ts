@@ -507,4 +507,22 @@ describe('MonotonicDeque', () => {
     deque.shift()
     expect(deque.size).toBeLessThan(2)
   })
+
+  it('empty deque front undefined', () => {
+    const d = new MonotonicDeque<number>('min')
+    expect(d.front()).toBeUndefined()
+  })
+
+  it('push returns size', () => {
+    const d = new MonotonicDeque<number>('min')
+    expect(typeof d.push(1)).toBe('number')
+  })
+
+  it('min mode keeps smallest', () => {
+    const d = new MonotonicDeque<number>('min')
+    d.push(3)
+    d.push(1)
+    d.push(2)
+    expect(d.front()).toBe(1)
+  })
 })

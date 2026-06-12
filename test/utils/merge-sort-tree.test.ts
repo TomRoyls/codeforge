@@ -306,4 +306,19 @@ describe('MergeSortTree', () => {
     const mst = new MergeSortTree([5, 3, 8])
     expect(mst.queryCountLessThan(1, 1, 4)).toBe(1)
   })
+
+  it('queryCountLessThan returns number', () => {
+    const tree = new MergeSortTree([1, 3, 5, 7])
+    expect(typeof tree.queryCountLessThan(0, 3, 4)).toBe('number')
+  })
+
+  it('queryCountInRange returns number', () => {
+    const tree = new MergeSortTree([1, 3, 5, 7])
+    expect(typeof tree.queryCountInRange(0, 3, 2, 6)).toBe('number')
+  })
+
+  it('querySorted returns array', () => {
+    const tree = new MergeSortTree([3, 1, 2])
+    expect(tree.querySorted(0, 2)).toEqual([1, 2, 3])
+  })
 })

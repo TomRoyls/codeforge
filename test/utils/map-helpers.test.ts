@@ -386,4 +386,22 @@ describe('append', () => {
     increment(map, 'count')
     expect(map.get('count')).toBe(1)
   })
+
+  it('increment adds to map', () => {
+    const m = new Map<string, number>()
+    increment(m, 'a')
+    expect(m.get('a')).toBe(1)
+  })
+
+  it('increment with delta', () => {
+    const m = new Map<string, number>()
+    increment(m, 'a', 5)
+    expect(m.get('a')).toBe(5)
+  })
+
+  it('append creates array', () => {
+    const m = new Map<string, number[]>()
+    append(m, 'a', 1)
+    expect(m.get('a')).toEqual([1])
+  })
 })

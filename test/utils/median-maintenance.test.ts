@@ -434,4 +434,24 @@ describe('MedianMaintenance', () => {
     expect(median).toBeGreaterThanOrEqual(1)
     expect(median).toBeLessThanOrEqual(10)
   })
+
+  it('single value is median', () => {
+    const mm = new MedianMaintenance()
+    mm.add(5)
+    expect(mm.getMedian()).toBe(5)
+  })
+
+  it('two values median', () => {
+    const mm = new MedianMaintenance()
+    mm.add(1)
+    mm.add(3)
+    expect(mm.getMedian()).toBe(1)
+  })
+
+  it('clear resets', () => {
+    const mm = new MedianMaintenance()
+    mm.add(5)
+    mm.clear()
+    expect(() => mm.getMedian()).toThrow()
+  })
 })

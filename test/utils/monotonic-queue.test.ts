@@ -496,4 +496,22 @@ describe('MonotonicQueue - multiple operations', () => {
     q.push(7)
     expect(q.current()).toBe(7)
   })
+
+  it('isEmpty on new queue', () => {
+    const q = new MonotonicQueue<number>({ mode: 'min' })
+    expect(q.isEmpty()).toBe(true)
+  })
+
+  it('push and current', () => {
+    const q = new MonotonicQueue<number>({ mode: 'min' })
+    q.push(5)
+    expect(q.current()).toBe(5)
+  })
+
+  it('clear empties queue', () => {
+    const q = new MonotonicQueue<number>({ mode: 'min' })
+    q.push(5)
+    q.clear()
+    expect(q.isEmpty()).toBe(true)
+  })
 })

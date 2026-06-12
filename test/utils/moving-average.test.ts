@@ -503,4 +503,25 @@ describe('MovingAverage', () => {
     ma.reset()
     expect(ma.size).toBe(0)
   })
+
+  it('single push returns value', () => {
+    const ma = new MovingAverage(3)
+    ma.push(10)
+    expect(ma.average).toBe(10)
+  })
+
+  it('window size limits', () => {
+    const ma = new MovingAverage(2)
+    ma.push(10)
+    ma.push(20)
+    ma.push(30)
+    expect(ma.average).toBe(25)
+  })
+
+  it('reset clears values', () => {
+    const ma = new MovingAverage(3)
+    ma.push(10)
+    ma.reset()
+    expect(ma.toArray()).toEqual([])
+  })
 })

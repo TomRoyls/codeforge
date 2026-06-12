@@ -741,4 +741,20 @@ describe('MoAlgorithmTree', () => {
     mo.processQueries([[1, 3]], () => { ops++ }, () => { ops++ })
     expect(ops).toBeGreaterThan(0)
   })
+
+  it('constructor works', () => {
+    const mo = new MoAlgorithmTree(3)
+    expect(mo).toBeDefined()
+  })
+
+  it('addEdge works', () => {
+    const mo = new MoAlgorithmTree(2)
+    mo.addEdge(0, 1)
+    expect(mo).toBeDefined()
+  })
+
+  it('clone works', () => {
+    const mo = new MoAlgorithmTree(2)
+    expect(mo.clone()).toBeDefined()
+  })
 })

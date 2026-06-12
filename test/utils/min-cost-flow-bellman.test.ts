@@ -532,4 +532,24 @@ describe('MinCostFlow', () => {
     const result = mcf.solve(0, 1)
     expect(result.maxFlow).toBe(10)
   })
+
+  it('single edge min cost flow', () => {
+    const mcf = new MinCostFlow(2)
+    mcf.addEdge(0, 1, 10, 1)
+    const result = mcf.solve(0, 1)
+    expect(result.maxFlow).toBe(10)
+  })
+
+  it('no edges returns zero flow', () => {
+    const mcf = new MinCostFlow(2)
+    const result = mcf.solve(0, 1)
+    expect(result.maxFlow).toBe(0)
+  })
+
+  it('solve returns object', () => {
+    const mcf = new MinCostFlow(2)
+    const result = mcf.solve(0, 1)
+    expect(typeof result.maxFlow).toBe('number')
+    expect(typeof result.minCost).toBe('number')
+  })
 })

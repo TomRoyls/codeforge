@@ -339,4 +339,17 @@ describe('LZCompression', () => {
     const tokens = LZCompression.compress('hello')
     expect(tokens.length).toBeGreaterThan(0)
   })
+
+  it('compress empty string', () => {
+    expect(LZCompression.compress('')).toEqual([])
+  })
+
+  it('compress and decompress roundtrip', () => {
+    const tokens = LZCompression.compress('abcabc')
+    expect(LZCompression.decompress(tokens)).toBe('abcabc')
+  })
+
+  it('compress single char', () => {
+    expect(LZCompression.compress('a').length).toBeGreaterThan(0)
+  })
 })

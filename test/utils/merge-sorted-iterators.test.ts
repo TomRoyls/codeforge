@@ -423,4 +423,19 @@ describe('MergeSortedIterators', () => {
     const iter = new MergeSortedIterators([a(), b(), c()], (x, y) => x - y)
     expect(iter.toArray()).toEqual([1, 2, 3, 4, 5, 6])
   })
+
+  it('fromArrays empty', () => {
+    const m = MergeSortedIterators.fromArrays([])
+    expect(m.toArray()).toEqual([])
+  })
+
+  it('fromArrays single array', () => {
+    const m = MergeSortedIterators.fromArrays([[1, 2, 3]])
+    expect(m.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('fromArrays two arrays merged', () => {
+    const m = MergeSortedIterators.fromArrays([[1, 3], [2, 4]])
+    expect(m.toArray()).toEqual([1, 2, 3, 4])
+  })
 })

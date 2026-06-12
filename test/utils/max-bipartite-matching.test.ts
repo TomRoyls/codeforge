@@ -473,4 +473,20 @@ describe('MaxBipartiteMatching', () => {
     m.addEdge(1, 2)
     expect(m.getMatchingSize()).toBe(2)
   })
+
+  it('no edges returns empty', () => {
+    const m = new MaxBipartiteMatching(2, 2)
+    expect(m.maxMatching()).toEqual([])
+  })
+
+  it('single edge matches', () => {
+    const m = new MaxBipartiteMatching(2, 2)
+    m.addEdge(0, 0)
+    expect(m.getMatchingSize()).toBe(1)
+  })
+
+  it('getMatchingSize returns number', () => {
+    const m = new MaxBipartiteMatching(2, 2)
+    expect(typeof m.getMatchingSize()).toBe('number')
+  })
 })

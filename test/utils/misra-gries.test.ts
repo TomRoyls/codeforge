@@ -423,4 +423,22 @@ describe('MisraGries', () => {
     mg.processBatch([1, 2, 3, 4, 5])
     expect(mg.size).toBeGreaterThan(0)
   })
+
+  it('empty top returns empty', () => {
+    const mg = new MisraGries<string>(3)
+    expect(mg.top()).toEqual([])
+  })
+
+  it('process and top', () => {
+    const mg = new MisraGries<string>(3)
+    mg.process('a')
+    mg.process('a')
+    mg.process('a')
+    expect(mg.top().length).toBeGreaterThan(0)
+  })
+
+  it('getCount returns 0 for unseen', () => {
+    const mg = new MisraGries<string>(3)
+    expect(mg.getCount('missing')).toBe(0)
+  })
 })

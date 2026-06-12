@@ -425,4 +425,20 @@ describe('NetworkFlowDinic', () => {
     nf.addEdge(0, 1, 5)
     expect(nf.maxFlow(0, 1)).toBe(10)
   })
+
+  it('no edges max flow is 0', () => {
+    const d = new NetworkFlowDinic(2)
+    expect(d.maxFlow(0, 1)).toBe(0)
+  })
+
+  it('single edge flow', () => {
+    const d = new NetworkFlowDinic(2)
+    d.addEdge(0, 1, 10)
+    expect(d.maxFlow(0, 1)).toBe(10)
+  })
+
+  it('clone works', () => {
+    const d = new NetworkFlowDinic(2)
+    expect(d.clone()).toBeDefined()
+  })
 })

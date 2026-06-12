@@ -307,4 +307,19 @@ describe('ModuloCombinatorics', () => {
     const mc = new ModuloCombinatorics(5)
     expect(mc.nCr(0, 0)).toBe(1)
   })
+
+  it('factorial of 0 is 1', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.factorial(0)).toBe(1)
+  })
+
+  it('factorial of 5 is 120', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.factorial(5)).toBe(120)
+  })
+
+  it('nCr 5 choose 2 is 10', () => {
+    const mc = new ModuloCombinatorics(10)
+    expect(mc.nCr(5, 2)).toBe(10)
+  })
 })

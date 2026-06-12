@@ -1100,4 +1100,24 @@ describe('MoAlgorithm', () => {
     )
     expect(answers[0]).toBe(3)
   })
+
+  it('MoAlgorithm.solve is static', () => {
+    expect(typeof MoAlgorithm.solve).toBe('function')
+  })
+
+  it('MoAlgorithm is a class', () => {
+    expect(typeof MoAlgorithm).toBe('function')
+  })
+
+  it('solve with empty queries', () => {
+    const result = MoAlgorithm.solve(
+      [1, 2, 3],
+      [],
+      (s: number[], i: number) => { s.push(1) },
+      (s: number[], i: number) => { s.push(1) },
+      (s: number[]) => [...s],
+      []
+    )
+    expect(result).toEqual([])
+  })
 })
