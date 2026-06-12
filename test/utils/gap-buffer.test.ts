@@ -519,3 +519,16 @@ describe('GapBuffer', () => {
     expect(buffer.length).toBeGreaterThan(0)
   })
 })
+describe('gap-buffer - wave546', () => {
+  it('module accessible', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module type check', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module name check', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

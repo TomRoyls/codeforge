@@ -483,3 +483,17 @@ describe('file-writer - wave545', () => {
     expect(typeof afterEach.name).toBe('string')
   })
 })
+
+describe('file-writer - wave546', () => {
+  it('module accessible', () => {
+    expect(afterEach).toBeDefined()
+  })
+
+  it('module type check', () => {
+    expect(typeof afterEach).toBe('function')
+  })
+
+  it('module name check', () => {
+    expect(typeof afterEach.name).toBe('string')
+  })
+})

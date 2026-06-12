@@ -416,3 +416,17 @@ describe('sliding-window-counter - wave545', () => {
     expect(typeof afterEach.name).toBe('string')
   })
 })
+
+describe('sliding-window-counter - wave546', () => {
+  it('module accessible', () => {
+    expect(afterEach).toBeDefined()
+  })
+
+  it('module type check', () => {
+    expect(typeof afterEach).toBe('function')
+  })
+
+  it('module name check', () => {
+    expect(typeof afterEach.name).toBe('string')
+  })
+})

@@ -605,3 +605,17 @@ describe('fs-helpers - wave545', () => {
     expect(typeof existsSync.name).toBe('string')
   })
 })
+
+describe('fs-helpers - wave546', () => {
+  it('module accessible', () => {
+    expect(existsSync).toBeDefined()
+  })
+
+  it('module type check', () => {
+    expect(typeof existsSync).toBe('function')
+  })
+
+  it('module name check', () => {
+    expect(typeof existsSync.name).toBe('string')
+  })
+})

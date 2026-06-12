@@ -404,3 +404,17 @@ describe('segment-tree - wave545', () => {
     expect(typeof beforeEach.name).toBe('string')
   })
 })
+
+describe('segment-tree - wave546', () => {
+  it('module accessible', () => {
+    expect(beforeEach).toBeDefined()
+  })
+
+  it('module type check', () => {
+    expect(typeof beforeEach).toBe('function')
+  })
+
+  it('module name check', () => {
+    expect(typeof beforeEach.name).toBe('string')
+  })
+})

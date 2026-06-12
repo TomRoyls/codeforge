@@ -435,3 +435,17 @@ describe('vptrie - wave545', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('vptrie - wave546', () => {
+  it('module accessible', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module type check', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module name check', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

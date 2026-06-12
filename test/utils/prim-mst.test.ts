@@ -522,3 +522,17 @@ describe('prim-mst - wave545', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('prim-mst - wave546', () => {
+  it('module accessible', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module type check', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module name check', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

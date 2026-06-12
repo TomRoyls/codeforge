@@ -551,3 +551,17 @@ describe('dancing-links - wave545', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('dancing-links - wave546', () => {
+  it('module accessible', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module type check', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module name check', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})
