@@ -373,4 +373,27 @@ describe('VertexColoring - larger graphs', () => {
     const colors = vc.greedyColor()
     expect(vc.isProperColoring(colors)).toBe(true)
   })
+
+  it('should compute max degree', () => {
+    const vc = new VertexColoring(3)
+    vc.addEdge(0, 1)
+    vc.addEdge(0, 2)
+    expect(vc.maxDegree()).toBe(2)
+  })
+
+  it('should compute chromatic number estimate', () => {
+    const vc = new VertexColoring(4)
+    vc.addEdge(0, 1)
+    vc.addEdge(1, 2)
+    vc.addEdge(2, 3)
+    const chi = vc.chromaticNumber()
+    expect(chi).toBeGreaterThanOrEqual(2)
+  })
+
+  it('should handle isolated nodes', () => {
+    const vc = new VertexColoring(3)
+    const colors = vc.greedyColor()
+    expect(colors.length).toBe(3)
+    expect(vc.maxDegree()).toBe(0)
+  })
 })

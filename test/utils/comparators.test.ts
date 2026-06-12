@@ -293,4 +293,16 @@ describe('Comparators', () => {
   it('localeReverse comparator type is function', () => {
     expect(typeof Comparators.localeReverse).toBe('function')
   })
+
+  it('should compare with natural comparator', () => {
+    const cmp = Comparators.natural<number>()
+    expect(cmp(1, 2)).toBeLessThan(0)
+    expect(cmp(2, 1)).toBeGreaterThan(0)
+  })
+
+  it('should compare strings by length', () => {
+    const cmp = Comparators.byStringLength
+    expect(cmp('ab', 'abc')).toBeLessThan(0)
+    expect(cmp('abc', 'ab')).toBeGreaterThan(0)
+  })
 })

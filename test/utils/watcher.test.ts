@@ -62,8 +62,9 @@ describe('FileWatcher isActive', () => {
 
   it('should report inactive after close', async () => {
     const dir = mkdtempSync(join(tmpdir(), 'watcher-test-'))
+    mkdirSync(dir, { recursive: true })
     const watcher = new FileWatcher({ path: dir })
-    await watcher.start()
+    await watcher.watch(dir)
     expect(watcher.isActive()).toBe(true)
     await watcher.stop()
     expect(watcher.isActive()).toBe(false)
@@ -858,6 +859,23 @@ describe('createWatcher', () => {
     expect(w1.isActive()).toBe(false)
 
     await w2.stop()
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('should detect new files', async () => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+    const w = createWatcher()
+    await w.watch(TEMP_DIR)
+    writeFileSync(join(TEMP_DIR, 'test.txt'), 'hello')
+    await w.stop()
+    rmSync(TEMP_DIR, { recursive: true, force: true })
+  })
+
+  it('should handle multiple watch calls', async () => {
+    mkdirSync(TEMP_DIR, { recursive: true })
+    const w = new FileWatcher()
+    await w.watch(TEMP_DIR)
+    await w.stop()
     rmSync(TEMP_DIR, { recursive: true, force: true })
   })
 })
