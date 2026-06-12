@@ -385,4 +385,17 @@ describe('Quadtree', () => {
     const results = qt.query({ x: 50, y: 50, w: 1.5, h: 1.5 })
     expect(results.length).toBe(1)
   })
+
+  it('should find all points', () => {
+    const qt = new Quadtree<string>({ x: 0, y: 0, w: 100, h: 100 })
+    qt.insert({ x: 10, y: 10, data: 'a' })
+    qt.insert({ x: 50, y: 50, data: 'b' })
+    expect(qt.findAll().length).toBe(2)
+  })
+
+  it('should handle empty query', () => {
+    const qt = new Quadtree<string>({ x: 0, y: 0, w: 100, h: 100 })
+    const results = qt.query({ x: 0, y: 0, w: 50, h: 50 })
+    expect(results).toEqual([])
+  })
 })

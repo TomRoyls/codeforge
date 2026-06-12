@@ -356,4 +356,17 @@ describe('CompactIntSet', () => {
     set.delete(1)
     expect(set.toArray()).toEqual([3, 4])
   })
+
+  it('should compute union', () => {
+    const s1 = new CompactIntSet([1, 3, 5])
+    const s2 = new CompactIntSet([2, 3, 4])
+    const u = s1.union(s2)
+    expect(u.toArray()).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('should delete elements', () => {
+    const set = new CompactIntSet([1, 2, 3])
+    expect(set.delete(2)).toBe(true)
+    expect(set.has(2)).toBe(false)
+  })
 })

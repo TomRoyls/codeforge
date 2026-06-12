@@ -404,4 +404,19 @@ describe('Deque', () => {
     }
     expect(dq.isEmpty).toBe(true)
   })
+
+  it('should report back element', () => {
+    const dq = new Deque<number>()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    expect(dq.back()).toBe(2)
+  })
+
+  it('should report size', () => {
+    const dq = new Deque<number>()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    dq.pushBack(3)
+    expect(dq.size).toBe(3)
+  })
 })

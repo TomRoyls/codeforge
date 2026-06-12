@@ -225,4 +225,14 @@ describe('EditDistance', () => {
     const b = 'b'.repeat(100)
     expect(EditDistance.levenshtein(a, b)).toBe(100)
   })
+
+  it('should compute hamming distance', () => {
+    expect(EditDistance.hamming('karolin', 'kathrin')).toBe(3)
+  })
+
+  it('should compute normalized levenshtein', () => {
+    const n = EditDistance.normalizedLevenshtein('kitten', 'sitting')
+    expect(n).toBeGreaterThanOrEqual(0)
+    expect(n).toBeLessThanOrEqual(1)
+  })
 })

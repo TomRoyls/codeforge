@@ -440,4 +440,15 @@ describe('TreeDiameter', () => {
     const path = td.findDiameterPath()
     expect(path.length).toBe(5)
   })
+
+  it('should handle single node', () => {
+    const td = new TreeDiameter(1)
+    expect(td.findDiameter()).toBe(0)
+  })
+
+  it('should handle two nodes', () => {
+    const td = new TreeDiameter(2)
+    td.addEdge(0, 1)
+    expect(td.findDiameter()).toBe(1)
+  })
 })

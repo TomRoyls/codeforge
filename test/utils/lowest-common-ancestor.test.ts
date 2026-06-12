@@ -448,4 +448,17 @@ describe('LowestCommonAncestor', () => {
     expect(str).toContain('4')
     expect(str).toContain('0')
   })
+
+  it('should compute distance', () => {
+    const adj = new Map<number, number[]>([[0, [1, 2]], [1, [0]], [2, [0, 3]], [3, [2]]])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.distance(1, 3)).toBe(3)
+  })
+
+  it('should report depth', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0, 2]], [2, [1]]])
+    const lca = new LowestCommonAncestor(adj, 0)
+    expect(lca.getDepth(0)).toBe(0)
+    expect(lca.getDepth(2)).toBe(2)
+  })
 })

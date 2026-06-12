@@ -479,4 +479,15 @@ describe('BellmanFord', () => {
     const { distances } = BellmanFord.shortestPath(edges, 3, 0)
     expect(distances.get(2)).toBe(4)
   })
+
+  it('should handle single node', () => {
+    const result = BellmanFord.shortestPath([], 1, 0)
+    expect(result.distances.get(0)).toBe(0)
+  })
+
+  it('should detect negative cycle', () => {
+    const edges = [{ from: 0, to: 1, weight: 1 }, { from: 1, to: 0, weight: -3 }]
+    const result = BellmanFord.shortestPath(edges, 2, 0)
+    expect(result.hasNegativeCycle).toBe(true)
+  })
 })

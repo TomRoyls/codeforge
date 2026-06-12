@@ -438,4 +438,18 @@ describe('FrequencyMap - edge cases', () => {
     expect(result).toContainEqual(['a', 3])
     expect(result).toContainEqual(['b', 7])
   })
+
+  it('should decrease counts', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('x', 5)
+    expect(fm.decrease('x', 3)).toBe(true)
+    expect(fm.get('x')).toBe(2)
+  })
+
+  it('should check has correctly', () => {
+    const fm = new FrequencyMap<string>()
+    expect(fm.has('a')).toBe(false)
+    fm.add('a')
+    expect(fm.has('a')).toBe(true)
+  })
 })

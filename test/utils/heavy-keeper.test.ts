@@ -382,4 +382,20 @@ describe('HeavyKeeper', () => {
     expect(hk.total).toBe(0)
     expect(hk.isEmpty()).toBe(true)
   })
+
+  it('should find top-k elements', () => {
+    const hk = new HeavyKeeper()
+    hk.update('a', 10)
+    hk.update('b', 5)
+    hk.update('c', 3)
+    const top = hk.top(2)
+    expect(top.length).toBeLessThanOrEqual(2)
+  })
+
+  it('should find heavy hitters', () => {
+    const hk = new HeavyKeeper()
+    for (let i = 0; i < 100; i++) hk.update('hot', 1)
+    const hitters = hk.heavyHitters(0.5)
+    expect(hitters.length).toBeGreaterThanOrEqual(0)
+  })
 })

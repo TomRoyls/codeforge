@@ -267,4 +267,13 @@ describe('Combination', () => {
     const result = Combination.withReplacement([1, 2], 4)
     expect(result.length).toBe(16)
   })
+
+  it('should count combinations with replacement', () => {
+    const count = Combination.countWithReplacement(3, 2)
+    expect(count).toBe(6)
+  })
+
+  it('should count n choose 0 as 1', () => {
+    expect(Combination.count(5, 0)).toBe(1)
+  })
 })

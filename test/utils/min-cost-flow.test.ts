@@ -411,4 +411,19 @@ describe('MinCostFlow - edge cases', () => {
     const result = mcf.solve(0, 2)
     expect(result.flow).toBe(5)
   })
+
+  it('should handle single edge', () => {
+    const mcf = new MinCostFlow(2)
+    mcf.addEdge(0, 1, 10, 5)
+    const result = mcf.solve(0, 1)
+    expect(result.flow).toBe(10)
+    expect(result.cost).toBe(50)
+  })
+
+  it('should handle no path', () => {
+    const mcf = new MinCostFlow(3)
+    mcf.addEdge(0, 1, 5, 1)
+    const result = mcf.solve(0, 2)
+    expect(result.flow).toBe(0)
+  })
 })

@@ -318,4 +318,14 @@ describe('Introsort', () => {
       expect(result[2].getFullYear()).toBe(2023)
     })
   })
+
+  it('should sort with custom comparator', () => {
+    const arr = [3, 1, 4, 1, 5]
+    const sorted = Introsort.sort(arr, (a, b) => b - a)
+    expect(sorted).toEqual([5, 4, 3, 1, 1])
+  })
+
+  it('should handle empty array', () => {
+    expect(Introsort.sort<number>([])).toEqual([])
+  })
 })

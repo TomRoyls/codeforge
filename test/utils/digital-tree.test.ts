@@ -399,4 +399,22 @@ describe('DigitalTree', () => {
     expect(dt.search('😀😁')).toBe(true)
     expect(dt.startsWith('😀')).toBe(true)
   })
+
+  it('should remove words', () => {
+    const dt = new DigitalTree()
+    dt.insert('hello')
+    dt.insert('help')
+    expect(dt.remove('hello')).toBe(true)
+    expect(dt.search('hello')).toBe(false)
+    expect(dt.search('help')).toBe(true)
+  })
+
+  it('should list all words via toJSON', () => {
+    const dt = new DigitalTree()
+    dt.insert('cat')
+    dt.insert('car')
+    const arr = dt.toJSON()
+    expect(arr).toContain('cat')
+    expect(arr).toContain('car')
+  })
 })

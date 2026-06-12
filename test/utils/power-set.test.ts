@@ -298,4 +298,15 @@ describe('PowerSet', () => {
     for (const _ of PowerSet.lazy(arr)) lazyCount++
     expect(lazyCount).toBe(eager.length)
   })
+
+  it('should generate power set by size', () => {
+    const bySize = PowerSet.bySize([1, 2, 3])
+    expect(bySize.get(0)).toEqual([[]])
+    expect(bySize.get(1)!.length).toBe(3)
+  })
+
+  it('should count power set size', () => {
+    expect(PowerSet.count(4)).toBe(16)
+    expect(PowerSet.count(0)).toBe(1)
+  })
 })

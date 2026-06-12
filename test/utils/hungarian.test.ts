@@ -401,4 +401,17 @@ describe('Hungarian', () => {
     const { totalCost } = Hungarian.solve(matrix)
     expect(totalCost).toBeLessThanOrEqual(1 + 6 + 8)
   })
+
+  it('should solve 2x2 assignment', () => {
+    const cost = [[1, 2], [3, 4]]
+    const { assignment, totalCost } = Hungarian.solve(cost)
+    expect(assignment.length).toBe(2)
+    expect(totalCost).toBe(1 + 4)
+  })
+
+  it('should solve 1x1 assignment', () => {
+    const { assignment, totalCost } = Hungarian.solve([[42]])
+    expect(assignment).toEqual([0])
+    expect(totalCost).toBe(42)
+  })
 })

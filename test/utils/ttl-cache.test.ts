@@ -430,4 +430,17 @@ describe('TTLCache keys & values', () => {
     expect(cache.size).toBe(1)
     expect(cache.has('a')).toBe(false)
   })
+
+  it('should peek without refreshing', () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 10000 })
+    cache.set('x', 42)
+    expect(cache.peek('x')).toBe(42)
+  })
+
+  it('should delete entries', () => {
+    const cache = new TTLCache<string, number>({ defaultTTL: 10000 })
+    cache.set('a', 1)
+    expect(cache.delete('a')).toBe(true)
+    expect(cache.has('a')).toBe(false)
+  })
 })

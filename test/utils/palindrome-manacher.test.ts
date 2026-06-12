@@ -259,4 +259,16 @@ describe('PalindromeManacher', () => {
     const m = new PalindromeManacher('abcbaxyzabccba')
     expect(m.countAllPalindromes()).toBeGreaterThan(10)
   })
+
+  it('should check if substring is palindrome', () => {
+    const m = new PalindromeManacher('racecar')
+    expect(m.isPalindrome(0, 6)).toBe(true)
+    expect(m.isPalindrome(0, 3)).toBe(false)
+  })
+
+  it('should handle single character', () => {
+    const m = new PalindromeManacher('a')
+    expect(m.longestPalindrome()).toBe('a')
+    expect(m.countAllPalindromes()).toBe(1)
+  })
 })

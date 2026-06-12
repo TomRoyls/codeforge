@@ -416,4 +416,15 @@ describe('BipartiteMatching', () => {
     const copy = graph.clone()
     expect(copy.edgeCount).toBe(3)
   })
+
+  it('should handle no edges', () => {
+    const bm = new BipartiteMatching(3, 3)
+    expect(bm.maxMatching()).toBe(0)
+  })
+
+  it('should handle single pair', () => {
+    const bm = new BipartiteMatching(1, 1)
+    bm.addEdge(0, 0)
+    expect(bm.maxMatching()).toBe(1)
+  })
 })

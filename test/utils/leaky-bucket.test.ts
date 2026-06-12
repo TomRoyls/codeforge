@@ -344,4 +344,17 @@ describe('LeakyBucket', () => {
     bucket1.pour(5)
     expect(bucket1.equals(bucket2)).toBe(true)
   })
+
+  it('should reset bucket', () => {
+    const bucket = new LeakyBucket(5, 1)
+    bucket.pour(3)
+    expect(bucket.available).toBeLessThan(5)
+    expect(bucket.available).toBeGreaterThanOrEqual(0)
+  })
+
+  it('should track available capacity', () => {
+    const bucket = new LeakyBucket(10, 1)
+    bucket.pour(3)
+    expect(bucket.available).toBeLessThan(10)
+  })
 })

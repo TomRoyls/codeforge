@@ -416,4 +416,19 @@ describe('RobinHopMap', () => {
     const maxPSL = map.maxPSL()
     expect(maxPSL).toBeGreaterThanOrEqual(0)
   })
+
+  it('should clear map', () => {
+    const map = new RobinHopMap<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    map.clear()
+    expect(map.size).toBe(0)
+  })
+
+  it('should handle delete', () => {
+    const map = new RobinHopMap<string, number>()
+    map.set('x', 10)
+    expect(map.delete('x')).toBe(true)
+    expect(map.get('x')).toBeUndefined()
+  })
 })

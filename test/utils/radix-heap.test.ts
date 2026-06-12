@@ -423,4 +423,19 @@ describe('RadixHeap', () => {
       expect(result.every((v, i) => i === 0 || result[i - 1]! <= v)).toBe(true)
     })
   })
+
+  it('should handle single element', () => {
+    const rh = new RadixHeap(100)
+    rh.push(42)
+    expect(rh.pop()).toBe(42)
+  })
+
+  it('should handle decreasing push', () => {
+    const rh = new RadixHeap(100)
+    rh.push(50)
+    rh.push(30)
+    rh.push(10)
+    expect(rh.pop()).toBe(10)
+    expect(rh.pop()).toBe(30)
+  })
 })
