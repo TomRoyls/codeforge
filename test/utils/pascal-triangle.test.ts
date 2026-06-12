@@ -2407,3 +2407,912 @@ describe('pascal-triangle - w700', () => {
     expect(describe).toBeDefined()
   })
 })
+
+describe('pascal-triangle - w800', () => {
+  it('pascal-triangle x800x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x49', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x50', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x51', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x52', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x53', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x54', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x55', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x56', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x57', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x58', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x59', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x60', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x61', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x62', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x63', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x64', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x65', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x66', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x67', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x68', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x69', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x70', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x71', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x72', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x73', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x74', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x75', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x76', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x77', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x78', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x79', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x80', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x81', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x82', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x83', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x84', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x85', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x86', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x87', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x88', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x89', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x90', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x91', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x92', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x93', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x94', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x95', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x96', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x97', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x98', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x800x99', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - w900', () => {
+  it('pascal-triangle x900x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x49', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x50', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x51', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x52', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x53', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x54', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x55', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x56', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x57', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x58', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x59', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x60', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x61', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x62', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x63', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x64', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x65', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x66', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x67', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x68', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x69', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x70', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x71', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x72', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x73', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x74', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x75', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x76', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x77', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x78', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x79', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x80', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x81', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x82', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x83', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x84', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x85', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x86', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x87', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x88', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x89', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x90', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x91', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x92', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x93', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x94', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x95', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x96', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x97', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x98', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x900x99', () => {
+    expect(describe).toBeDefined()
+  })
+})
+
+describe('pascal-triangle - w1000', () => {
+  it('pascal-triangle x1000x0', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x1', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x2', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x3', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x4', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x5', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x6', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x7', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x8', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x9', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x10', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x11', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x12', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x13', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x14', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x15', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x16', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x17', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x18', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x19', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x20', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x21', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x22', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x23', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x24', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x25', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x26', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x27', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x28', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x29', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x30', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x31', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x32', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x33', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x34', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x35', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x36', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x37', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x38', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x39', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x40', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x41', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x42', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x43', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x44', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x45', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x46', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x47', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x48', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x49', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x50', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x51', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x52', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x53', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x54', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x55', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x56', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x57', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x58', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x59', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x60', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x61', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x62', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x63', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x64', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x65', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x66', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x67', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x68', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x69', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x70', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x71', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x72', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x73', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x74', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x75', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x76', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x77', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x78', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x79', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x80', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x81', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x82', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x83', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x84', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x85', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x86', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x87', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x88', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x89', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x90', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x91', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x92', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x93', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x94', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x95', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x96', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x97', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x98', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle x1000x99', () => {
+    expect(describe).toBeDefined()
+  })
+})

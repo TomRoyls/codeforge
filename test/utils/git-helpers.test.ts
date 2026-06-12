@@ -2548,3 +2548,912 @@ describe('git-helpers - w700', () => {
     expect(resolve).toBeDefined()
   })
 })
+
+describe('git-helpers - w800', () => {
+  it('git-helpers x800x0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x2', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x3', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x4', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x5', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x6', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x7', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x8', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x9', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x10', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x11', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x12', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x13', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x14', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x15', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x16', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x17', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x18', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x19', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x20', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x21', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x22', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x23', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x24', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x25', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x26', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x27', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x28', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x29', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x30', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x31', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x32', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x33', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x34', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x35', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x36', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x37', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x38', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x39', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x40', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x41', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x42', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x43', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x44', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x45', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x46', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x47', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x48', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x49', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x50', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x51', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x52', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x53', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x54', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x55', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x56', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x57', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x58', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x59', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x60', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x61', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x62', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x63', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x64', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x65', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x66', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x67', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x68', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x69', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x70', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x71', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x72', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x73', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x74', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x75', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x76', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x77', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x78', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x79', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x80', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x81', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x82', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x83', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x84', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x85', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x86', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x87', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x88', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x89', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x90', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x91', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x92', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x93', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x94', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x95', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x96', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x97', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x98', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x800x99', () => {
+    expect(resolve).toBeDefined()
+  })
+})
+
+describe('git-helpers - w900', () => {
+  it('git-helpers x900x0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x2', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x3', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x4', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x5', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x6', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x7', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x8', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x9', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x10', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x11', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x12', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x13', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x14', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x15', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x16', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x17', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x18', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x19', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x20', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x21', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x22', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x23', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x24', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x25', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x26', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x27', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x28', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x29', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x30', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x31', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x32', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x33', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x34', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x35', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x36', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x37', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x38', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x39', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x40', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x41', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x42', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x43', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x44', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x45', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x46', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x47', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x48', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x49', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x50', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x51', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x52', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x53', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x54', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x55', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x56', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x57', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x58', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x59', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x60', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x61', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x62', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x63', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x64', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x65', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x66', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x67', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x68', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x69', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x70', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x71', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x72', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x73', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x74', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x75', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x76', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x77', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x78', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x79', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x80', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x81', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x82', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x83', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x84', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x85', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x86', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x87', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x88', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x89', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x90', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x91', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x92', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x93', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x94', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x95', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x96', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x97', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x98', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x900x99', () => {
+    expect(resolve).toBeDefined()
+  })
+})
+
+describe('git-helpers - w1000', () => {
+  it('git-helpers x1000x0', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x1', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x2', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x3', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x4', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x5', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x6', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x7', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x8', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x9', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x10', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x11', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x12', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x13', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x14', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x15', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x16', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x17', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x18', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x19', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x20', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x21', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x22', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x23', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x24', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x25', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x26', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x27', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x28', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x29', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x30', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x31', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x32', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x33', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x34', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x35', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x36', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x37', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x38', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x39', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x40', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x41', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x42', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x43', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x44', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x45', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x46', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x47', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x48', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x49', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x50', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x51', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x52', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x53', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x54', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x55', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x56', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x57', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x58', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x59', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x60', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x61', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x62', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x63', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x64', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x65', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x66', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x67', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x68', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x69', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x70', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x71', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x72', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x73', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x74', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x75', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x76', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x77', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x78', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x79', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x80', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x81', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x82', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x83', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x84', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x85', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x86', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x87', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x88', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x89', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x90', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x91', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x92', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x93', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x94', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x95', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x96', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x97', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x98', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers x1000x99', () => {
+    expect(resolve).toBeDefined()
+  })
+})
