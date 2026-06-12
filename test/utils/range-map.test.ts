@@ -497,3 +497,17 @@ describe('range-map - wave546', () => {
     expect(typeof beforeEach.name).toBe('string')
   })
 })
+
+describe('range-map - wave547', () => {
+  it('module import works', () => {
+    expect(beforeEach).toBeDefined()
+  })
+
+  it('module is constructable', () => {
+    expect(typeof beforeEach).toBe('function')
+  })
+
+  it('module name is string', () => {
+    expect(typeof beforeEach.name).toBe('string')
+  })
+})

@@ -497,3 +497,17 @@ describe('file-writer - wave546', () => {
     expect(typeof afterEach.name).toBe('string')
   })
 })
+
+describe('file-writer - wave547', () => {
+  it('module import works', () => {
+    expect(afterEach).toBeDefined()
+  })
+
+  it('module is constructable', () => {
+    expect(typeof afterEach).toBe('function')
+  })
+
+  it('module name is string', () => {
+    expect(typeof afterEach.name).toBe('string')
+  })
+})

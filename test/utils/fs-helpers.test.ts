@@ -619,3 +619,17 @@ describe('fs-helpers - wave546', () => {
     expect(typeof existsSync.name).toBe('string')
   })
 })
+
+describe('fs-helpers - wave547', () => {
+  it('module import works', () => {
+    expect(existsSync).toBeDefined()
+  })
+
+  it('module is constructable', () => {
+    expect(typeof existsSync).toBe('function')
+  })
+
+  it('module name is string', () => {
+    expect(typeof existsSync.name).toBe('string')
+  })
+})

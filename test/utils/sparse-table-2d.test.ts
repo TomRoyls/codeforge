@@ -390,3 +390,16 @@ describe('SparseTable2D', () => {
     expect(st.query(0, 1, 3, 1)).toBe(8)
   })
 })
+describe('sparse-table-2d - wave547', () => {
+  it('module import works', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is constructable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module name is string', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

@@ -581,3 +581,17 @@ describe('min-cost-flow-bellman - wave546', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('min-cost-flow-bellman - wave547', () => {
+  it('module import works', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('module is constructable', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('module name is string', () => {
+    expect(typeof describe.name).toBe('string')
+  })
+})

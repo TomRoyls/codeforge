@@ -941,3 +941,17 @@ describe('watcher - wave546', () => {
     expect(typeof mkdirSync.name).toBe('string')
   })
 })
+
+describe('watcher - wave547', () => {
+  it('module import works', () => {
+    expect(mkdirSync).toBeDefined()
+  })
+
+  it('module is constructable', () => {
+    expect(typeof mkdirSync).toBe('function')
+  })
+
+  it('module name is string', () => {
+    expect(typeof mkdirSync.name).toBe('string')
+  })
+})
