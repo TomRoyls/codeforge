@@ -350,4 +350,51 @@ describe('LRUTTLCache', () => {
     expect(cache.has('a')).toBe(true)
     expect(cache.has('b')).toBe(false)
   })
+
+  it('should report hit rate', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 10, defaultTTL: 60000 })
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.get('a')
+    cache.get('c')
+    expect(cache.hitRate).toBeGreaterThan(0)
+    expect(cache.hitRate).toBeLessThanOrEqual(1)
+  })
+
+  it('should report hits and misses', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 10, defaultTTL: 60000 })
+    cache.set('a', 1)
+    cache.get('a')
+    cache.get('missing')
+    expect(cache.hits).toBe(1)
+    expect(cache.misses).toBe(1)
+  })
+
+  it('should convert to string', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 10, defaultTTL: 5000 })
+    expect(cache.toString()).toContain('LRUTTLCache')
+  })
+
+  it('should convert to JSON', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 10, defaultTTL: 60000 })
+    cache.set('x', 42)
+    const json = cache.toJSON() as Array<[string, number]>
+    expect(json).toEqual([['x', 42]])
+  })
+
+  it('should clone cache', () => {
+    const cache = new LRUTTLCache<string, number>({ maxSize: 10, defaultTTL: 60000 })
+    cache.set('a', 1)
+    const cloned = cache.clone()
+    expect(cloned.get('a')).toBe(1)
+    expect(cloned.equals(cache)).toBe(true)
+  })
+
+  it('should check equality', () => {
+    const c1 = new LRUTTLCache<string, number>({ maxSize: 10, defaultTTL: 60000 })
+    const c2 = new LRUTTLCache<string, number>({ maxSize: 10, defaultTTL: 60000 })
+    c1.set('a', 1)
+    c2.set('a', 1)
+    expect(c1.equals(c2)).toBe(true)
+  })
 })

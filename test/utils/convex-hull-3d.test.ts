@@ -429,4 +429,56 @@ describe('ConvexHull3D', () => {
     expect(c[1]).toBeCloseTo(0.5, 5)
     expect(c[2]).toBeCloseTo(0.5, 5)
   })
+
+  it('very small negative coordinates tetrahedron', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(-0.001, -0.001, -0.001)
+    ch.addPoint(-0.002, -0.001, -0.001)
+    ch.addPoint(-0.001, -0.002, -0.001)
+    ch.addPoint(-0.001, -0.001, -0.002)
+    expect(ch.convexHullVolume()).toBeGreaterThan(0)
+  })
+
+  it('points spanning multiple octants', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(-1, -1, -1)
+    ch.addPoint(1, -1, -1)
+    ch.addPoint(-1, 1, -1)
+    ch.addPoint(-1, -1, 1)
+    expect(ch.convexHullVolume()).toBeCloseTo(8 / 6, 5)
+  })
+
+  it('non-unit cube volume', () => {
+    const ch = new ConvexHull3D()
+    const size = 2
+    ch.addPoint(0, 0, 0)
+    ch.addPoint(size, 0, 0)
+    ch.addPoint(0, size, 0)
+    ch.addPoint(0, 0, size)
+    ch.addPoint(size, size, size)
+    expect(ch.convexHullVolume()).toBeGreaterThan(0)
+  })
+
+  it('centroid with very large negative coordinates', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(-1000000, -2000000, -3000000)
+    ch.addPoint(-2000000, -4000000, -6000000)
+    const c = ch.centroid()
+    expect(c[0]).toBeCloseTo(-1500000, 0)
+    expect(c[1]).toBeCloseTo(-3000000, 0)
+    expect(c[2]).toBeCloseTo(-4500000, 0)
+  })
+
+  it('mixed extreme positive and negative values', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(-1000, -1000, -1000)
+    ch.addPoint(1000, -1000, -1000)
+    ch.addPoint(-1000, 1000, -1000)
+    ch.addPoint(-1000, -1000, 1000)
+    ch.addPoint(1000, 1000, 1000)
+    expect(ch.convexHullVolume()).toBeGreaterThan(0)
+    const bb = ch.boundingBox()
+    expect(bb.min).toEqual([-1000, -1000, -1000])
+    expect(bb.max).toEqual([1000, 1000, 1000])
+  })
 })

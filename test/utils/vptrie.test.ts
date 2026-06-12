@@ -337,4 +337,51 @@ describe('VPTrie', () => {
     vp.addPoint([7, 7])
     expect(vp.nearest([7, 7])).toEqual([7, 7])
   })
+
+  it('should return null for nearest on empty trie', () => {
+    const vp = new VPTrie(2)
+    expect(vp.nearest([0, 0])).toBeNull()
+  })
+
+  it('should find k nearest neighbors', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([1, 1])
+    vp.addPoint([10, 10])
+    const knn = vp.kNearest([0, 0], 2)
+    expect(knn).toHaveLength(2)
+    expect(knn[0]).toEqual([0, 0])
+  })
+
+  it('should find all points within radius', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([0, 0])
+    vp.addPoint([1, 1])
+    vp.addPoint([10, 10])
+    const within = vp.findAllWithin([0, 0], 2)
+    expect(within.length).toBe(2)
+  })
+
+  it('should report size', () => {
+    const vp = new VPTrie(2)
+    expect(vp.size).toBe(0)
+    vp.addPoint([1, 2])
+    vp.addPoint([3, 4])
+    expect(vp.size).toBe(2)
+  })
+
+  it('should work with 3D points', () => {
+    const vp = new VPTrie(3)
+    vp.addPoint([0, 0, 0])
+    vp.addPoint([1, 1, 1])
+    const nearest = vp.nearest([0.5, 0.5, 0.5])
+    expect(nearest).toEqual([0, 0, 0])
+  })
+
+  it('should handle single point', () => {
+    const vp = new VPTrie(2)
+    vp.addPoint([5, 5])
+    expect(vp.nearest([0, 0])).toEqual([5, 5])
+    expect(vp.kNearest([0, 0], 1)).toEqual([[5, 5]])
+  })
 })

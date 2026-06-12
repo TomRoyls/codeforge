@@ -388,4 +388,52 @@ describe('SlidingWindowStats', () => {
     sw.push(30)
     expect(sw.total).toBe(60)
   })
+
+  it('should return 0 for mean of empty window', () => {
+    const sw = new SlidingWindowStats(5)
+    expect(sw.mean).toBe(0)
+  })
+
+  it('should compute variance', () => {
+    const sw = new SlidingWindowStats(10)
+    sw.push(2)
+    sw.push(4)
+    sw.push(6)
+    expect(sw.variance).toBeCloseTo(4)
+  })
+
+  it('should compute stddev', () => {
+    const sw = new SlidingWindowStats(10)
+    sw.push(2)
+    sw.push(4)
+    sw.push(6)
+    expect(sw.stddev).toBeCloseTo(2)
+  })
+
+  it('should return min and max', () => {
+    const sw = new SlidingWindowStats(5)
+    sw.push(3)
+    sw.push(1)
+    sw.push(5)
+    expect(sw.min).toBe(1)
+    expect(sw.max).toBe(5)
+  })
+
+  it('should report isFull', () => {
+    const sw = new SlidingWindowStats(3)
+    expect(sw.isFull).toBe(false)
+    sw.push(1)
+    sw.push(2)
+    sw.push(3)
+    expect(sw.isFull).toBe(true)
+  })
+
+  it('should clear stats', () => {
+    const sw = new SlidingWindowStats(5)
+    sw.push(1)
+    sw.push(2)
+    sw.clear()
+    expect(sw.count).toBe(0)
+    expect(sw.mean).toBe(0)
+  })
 })

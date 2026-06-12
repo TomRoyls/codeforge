@@ -453,4 +453,50 @@ describe('DequeAggregation', () => {
     deque.pushBack(3)
     expect(deque.aggregate()).toBe(6)
   })
+
+  it('should return correct back element', () => {
+    const deque = new DequeAggregation<number>((a, b) => a + b)
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.pushBack(3)
+    expect(deque.back()).toBe(3)
+  })
+
+  it('should return correct front element', () => {
+    const deque = new DequeAggregation<number>((a, b) => Math.max(a, b))
+    deque.pushBack(5)
+    deque.pushBack(10)
+    expect(deque.front()).toBe(5)
+  })
+
+  it('should return undefined aggregate when empty', () => {
+    const deque = new DequeAggregation<number>((a, b) => a + b)
+    expect(deque.aggregate()).toBeUndefined()
+  })
+
+  it('should clear the deque', () => {
+    const deque = new DequeAggregation<number>((a, b) => a + b)
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.clear()
+    expect(deque.size).toBe(0)
+    expect(deque.isEmpty()).toBe(true)
+  })
+
+  it('should handle aggregate with multiplication', () => {
+    const deque = new DequeAggregation<number>((a, b) => a * b)
+    deque.pushBack(2)
+    deque.pushBack(3)
+    deque.pushBack(4)
+    expect(deque.aggregate()).toBe(24)
+  })
+
+  it('should maintain aggregate after popFront', () => {
+    const deque = new DequeAggregation<number>((a, b) => a + b)
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.pushBack(3)
+    deque.popFront()
+    expect(deque.aggregate()).toBe(5)
+  })
 })

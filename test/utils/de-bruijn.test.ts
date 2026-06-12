@@ -266,4 +266,42 @@ describe('DeBruijnSequence', () => {
     expect(seq.length).toBe(225)
     expect(DeBruijnSequence.containsAllSubstrings(seq, 15, 2)).toBe(true)
   })
+
+  it('should generate binary sequence for n=4', () => {
+    const seq = DeBruijnSequence.generateBinary(4)
+    expect(seq.length).toBe(16)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 2, 4)).toBe(true)
+  })
+
+  it('should generate sequence for k=3, n=2', () => {
+    const seq = DeBruijnSequence.generate(3, 2)
+    expect(seq.length).toBe(9)
+    expect(DeBruijnSequence.containsAllSubstrings(seq, 3, 2)).toBe(true)
+  })
+
+  it('should generate single character sequence for n=1', () => {
+    const seq = DeBruijnSequence.generate(2, 1)
+    expect(seq.length).toBe(2)
+    expect(seq).toBe('01')
+  })
+
+  it('should throw for k exceeding alphabet size', () => {
+    expect(() => DeBruijnSequence.generate(37, 2)).toThrow()
+  })
+
+  it('should use correct alphabet characters', () => {
+    const seq = DeBruijnSequence.generate(3, 2)
+    for (const ch of seq) {
+      expect('012').toContain(ch)
+    }
+  })
+
+  it('should produce cyclic valid sequence', () => {
+    const seq = DeBruijnSequence.generate(2, 3)
+    const doubled = seq + seq
+    for (let i = 0; i < 8; i++) {
+      let sub = i.toString(2).padStart(3, '0')
+      expect(doubled).toContain(sub)
+    }
+  })
 })

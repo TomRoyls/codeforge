@@ -369,4 +369,45 @@ describe('StreamingMedian', () => {
     expect(sm.min()).toBe(0)
     expect(sm.max()).toBe(10)
   })
+
+  it('should return 0 for median of empty stream', () => {
+    const sm = new StreamingMedian()
+    expect(sm.median()).toBe(0)
+  })
+
+  it('should return 0 for mean of empty stream', () => {
+    const sm = new StreamingMedian()
+    expect(sm.mean()).toBe(0)
+  })
+
+  it('should compute mean', () => {
+    const sm = new StreamingMedian()
+    sm.push(10)
+    sm.push(20)
+    sm.push(30)
+    expect(sm.mean()).toBeCloseTo(20)
+  })
+
+  it('should track count', () => {
+    const sm = new StreamingMedian()
+    sm.push(1)
+    sm.push(2)
+    sm.push(3)
+    expect(sm.count).toBe(3)
+  })
+
+  it('should track sum', () => {
+    const sm = new StreamingMedian()
+    sm.push(5)
+    sm.push(15)
+    expect(sm.sum).toBe(20)
+  })
+
+  it('should return min', () => {
+    const sm = new StreamingMedian()
+    sm.push(10)
+    sm.push(3)
+    sm.push(7)
+    expect(sm.min()).toBe(3)
+  })
 })

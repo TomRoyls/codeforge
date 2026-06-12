@@ -217,7 +217,31 @@ describe('LongestIncreasingSubsequence', () => {
     })
 
     it('countLIS handles negative numbers', () => {
-      expect(LongestIncreasingSubsequence.countLIS([-5, -3, -1, 0, 2])).toBe(5)
-    })
+    expect(LongestIncreasingSubsequence.countLIS([-5, -3, -1, 0, 2])).toBe(5)
   })
+
+  it('find returns valid subsequence for mixed signs', () => {
+    const result = LongestIncreasingSubsequence.find([-3, 1, -2, 4, 0, 2])
+    expect(result.length).toBeGreaterThan(0)
+  })
+
+  it('length of all decreasing is 1', () => {
+    expect(LongestIncreasingSubsequence.length([5, 4, 3, 2, 1])).toBe(1)
+  })
+
+  it('findIndices returns valid indices', () => {
+    const arr = [3, 1, 2]
+    const indices = LongestIncreasingSubsequence.findIndices(arr)
+    expect(indices.length).toBe(2)
+  })
+
+  it('countLIS for all same elements is 1', () => {
+    expect(LongestIncreasingSubsequence.countLIS([5, 5, 5])).toBe(1)
+  })
+
+  it('handles single element', () => {
+    expect(LongestIncreasingSubsequence.length([42])).toBe(1)
+    expect(LongestIncreasingSubsequence.find([42])).toEqual([42])
+  })
+})
 })

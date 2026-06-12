@@ -497,4 +497,48 @@ describe('SparseMatrix - large sparse', () => {
     const c = a.add(b)
     expect(c.toDense()).toEqual([[2, 2]])
   })
+
+  it('should scale a matrix', () => {
+    const m = SparseMatrix.fromDense([[1, 0], [0, 3]])
+    const s = m.scale(2)
+    expect(s.get(0, 0)).toBe(2)
+    expect(s.get(1, 1)).toBe(6)
+    expect(s.get(0, 1)).toBe(0)
+  })
+
+  it('should return zero matrix when scaling by zero', () => {
+    const m = SparseMatrix.fromDense([[1, 2], [3, 4]])
+    const s = m.scale(0)
+    expect(s.nnz).toBe(0)
+  })
+
+  it('should transpose a matrix', () => {
+    const m = SparseMatrix.fromDense([[1, 2], [3, 4]])
+    const t = m.transpose()
+    expect(t.get(0, 0)).toBe(1)
+    expect(t.get(0, 1)).toBe(3)
+    expect(t.get(1, 0)).toBe(2)
+    expect(t.get(1, 1)).toBe(4)
+  })
+
+  it('should compute density', () => {
+    const m = new SparseMatrix(3, 3)
+    m.set(0, 0, 1)
+    m.set(1, 1, 2)
+    expect(m.density).toBeCloseTo(2 / 9)
+  })
+
+  it('should iterate over non-zero entries with forEachNonZero', () => {
+    const m = SparseMatrix.fromDense([[1, 0], [0, 5]])
+    const entries: [number, number, number][] = []
+    m.forEachNonZero((r, c, v) => entries.push([r, c, v]))
+    expect(entries).toEqual([[0, 0, 1], [1, 1, 5]])
+  })
+
+  it('should create matrix from entries', () => {
+    const m = SparseMatrix.fromEntries(2, 2, [[0, 1, 7], [1, 0, 3]])
+    expect(m.get(0, 1)).toBe(7)
+    expect(m.get(1, 0)).toBe(3)
+    expect(m.get(0, 0)).toBe(0)
+  })
 })

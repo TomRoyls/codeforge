@@ -351,4 +351,51 @@ describe('EdmondsBlossom', () => {
     const eb = new EdmondsBlossom(5)
     expect(eb.maxMatchingSize()).toBe(0)
   })
+
+  it('should match single edge', () => {
+    const eb = new EdmondsBlossom(2)
+    eb.addEdge(0, 1)
+    expect(eb.maxMatchingSize()).toBe(1)
+  })
+
+  it('should match triangle partially', () => {
+    const eb = new EdmondsBlossom(3)
+    eb.addEdge(0, 1)
+    eb.addEdge(1, 2)
+    eb.addEdge(0, 2)
+    const matching = eb.maxMatchingSize()
+    expect(matching).toBeGreaterThan(0)
+    expect(Number.isInteger(matching) || matching === 1.5).toBe(true)
+  })
+
+  it('should match path of 4 nodes', () => {
+    const eb = new EdmondsBlossom(4)
+    eb.addEdge(0, 1)
+    eb.addEdge(1, 2)
+    eb.addEdge(2, 3)
+    expect(eb.maxMatchingSize()).toBe(2)
+  })
+
+  it('should handle isolated nodes', () => {
+    const eb = new EdmondsBlossom(5)
+    eb.addEdge(0, 1)
+    expect(eb.maxMatchingSize()).toBe(1)
+  })
+
+  it('should match star graph with 4 leaves', () => {
+    const eb = new EdmondsBlossom(5)
+    eb.addEdge(0, 1)
+    eb.addEdge(0, 2)
+    eb.addEdge(0, 3)
+    eb.addEdge(0, 4)
+    expect(eb.maxMatchingSize()).toBe(1)
+  })
+
+  it('should handle disconnected components', () => {
+    const eb = new EdmondsBlossom(6)
+    eb.addEdge(0, 1)
+    eb.addEdge(2, 3)
+    eb.addEdge(4, 5)
+    expect(eb.maxMatchingSize()).toBe(3)
+  })
 })

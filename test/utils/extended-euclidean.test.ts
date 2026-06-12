@@ -250,4 +250,36 @@ describe('ExtendedEuclidean', () => {
   it('lcm of large numbers', () => {
     expect(ExtendedEuclidean.lcm(100n, 75n)).toBe(300n)
   })
+
+  it('lcm of large prime numbers', () => {
+    expect(ExtendedEuclidean.lcm(1000003n, 1000033n)).toBe(1000036000099n)
+  })
+
+  it('solve with power of 2', () => {
+    const { gcd } = ExtendedEuclidean.solve(8n, 4n)
+    expect(gcd).toBe(4n)
+  })
+
+  it('solve with consecutive powers of 2', () => {
+    const { gcd, x, y } = ExtendedEuclidean.solve(16n, 8n)
+    expect(gcd).toBe(8n)
+    expect(16n * x + 8n * y).toBe(8n)
+  })
+
+  it('solveNumber handles negative inputs', () => {
+    const { gcd, x, y } = ExtendedEuclidean.solveNumber(-12, 8)
+    expect(Math.abs(gcd)).toBe(4)
+    expect(-12 * x + 8 * y).toBe(-4)
+  })
+
+  it('modularInverse handles large modulus', () => {
+    const inv = ExtendedEuclidean.modularInverse(2n, 999999999999989n)
+    expect(inv).not.toBeNull()
+    expect((2n * inv!) % 999999999999989n).toBe(1n)
+  })
+
+  it('lcm of number and its multiple', () => {
+    expect(ExtendedEuclidean.lcm(5n, 15n)).toBe(15n)
+    expect(ExtendedEuclidean.lcm(3n, 21n)).toBe(21n)
+  })
 })

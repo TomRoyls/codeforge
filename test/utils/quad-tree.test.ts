@@ -453,5 +453,54 @@ describe('QuadTree', () => {
       const result = qt.queryRadius({ x: 50, y: 50 }, 10);
       expect(result.length).toBeGreaterThanOrEqual(4);
     });
+
+    it('should return undefined nearestNeighbor on empty tree', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      expect(qt.nearestNeighbor({ x: 50, y: 50 })).toBeUndefined();
+    });
+
+    it('should find nearest neighbor', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 10, y: 10 });
+      qt.insert({ x: 90, y: 90 });
+      qt.insert({ x: 50, y: 50 });
+      const nn = qt.nearestNeighbor({ x: 48, y: 48 });
+      expect(nn).toBeDefined();
+      expect(nn!.x).toBe(50);
+      expect(nn!.y).toBe(50);
+    });
+
+    it('should clone the tree', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 10, y: 10 });
+      qt.insert({ x: 20, y: 20 });
+      const cloned = qt.clone();
+      expect(cloned.size).toBe(2);
+      expect(cloned.equals(qt)).toBe(true);
+    });
+
+    it('should check equals correctly', () => {
+      const qt1 = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt1.insert({ x: 5, y: 5 });
+      const qt2 = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt2.insert({ x: 5, y: 5 });
+      expect(qt1.equals(qt2)).toBe(true);
+    });
+
+    it('should return false for equals with different points', () => {
+      const qt1 = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt1.insert({ x: 5, y: 5 });
+      const qt2 = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt2.insert({ x: 99, y: 99 });
+      expect(qt1.equals(qt2)).toBe(false);
+    });
+
+    it('should convert to JSON', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 1, y: 2 });
+      qt.insert({ x: 3, y: 4 });
+      const json = qt.toJSON() as number[][];
+      expect(json).toEqual([[1, 2], [3, 4]]);
+    });
   });
 });

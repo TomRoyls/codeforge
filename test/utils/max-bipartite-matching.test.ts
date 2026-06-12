@@ -405,4 +405,39 @@ describe('MaxBipartiteMatching', () => {
     m.addEdge(0, 3)
     expect(m.getMatchingSize()).toBe(3)
   })
+
+  it('handles 4x4 with partial edges', () => {
+    const m = new MaxBipartiteMatching(4, 4)
+    m.addEdge(0, 0); m.addEdge(0, 1)
+    m.addEdge(1, 1); m.addEdge(1, 2)
+    m.addEdge(2, 2); m.addEdge(2, 3)
+    m.addEdge(3, 3)
+    expect(m.getMatchingSize()).toBe(4)
+  })
+
+  it('handles disconnected components', () => {
+    const m = new MaxBipartiteMatching(4, 4)
+    m.addEdge(0, 0); m.addEdge(2, 2)
+    expect(m.getMatchingSize()).toBe(2)
+  })
+
+  it('handles single left node with multiple edges', () => {
+    const m = new MaxBipartiteMatching(1, 3)
+    m.addEdge(0, 0); m.addEdge(0, 1); m.addEdge(0, 2)
+    expect(m.getMatchingSize()).toBe(1)
+  })
+
+  it('handles single edge', () => {
+    const m = new MaxBipartiteMatching(1, 1)
+    m.addEdge(0, 0)
+    expect(m.maxMatching()).toEqual([[0, 0]])
+  })
+
+  it('handles 5x5 complete bipartite', () => {
+    const m = new MaxBipartiteMatching(5, 5)
+    for (let i = 0; i < 5; i++)
+      for (let j = 0; j < 5; j++)
+        m.addEdge(i, j)
+    expect(m.getMatchingSize()).toBe(5)
+  })
 })

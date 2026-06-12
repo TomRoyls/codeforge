@@ -380,4 +380,56 @@ describe('writeToFileAtomic', () => {
     expect(content.endsWith('\n')).toBe(true)
     fs.rmSync(dir, { recursive: true })
   })
+
+  it('writes JSON content correctly', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'data.json')
+    const data = JSON.stringify({ key: 'value', num: 42 })
+    writeToFile(fp, data)
+    const read = fs.readFileSync(fp, 'utf8')
+    expect(JSON.parse(read)).toEqual({ key: 'value', num: 42 })
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('writes empty string', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'empty.txt')
+    writeToFile(fp, '')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('writes unicode content', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'unicode.txt')
+    writeToFile(fp, 'こんにちは世界 🌍')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('こんにちは世界 🌍')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('creates nested directories for atomic write', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'a', 'b', 'c', 'deep.txt')
+    writeToFileAtomic(fp, 'deep')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('deep')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('overwrites existing file', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'overwrite.txt')
+    writeToFile(fp, 'first')
+    writeToFile(fp, 'second')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('second')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('writes large content', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'large.txt')
+    const large = 'x'.repeat(100000)
+    writeToFile(fp, large)
+    expect(fs.readFileSync(fp, 'utf8').length).toBe(100000)
+    fs.rmSync(dir, { recursive: true })
+  })
 })

@@ -402,4 +402,55 @@ describe('CuckooHashMap', () => {
     expect(map.get('key')).toBe(3)
     expect(map.size).toBe(1)
   })
+
+  it('should return keys', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    const keys = map.keys()
+    expect(keys).toContain('a')
+    expect(keys).toContain('b')
+  })
+
+  it('should return values', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('x', 10)
+    map.set('y', 20)
+    const values = map.values()
+    expect(values).toContain(10)
+    expect(values).toContain(20)
+  })
+
+  it('should return entries', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('a', 1)
+    const entries = map.entries()
+    expect(entries).toEqual([['a', 1]])
+  })
+
+  it('should report loadFactor', () => {
+    const map = new CuckooHashMap<string, number>({ capacity: 64 })
+    expect(map.loadFactor).toBe(0)
+    map.set('a', 1)
+    expect(map.loadFactor).toBeGreaterThan(0)
+    expect(map.loadFactor).toBeLessThan(1)
+  })
+
+  it('should iterate with forEach', () => {
+    const map = new CuckooHashMap<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    const result: Record<string, number> = {}
+    map.forEach((v, k) => { result[k] = v })
+    expect(result).toEqual({ a: 1, b: 2 })
+  })
+
+  it('should handle numeric keys', () => {
+    const map = new CuckooHashMap<number, string>()
+    map.set(1, 'one')
+    map.set(2, 'two')
+    expect(map.get(1)).toBe('one')
+    expect(map.get(2)).toBe('two')
+    expect(map.get(3)).toBeUndefined()
+  })
 })

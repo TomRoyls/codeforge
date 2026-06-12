@@ -352,4 +352,49 @@ describe('NetworkFlow', () => {
     ]
     expect(NetworkFlow.maxFlow(edges, 0, 2, 3)).toBe(15)
   })
+
+  it('should return 0 for disconnected source and sink', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+    ]
+    expect(NetworkFlow.maxFlow(edges, 0, 3, 4)).toBe(0)
+  })
+
+  it('should handle bidirectional edges', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 1, to: 0, capacity: 5 },
+    ]
+    expect(NetworkFlow.maxFlow(edges, 0, 1, 2)).toBe(5)
+  })
+
+  it('should handle capacity bottleneck', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 100 },
+      { from: 1, to: 2, capacity: 3 },
+    ]
+    expect(NetworkFlow.maxFlow(edges, 0, 2, 3)).toBe(3)
+  })
+
+  it('should detect augmenting path', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+      { from: 1, to: 2, capacity: 5 },
+    ]
+    expect(NetworkFlow.hasAugmentingPath(edges, 0, 2, 3)).toBe(true)
+  })
+
+  it('should return false for no augmenting path', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 10 },
+    ]
+    expect(NetworkFlow.hasAugmentingPath(edges, 0, 3, 4)).toBe(false)
+  })
+
+  it('should handle single edge', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 7 },
+    ]
+    expect(NetworkFlow.maxFlow(edges, 0, 1, 2)).toBe(7)
+  })
 })

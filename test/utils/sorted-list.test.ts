@@ -357,4 +357,54 @@ describe('SortedList', () => {
     expect(sl.size).toBe(0)
     expect(sl.min()).toBeUndefined()
   })
+
+  it('should return undefined max for empty list', () => {
+    const sl = new SortedList<number>()
+    expect(sl.max()).toBeUndefined()
+  })
+
+  it('should compute rangeCount', () => {
+    const sl = new SortedList<number>()
+    sl.insert(1)
+    sl.insert(3)
+    sl.insert(5)
+    sl.insert(7)
+    sl.insert(9)
+    expect(sl.rangeCount(3, 7)).toBe(3)
+  })
+
+  it('should return slice', () => {
+    const sl = new SortedList<number>()
+    sl.insert(10)
+    sl.insert(20)
+    sl.insert(30)
+    expect(sl.slice(1, 3)).toEqual([20, 30])
+  })
+
+  it('should iterate entries', () => {
+    const sl = new SortedList<number>()
+    sl.insert(3)
+    sl.insert(1)
+    sl.insert(2)
+    expect([...sl.entries()]).toEqual([1, 2, 3])
+  })
+
+  it('should support custom comparator', () => {
+    const sl = new SortedList<string>((a, b) => b.localeCompare(a))
+    sl.insert('a')
+    sl.insert('b')
+    sl.insert('c')
+    expect(sl.get(0)).toBe('c')
+    expect(sl.get(2)).toBe('a')
+  })
+
+  it('should remove items by value', () => {
+    const sl = new SortedList<number>()
+    sl.insert(5)
+    sl.insert(3)
+    sl.insert(7)
+    expect(sl.removeItem(5)).toBe(true)
+    expect(sl.contains(5)).toBe(false)
+    expect(sl.removeItem(99)).toBe(false)
+  })
 })

@@ -333,4 +333,58 @@ describe('WindowTinyLFU', () => {
     const w3 = new WindowTinyLFU(1000, 0.2)
     expect(w3.windowSize).toBe(200)
   })
+
+  it('estimate for unseen key returns 0', () => {
+    const w = new WindowTinyLFU(100)
+    expect(w.estimate('never-seen')).toBe(0)
+  })
+
+  it('recordAccess updates estimate incrementally', () => {
+    const w = new WindowTinyLFU(100)
+    w.recordAccess('key')
+    const est1 = w.estimate('key')
+    w.recordAccess('key')
+    const est2 = w.estimate('key')
+    expect(est2).toBeGreaterThanOrEqual(est1)
+  })
+
+  it('shouldAdmit with zero candidate frequency', () => {
+    const w = new WindowTinyLFU(100)
+    w.recordAccess('victim')
+    expect(w.shouldAdmit('candidate', 'victim')).toBe(false)
+  })
+
+  it('shouldAdmit with equal frequencies returns false', () => {
+    const w = new WindowTinyLFU(100)
+    for (let i = 0; i < 10; i++) {
+      w.recordAccess('a')
+      w.recordAccess('b')
+    }
+    expect(w.shouldAdmit('a', 'b')).toBe(false)
+  })
+
+  it('multiple keys in window', () => {
+    const w = new WindowTinyLFU(100, 0.5)
+    w.recordAccess('a')
+    w.recordAccess('b')
+    w.recordAccess('c')
+    expect(w.estimate('a')).toBeGreaterThan(0)
+    expect(w.estimate('b')).toBeGreaterThan(0)
+    expect(w.estimate('c')).toBeGreaterThan(0)
+  })
+
+  it('window eviction works at capacity', () => {
+    const w = new WindowTinyLFU(10, 0.5)
+    for (let i = 0; i < 15; i++) {
+      w.recordAccess(`key-${i}`)
+    }
+    expect(w.estimate('key-14')).toBeGreaterThan(0)
+  })
+
+  it('sketch with custom width and depth works', () => {
+    const w = new WindowTinyLFU(100, 0.01, 500, 8)
+    w.recordAccess('key')
+    expect(w.estimate('key')).toBeGreaterThan(0)
+    expect(w.capacity).toBe(100)
+  })
 })

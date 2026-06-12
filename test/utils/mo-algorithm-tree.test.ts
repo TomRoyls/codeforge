@@ -618,5 +618,89 @@ describe('MoAlgorithmTree', () => {
       )
       expect(calls).toBeGreaterThan(0)
     })
+
+    it('should handle query on adjacent nodes', () => {
+      const mo = new MoAlgorithmTree(3)
+      mo.addEdge(0, 1)
+      mo.addEdge(1, 2)
+      let addNodes: number[] = []
+      let removeNodes: number[] = []
+      mo.processQueries(
+        [[0, 1]],
+        (n) => { addNodes.push(n) },
+        (n) => { removeNodes.push(n) }
+      )
+      expect(addNodes.length).toBeGreaterThan(0)
+    })
+
+    it('should handle single node tree', () => {
+      const mo = new MoAlgorithmTree(1)
+      let count = 0
+      mo.processQueries(
+        [[0, 0]],
+        () => { count++ },
+        () => { count-- }
+      )
+      expect(count).toBeGreaterThanOrEqual(0)
+    })
+
+    it('should handle multiple queries', () => {
+      const mo = new MoAlgorithmTree(4)
+      mo.addEdge(0, 1)
+      mo.addEdge(0, 2)
+      mo.addEdge(0, 3)
+      let totalAdd = 0
+      mo.processQueries(
+        [[1, 2], [2, 3]],
+        () => { totalAdd++ },
+        () => {}
+      )
+      expect(totalAdd).toBeGreaterThan(0)
+    })
+
+    it('should handle star graph', () => {
+      const mo = new MoAlgorithmTree(6)
+      mo.addEdge(0, 1)
+      mo.addEdge(0, 2)
+      mo.addEdge(0, 3)
+      mo.addEdge(0, 4)
+      mo.addEdge(0, 5)
+      let nodes = new Set<number>()
+      mo.processQueries(
+        [[1, 5]],
+        (n) => { nodes.add(n) },
+        () => {}
+      )
+      expect(nodes.size).toBeGreaterThan(0)
+    })
+
+    it('should handle linear chain', () => {
+      const mo = new MoAlgorithmTree(5)
+      mo.addEdge(0, 1)
+      mo.addEdge(1, 2)
+      mo.addEdge(2, 3)
+      mo.addEdge(3, 4)
+      let count = 0
+      mo.processQueries(
+        [[0, 4]],
+        () => { count++ },
+        () => { count-- }
+      )
+      expect(count).toBeGreaterThanOrEqual(0)
+    })
+
+    it('should toggle nodes correctly for overlapping queries', () => {
+      const mo = new MoAlgorithmTree(4)
+      mo.addEdge(0, 1)
+      mo.addEdge(1, 2)
+      mo.addEdge(2, 3)
+      let toggleCount = 0
+      mo.processQueries(
+        [[0, 1], [1, 2]],
+        () => { toggleCount++ },
+        () => { toggleCount++ }
+      )
+      expect(toggleCount).toBeGreaterThan(0)
+    })
   })
 })

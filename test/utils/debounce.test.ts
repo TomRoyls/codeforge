@@ -525,4 +525,58 @@ describe('throttle', () => {
       expect(fn).toHaveBeenLastCalledWith(obj2)
     })
   })
+
+  describe('debounce cancel', () => {
+    it('should cancel pending debounced call', () => {
+      const fn = vi.fn()
+      const debounced = debounce(fn, 100)
+      debounced('a')
+      debounced.cancel()
+      vi.advanceTimersByTime(200)
+      expect(fn).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('debounce flush', () => {
+    it('should flush pending call immediately', () => {
+      const fn = vi.fn()
+      const debounced = debounce(fn, 100)
+      debounced('a')
+      debounced.flush()
+      expect(fn).toHaveBeenCalledWith('a')
+    })
+
+    it('should not call fn on flush if no pending', () => {
+      const fn = vi.fn()
+      const debounced = debounce(fn, 100)
+      debounced.flush()
+      expect(fn).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('throttle cancel', () => {
+    it('should cancel pending throttled call', () => {
+      const fn = vi.fn()
+      const throttled = throttle(fn, 100)
+      throttled('a')
+      expect(fn).toHaveBeenCalledTimes(1)
+      throttled('b')
+      throttled.cancel()
+      vi.advanceTimersByTime(200)
+      expect(fn).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('multiple debounce calls', () => {
+    it('should use latest args', () => {
+      const fn = vi.fn()
+      const debounced = debounce(fn, 100)
+      debounced('first')
+      debounced('second')
+      debounced('third')
+      vi.advanceTimersByTime(150)
+      expect(fn).toHaveBeenCalledTimes(1)
+      expect(fn).toHaveBeenCalledWith('third')
+    })
+  })
 })

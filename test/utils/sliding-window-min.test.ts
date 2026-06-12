@@ -246,4 +246,41 @@ describe('SlidingWindowMin', () => {
   it('handles window size 1 with solve', () => {
     expect(SlidingWindowMin.solve([5, 3, 7, 2], 1)).toEqual([5, 3, 7, 2])
   })
+
+  it('should return undefined before window fills', () => {
+    const swm = new SlidingWindowMin(3)
+    expect(swm.push(5)).toBeUndefined()
+    expect(swm.push(3)).toBeUndefined()
+    expect(swm.push(1)).toBe(1)
+  })
+
+  it('should update minimum as window slides', () => {
+    const swm = new SlidingWindowMin(2)
+    swm.push(5)
+    const min1 = swm.push(3)
+    expect(min1).toBe(3)
+    const min2 = swm.push(7)
+    expect(min2).toBe(3)
+    const min3 = swm.push(1)
+    expect(min3).toBe(1)
+  })
+
+  it('should return undefined getMin for empty', () => {
+    const swm = new SlidingWindowMin(3)
+    expect(swm.getMin()).toBeUndefined()
+  })
+
+  it('should throw for invalid windowSize', () => {
+    expect(() => new SlidingWindowMin(0)).toThrow()
+  })
+
+  it('should handle all same values', () => {
+    const result = SlidingWindowMin.solve([5, 5, 5, 5], 2)
+    expect(result).toEqual([5, 5, 5])
+  })
+
+  it('should handle descending values', () => {
+    const result = SlidingWindowMin.solve([4, 3, 2, 1], 2)
+    expect(result).toEqual([3, 2, 1])
+  })
 })

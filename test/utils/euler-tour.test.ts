@@ -335,4 +335,46 @@ describe('EulerTour', () => {
     const et = new EulerTour(adj, 0)
     expect(et.last.length).toBe(3)
   })
+
+  it('getSubtreeRange for leaf node returns single position', () => {
+    const adj = [[1, 2], [0], [0]]
+    const et = new EulerTour(adj, 0)
+    const [lo, hi] = et.getSubtreeRange(1)
+    expect(lo).toBe(hi)
+  })
+
+  it('depth is consistent with ancestor relationship', () => {
+    const adj = [[1], [2], [3], []]
+    const et = new EulerTour(adj, 0)
+    expect(et.depth[2]).toBe(et.depth[0] + 2)
+    expect(et.depth[3]).toBe(et.depth[0] + 3)
+  })
+
+  it('parent chain is consistent', () => {
+    const adj = [[1], [2], [3], []]
+    const et = new EulerTour(adj, 0)
+    expect(et.parent[1]).toBe(0)
+    expect(et.parent[2]).toBe(1)
+    expect(et.parent[3]).toBe(2)
+  })
+
+  it('isAncestor handles transitive relationship', () => {
+    const adj = [[1], [2], [3], []]
+    const et = new EulerTour(adj, 0)
+    expect(et.isAncestor(0, 3)).toBe(true)
+    expect(et.isAncestor(1, 3)).toBe(true)
+    expect(et.isAncestor(3, 0)).toBe(false)
+  })
+
+  it('getPath works for grandparent to grandchild', () => {
+    const adj = [[1], [2], [3], []]
+    const et = new EulerTour(adj, 0)
+    expect(et.getPath(0, 3)).toEqual([0, 1, 2, 3])
+  })
+
+  it('getPath for cousin nodes returns empty array', () => {
+    const adj = [[1, 2], [3], [4], [], []]
+    const et = new EulerTour(adj, 0)
+    expect(et.getPath(3, 4)).toEqual([])
+  })
 })

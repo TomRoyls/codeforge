@@ -335,4 +335,37 @@ describe('SlidingWindowCounter - same timestamp', () => {
     counter.increment(5)
     expect(counter.getRate()).toBe(15)
   })
+
+  it('should start at zero count', () => {
+    const counter = new SlidingWindowCounter(1000)
+    expect(counter.getCount()).toBe(0)
+  })
+
+  it('should increment by custom amount', () => {
+    const counter = new SlidingWindowCounter(60000)
+    counter.increment(5)
+    expect(counter.getCount()).toBe(5)
+  })
+
+  it('should reset counter', () => {
+    const counter = new SlidingWindowCounter(60000)
+    counter.increment(10)
+    counter.reset()
+    expect(counter.getCount()).toBe(0)
+  })
+
+  it('should calculate rate', () => {
+    const counter = new SlidingWindowCounter(1000)
+    counter.increment(10)
+    expect(counter.getRate()).toBe(10)
+  })
+
+  it('should throw for invalid windowMs', () => {
+    expect(() => new SlidingWindowCounter(0)).toThrow()
+    expect(() => new SlidingWindowCounter(-1)).toThrow()
+  })
+
+  it('should throw for invalid maxBuckets', () => {
+    expect(() => new SlidingWindowCounter(1000, 0)).toThrow()
+  })
 })

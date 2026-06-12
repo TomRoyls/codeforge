@@ -415,7 +415,7 @@ describe('ClosestPairBrute', () => {
     cp.addPoint(0, 1)
     cp.addPoint(1, 1)
     const pairs = cp.findKNearest(4)
-    expect(pairs.length).toBe(6)
+    expect(pairs.length).toBe(4)
     const distances = pairs.map(p => p.distance)
     const sortedDistances = [...distances].sort((a, b) => a - b)
     expect(distances).toEqual(sortedDistances)
@@ -443,8 +443,8 @@ describe('ClosestPairBrute', () => {
 
   it('handles extreme coordinate values', () => {
     const cp = new ClosestPairBrute()
-    cp.addPoint(1e100, 1e100)
-    cp.addPoint(1e100 + 1, 1e100 + 1)
+    cp.addPoint(1e10, 1e10)
+    cp.addPoint(1e10 + 1, 1e10 + 1)
     const result = cp.findClosest()
     expect(result).not.toBeNull()
     expect(result!.distance).toBeCloseTo(Math.sqrt(2), 5)

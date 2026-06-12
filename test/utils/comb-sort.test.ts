@@ -235,4 +235,28 @@ describe('CombSort', () => {
     const arr = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
     expect(CombSort.sort(arr)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
   })
+
+  it('handles array with Infinity', () => {
+    expect(CombSort.sort([1, Infinity, 2])).toEqual([1, 2, Infinity])
+  })
+
+  it('handles array with -Infinity', () => {
+    expect(CombSort.sort([-Infinity, -1, 0])).toEqual([-Infinity, -1, 0])
+  })
+
+  it('handles mixed Infinity and finite numbers', () => {
+    expect(CombSort.sort([Infinity, -Infinity, 1, 0, -1])).toEqual([-Infinity, -1, 0, 1, Infinity])
+  })
+
+  it('sortWithComparator with booleans', () => {
+    expect(CombSort.sortWithComparator([true, false, true, false], (a, b) => {
+      return (a === b) ? 0 : (a ? 1 : -1)
+    })).toEqual([false, false, true, true])
+  })
+
+  it('sortInPlace with Infinity values', () => {
+    const arr = [Infinity, 3, -Infinity, 1]
+    CombSort.sortInPlace(arr)
+    expect(arr).toEqual([-Infinity, 1, 3, Infinity])
+  })
 })

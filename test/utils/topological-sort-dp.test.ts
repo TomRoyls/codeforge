@@ -384,4 +384,48 @@ describe('TopologicalSortDP', () => {
       expect(ts.shortestPath(0, 4)).toBe(1)
     })
   })
+
+  it('should return 0 for longest path in single node', () => {
+    const ts = new TopologicalSortDP(1)
+    expect(ts.longestPath()).toBe(0)
+  })
+
+  it('should count paths in a DAG', () => {
+    const ts = new TopologicalSortDP(4)
+    ts.addEdge(0, 1)
+    ts.addEdge(0, 2)
+    ts.addEdge(1, 3)
+    ts.addEdge(2, 3)
+    expect(ts.countPaths()).toBeGreaterThan(0)
+  })
+
+  it('should find shortest path', () => {
+    const ts = new TopologicalSortDP(4)
+    ts.addEdge(0, 1)
+    ts.addEdge(1, 2)
+    ts.addEdge(2, 3)
+    expect(ts.shortestPath(0, 3)).toBe(3)
+  })
+
+  it('should return -1 for cyclic graph longest path', () => {
+    const ts = new TopologicalSortDP(3)
+    ts.addEdge(0, 1)
+    ts.addEdge(1, 2)
+    ts.addEdge(2, 0)
+    expect(ts.longestPath()).toBe(-1)
+  })
+
+  it('should count paths for linear graph', () => {
+    const ts = new TopologicalSortDP(4)
+    ts.addEdge(0, 1)
+    ts.addEdge(1, 2)
+    ts.addEdge(2, 3)
+    expect(ts.countPaths()).toBe(4)
+  })
+
+  it('should handle disconnected components', () => {
+    const ts = new TopologicalSortDP(4)
+    ts.addEdge(0, 1)
+    expect(ts.longestPath()).toBe(1)
+  })
 })

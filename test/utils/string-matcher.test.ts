@@ -410,4 +410,57 @@ describe('StringMatcher', () => {
     expect(results[0]!.start).toBe(0)
     expect(results[0]!.end).toBe(4)
   })
+
+  it('should report patternCount', () => {
+    const sm = new StringMatcher()
+    expect(sm.patternCount).toBe(0)
+    sm.addPattern('abc')
+    expect(sm.patternCount).toBe(1)
+    sm.addPattern('def')
+    expect(sm.patternCount).toBe(2)
+  })
+
+  it('should clear all patterns', () => {
+    const sm = new StringMatcher()
+    sm.addPattern('hello')
+    sm.build()
+    sm.clear()
+    expect(sm.patternCount).toBe(0)
+    sm.addPattern('world')
+    sm.build()
+    const results = sm.search('world')
+    expect(results).toHaveLength(1)
+  })
+
+  it('should throw when searching before build', () => {
+    const sm = new StringMatcher()
+    sm.addPattern('test')
+    expect(() => sm.search('test')).toThrow('Must call build() before search()')
+  })
+
+  it('should throw when adding pattern after build', () => {
+    const sm = new StringMatcher()
+    sm.addPattern('a')
+    sm.build()
+    expect(() => sm.addPattern('b')).toThrow('Cannot add patterns after build()')
+  })
+
+  it('should find multiple overlapping patterns', () => {
+    const sm = new StringMatcher()
+    sm.addPattern('ab')
+    sm.addPattern('bc')
+    sm.addPattern('abc')
+    sm.build()
+    const results = sm.search('abc')
+    expect(results.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('should use custom id', () => {
+    const sm = new StringMatcher()
+    sm.addPattern('hello', 'custom-id')
+    sm.build()
+    const results = sm.search('say hello world')
+    expect(results).toHaveLength(1)
+    expect(results[0]!.id).toBe('custom-id')
+  })
 })

@@ -421,4 +421,49 @@ describe('DequeMin', () => {
     dq.popFront()
     expect(dq.min).toBe(3)
   })
+
+  it('should return undefined min for empty deque', () => {
+    const dq = new DequeMin()
+    expect(dq.min).toBeUndefined()
+  })
+
+  it('should return undefined popFront for empty deque', () => {
+    const dq = new DequeMin()
+    expect(dq.popFront()).toBeUndefined()
+  })
+
+  it('should convert to array', () => {
+    const dq = new DequeMin()
+    dq.pushBack(1)
+    dq.pushBack(2)
+    dq.pushBack(3)
+    expect(dq.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('should report isEmpty correctly', () => {
+    const dq = new DequeMin()
+    expect(dq.isEmpty).toBe(true)
+    dq.pushBack(5)
+    expect(dq.isEmpty).toBe(false)
+  })
+
+  it('should handle duplicate values', () => {
+    const dq = new DequeMin()
+    dq.pushBack(3)
+    dq.pushBack(3)
+    dq.pushBack(3)
+    expect(dq.min).toBe(3)
+    dq.popFront()
+    expect(dq.min).toBe(3)
+  })
+
+  it('should update min after popFront removes minimum', () => {
+    const dq = new DequeMin()
+    dq.pushBack(1)
+    dq.pushBack(5)
+    dq.pushBack(3)
+    expect(dq.min).toBe(1)
+    dq.popFront()
+    expect(dq.min).toBe(3)
+  })
 })

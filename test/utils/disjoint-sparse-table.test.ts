@@ -296,4 +296,39 @@ describe('DisjointSparseTable', () => {
     const b = new DisjointSparseTable([1, 2, 3], (a, b) => a + b)
     expect(a.equals(b)).toBe(false)
   })
+
+  it('queries LCM over range', () => {
+    const dst = new DisjointSparseTable([2, 3, 4, 5], (a, b) => {
+      const gcd = (x: number, y: number): number => y === 0 ? x : gcd(y, x % y)
+      return Math.abs(a * b) / gcd(a, b)
+    })
+    expect(dst.query(0, 3)).toBe(60)
+    expect(dst.query(1, 2)).toBe(12)
+  })
+
+  it('handles string concatenation', () => {
+    const dst = new DisjointSparseTable(['a', 'b', 'c'], (a, b) => a + b)
+    expect(dst.query(0, 2)).toBe('abc')
+    expect(dst.query(0, 0)).toBe('a')
+  })
+
+  it('queries sum with large values', () => {
+    const data = [1000000, 2000000, 3000000, 4000000]
+    const dst = new DisjointSparseTable(data, (a, b) => a + b)
+    expect(dst.query(0, 3)).toBe(10000000)
+  })
+
+  it('min query across multiple power-of-two boundaries', () => {
+    const data = [9, 8, 7, 6, 5, 4, 3, 2, 1, 10]
+    const dst = new DisjointSparseTable(data, (a, b) => Math.min(a, b))
+    expect(dst.query(0, 9)).toBe(1)
+    expect(dst.query(3, 7)).toBe(2)
+  })
+
+  it('clone with string data', () => {
+    const dst = new DisjointSparseTable(['x', 'y', 'z'], (a, b) => a + b)
+    const copy = dst.clone()
+    expect(copy.query(0, 2)).toBe('xyz')
+    expect(copy.toJSON()).toEqual(['x', 'y', 'z'])
+  })
 })

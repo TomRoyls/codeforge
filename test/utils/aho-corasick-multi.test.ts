@@ -321,4 +321,40 @@ describe('AhoCorasickMulti', () => {
     const result = ac.search('xyzabcdef')
     expect(result.get(0)).toEqual([5])
   })
+
+  it('handles patterns with repeated characters', () => {
+    const ac = new AhoCorasickMulti(['aaa', 'aa'])
+    const result = ac.search('aaaa')
+    expect(result.get(0)).toEqual([2, 3])
+    expect(result.get(1)).toEqual([1, 2, 3])
+  })
+
+  it('clone works with complex overlapping patterns', () => {
+    const ac = new AhoCorasickMulti(['abc', 'bc', 'c', 'abcd', 'bcd', 'cd'])
+    const cloned = ac.clone()
+    expect(cloned.equals(ac)).toBe(true)
+    const r1 = ac.search('abcd')
+    const r2 = cloned.search('abcd')
+    expect(r1).toEqual(r2)
+  })
+
+  it('handles unicode surrogate pairs', () => {
+    const ac = new AhoCorasickMulti(['ab', 'cd'])
+    const result = ac.search('x\u{1F600}ab\u{1F600}cd')
+    expect(result.get(0)).toEqual([4])
+    expect(result.get(1)).toEqual([8])
+  })
+
+  it('correctly handles pattern starting with pattern suffix', () => {
+    const ac = new AhoCorasickMulti(['aba', 'ba'])
+    const result = ac.search('ababa')
+    expect(result.get(0)).toEqual([2, 4])
+    expect(result.get(1)).toEqual([2, 4])
+  })
+
+  it('equals detects difference in output arrays', () => {
+    const ac1 = new AhoCorasickMulti(['a', 'b'])
+    const ac2 = new AhoCorasickMulti(['a'])
+    expect(ac1.equals(ac2)).toBe(false)
+  })
 })

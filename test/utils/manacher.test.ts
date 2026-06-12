@@ -280,4 +280,41 @@ describe('Manacher', () => {
     const result = m.longestPalindrome()
     expect(result.length).toBe(101)
   })
+
+  it('should handle single character string', () => {
+    const m = new Manacher('a')
+    const lp = m.longestPalindrome()
+    expect(lp.length).toBe(1)
+  })
+
+  it('should detect palindrome substring', () => {
+    const m = new Manacher('racecar')
+    expect(m.isPalindrome(0, 6)).toBe(true)
+    expect(m.isPalindrome(1, 5)).toBe(true)
+    expect(m.isPalindrome(0, 3)).toBe(false)
+  })
+
+  it('should count all palindromes in abcba', () => {
+    const m = new Manacher('abcba')
+    const count = m.countAllPalindromes()
+    expect(count).toBeGreaterThan(0)
+  })
+
+  it('should return all palindromes', () => {
+    const m = new Manacher('aba')
+    const all = m.getAllPalindromes()
+    expect(all.length).toBeGreaterThan(0)
+  })
+
+  it('should handle string with no palindromes longer than 1', () => {
+    const m = new Manacher('abcde')
+    const lp = m.longestPalindrome()
+    expect(lp.length).toBe(1)
+  })
+
+  it('should handle even-length palindrome', () => {
+    const m = new Manacher('abba')
+    const lp = m.longestPalindrome()
+    expect(lp.length).toBeGreaterThanOrEqual(2)
+  })
 })

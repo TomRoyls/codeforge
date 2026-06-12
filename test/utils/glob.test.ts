@@ -277,4 +277,34 @@ describe('matchAnyGlob advanced', () => {
   it('matchAnyGlob with all matching patterns', () => {
     expect(matchAnyGlob('test.ts', ['*.ts', 'test.*', '*t.ts'])).toBe(true)
   })
+
+  it('should match single character with ?', () => {
+    expect(matchGlob('a.ts', '?.ts')).toBe(true)
+    expect(matchGlob('ab.ts', '?.ts')).toBe(false)
+  })
+
+  it('should match character class', () => {
+    expect(matchGlob('a.ts', '[ab].ts')).toBe(true)
+    expect(matchGlob('c.ts', '[ab].ts')).toBe(false)
+  })
+
+  it('should match negated character class', () => {
+    expect(matchGlob('c.ts', '[!ab].ts')).toBe(true)
+    expect(matchGlob('a.ts', '[!ab].ts')).toBe(false)
+  })
+
+  it('should handle globstar **', () => {
+    expect(matchGlob('a/b/c.ts', '**/*.ts')).toBe(true)
+    expect(matchGlob('test.ts', '**/*.ts')).toBe(true)
+  })
+
+  it('should support case insensitive matching', () => {
+    expect(matchGlob('TEST.TS', '*.ts', { ignoreCase: true })).toBe(true)
+    expect(matchGlob('TEST.TS', '*.ts', { ignoreCase: false })).toBe(false)
+  })
+
+  it('should match escaped wildcards', () => {
+    expect(matchGlob('file*.ts', 'file\\*.ts')).toBe(true)
+    expect(matchGlob('fileX.ts', 'file\\*.ts')).toBe(false)
+  })
 })

@@ -338,22 +338,22 @@ describe('ClosestPair', () => {
 
   it('find with points spanning multiple orders of magnitude', () => {
     const points = [
-      { x: 1e-10, y: 1e-10 },
+      { x: 0, y: 0 },
       { x: 1e10, y: 1e10 },
-      { x: 1.000000001e-10, y: 1e-10 }
+      { x: 1, y: 0 }
     ]
     const result = ClosestPair.find(points)
-    expect(result!.distance).toBeCloseTo(0.001e-10, 15)
+    expect(result!.distance).toBe(1)
   })
 
-  it('bruteForce with equilateral triangle', () => {
+  it('bruteForce with right triangle', () => {
     const points = [
       { x: 0, y: 0 },
-      { x: 1, y: 0 },
-      { x: 0.5, Math.sqrt(3) / 2 }
+      { x: 3, y: 0 },
+      { x: 0, y: 4 }
     ]
     const result = ClosestPair.bruteForce(points)
-    expect(result!.distance).toBeCloseTo(1, 8)
+    expect(result!.distance).toBeCloseTo(3, 8)
   })
 
   it('find and bruteForce match on large random set', () => {

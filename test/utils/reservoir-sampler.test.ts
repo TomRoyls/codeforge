@@ -389,4 +389,52 @@ describe('ReservoirSampler', () => {
     sample[0].value = 2
     expect(sampler.sample[0].value).toBe(2)
   })
+
+  it('should report totalSeen correctly', () => {
+    const sampler = new ReservoirSampler<number>(3)
+    sampler.add(1)
+    sampler.add(2)
+    sampler.add(3)
+    sampler.add(4)
+    expect(sampler.totalSeen).toBe(4)
+  })
+
+  it('should report isFull', () => {
+    const sampler = new ReservoirSampler<number>(2)
+    expect(sampler.isFull).toBe(false)
+    sampler.add(1)
+    sampler.add(2)
+    expect(sampler.isFull).toBe(true)
+  })
+
+  it('should reset the sampler', () => {
+    const sampler = new ReservoirSampler<number>(3)
+    sampler.add(1)
+    sampler.add(2)
+    sampler.reset()
+    expect(sampler.sample).toEqual([])
+    expect(sampler.totalSeen).toBe(0)
+  })
+
+  it('should handle capacity of 1', () => {
+    const sampler = new ReservoirSampler<number>(1)
+    sampler.add(10)
+    sampler.add(20)
+    sampler.add(30)
+    expect(sampler.sample).toHaveLength(1)
+    expect(sampler.totalSeen).toBe(3)
+  })
+
+  it('should sample from larger stream', () => {
+    const sampler = new ReservoirSampler<number>(5)
+    for (let i = 0; i < 100; i++) sampler.add(i)
+    expect(sampler.sample).toHaveLength(5)
+    expect(sampler.totalSeen).toBe(100)
+  })
+
+  it('should handle empty sample', () => {
+    const sampler = new ReservoirSampler<number>(3)
+    expect(sampler.sample).toEqual([])
+    expect(sampler.totalSeen).toBe(0)
+  })
 })

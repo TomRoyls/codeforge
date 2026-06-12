@@ -314,4 +314,43 @@ describe('SegmentTree - multiple updates', () => {
     st.update(0, -5)
     expect(st.query(0, 4)).toBe(-5)
   })
+
+  it('should clone a segment tree', () => {
+    const st = SegmentTree.fromArray([1, 2, 3, 4, 5])
+    const cloned = st.clone()
+    expect(cloned.equals(st)).toBe(true)
+  })
+
+  it('should reset the tree', () => {
+    const st = SegmentTree.fromArray([1, 2, 3])
+    st.reset()
+    expect(st.query(0, 2)).toBe(Infinity)
+  })
+
+  it('should support sum operation', () => {
+    const st = new SegmentTree(3, (a, b) => a + b, 0)
+    st.update(0, 10)
+    st.update(1, 20)
+    st.update(2, 30)
+    expect(st.query(0, 2)).toBe(60)
+  })
+
+  it('should support max operation', () => {
+    const st = new SegmentTree(4, Math.max, -Infinity)
+    st.update(0, 5)
+    st.update(1, 15)
+    st.update(2, 8)
+    st.update(3, 12)
+    expect(st.query(0, 3)).toBe(15)
+  })
+
+  it('should convert to array', () => {
+    const st = SegmentTree.fromArray([10, 20, 30])
+    expect(st.toArray()).toEqual([10, 20, 30])
+  })
+
+  it('should return identity for out of range query', () => {
+    const st = SegmentTree.fromArray([1, 2, 3])
+    expect(st.query(5, 10)).toBe(Infinity)
+  })
 })

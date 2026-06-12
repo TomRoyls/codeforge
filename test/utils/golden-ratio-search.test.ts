@@ -240,4 +240,35 @@ describe('GoldenRatioSearch maximize', () => {
     const x = GoldenRatioSearch.minimize((t) => (t - 1) * (t - 1), -100, 100)
     expect(x).toBeCloseTo(1, 0)
   })
+
+  it('should minimize a linear function (endpoint)', () => {
+    const x = GoldenRatioSearch.minimize((x) => x, -10, 10)
+    expect(x).toBeCloseTo(-10, 0)
+  })
+
+  it('should maximize a quadratic', () => {
+    const x = GoldenRatioSearch.maximize((x) => -((x - 3) ** 2), 0, 10)
+    expect(x).toBeCloseTo(3, 0)
+  })
+
+  it('should handle narrow interval', () => {
+    const x = GoldenRatioSearch.minimize((x) => (x - 5) ** 2, 4.999, 5.001)
+    expect(x).toBeCloseTo(5, 0)
+  })
+
+  it('should minimize cubic function', () => {
+    const x = GoldenRatioSearch.minimize((x) => x ** 3 - 3 * x, -2, 2)
+    expect(x).toBeCloseTo(1, 0)
+  })
+
+  it('should handle constant function', () => {
+    const x = GoldenRatioSearch.minimize(() => 42, 0, 100)
+    expect(x).toBeGreaterThanOrEqual(0)
+    expect(x).toBeLessThanOrEqual(100)
+  })
+
+  it('should work with custom tolerance', () => {
+    const x = GoldenRatioSearch.minimize((x) => (x - 7) ** 2, 0, 20, 0.1)
+    expect(x).toBeCloseTo(7, 0)
+  })
 })

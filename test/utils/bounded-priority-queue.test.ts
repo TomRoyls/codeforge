@@ -390,4 +390,64 @@ describe('BoundedPriorityQueue', () => {
     expect(q.toArray()[0]).toBe(0)
     expect(q.toArray()[999]).toBe(999)
   })
+
+  it('clone modifications do not affect original', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    q.push(1)
+    q.push(2)
+    const cloned = q.clone()
+    cloned.push(0)
+    cloned.pop()
+    expect(q.size).toBe(2)
+    expect(q.toArray()).toEqual([1, 2])
+    expect(cloned.toArray()).toEqual([0, 1])
+  })
+
+  it('drain returns items in sorted order regardless of insertion order', () => {
+    const q = new BoundedPriorityQueue<number>(5, minCmp)
+    q.push(50)
+    q.push(10)
+    q.push(40)
+    q.push(20)
+    q.push(30)
+    const drained = q.drain()
+    expect(drained).toEqual([50, 40, 30, 20, 10])
+  })
+
+  it('isFull reflects current capacity correctly', () => {
+    const q = new BoundedPriorityQueue<number>(2, minCmp)
+    expect(q.isFull).toBe(false)
+    q.push(1)
+    expect(q.isFull).toBe(false)
+    q.push(2)
+    expect(q.isFull).toBe(true)
+  })
+
+  it('equals returns false for queues with different comparators', () => {
+    const q1 = new BoundedPriorityQueue<number>(3, minCmp)
+    const q2 = new BoundedPriorityQueue<number>(3, maxCmp)
+    q1.push(1)
+    q1.push(2)
+    q2.push(2)
+    q2.push(1)
+    expect(q1.equals(q2)).toBe(false)
+  })
+
+  it('toString and toJSON return same sorted data', () => {
+    const q = new BoundedPriorityQueue<number>(3, minCmp)
+    q.push(3)
+    q.push(1)
+    q.push(2)
+    const strArr = q.toString().slice(1, -1).split(', ').map(Number)
+    expect(strArr).toEqual(q.toJSON())
+  })
+
+  it('handles max-heap with negative numbers', () => {
+    const q = new BoundedPriorityQueue<number>(3, maxCmp)
+    q.push(-5)
+    q.push(-1)
+    q.push(-10)
+    q.push(-3)
+    expect(q.toArray()).toEqual([-1, -3, -5])
+  })
 })

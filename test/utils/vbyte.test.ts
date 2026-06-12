@@ -303,4 +303,41 @@ describe('VByte', () => {
     const { bytesRead } = VByte.decodeDelta(encoded)
     expect(bytesRead).toBe(encoded.length)
   })
+
+  it('should encode 0 as single byte', () => {
+    const encoded = VByte.encode(0)
+    expect(encoded).toEqual(new Uint8Array([0]))
+    const { value } = VByte.decode(encoded)
+    expect(value).toBe(0)
+  })
+
+  it('should encode single byte value', () => {
+    const encoded = VByte.encode(127)
+    expect(encoded.length).toBe(1)
+    expect(VByte.decode(encoded).value).toBe(127)
+  })
+
+  it('should encode multi-byte value', () => {
+    const encoded = VByte.encode(300)
+    expect(encoded.length).toBe(2)
+    expect(VByte.decode(encoded).value).toBe(300)
+  })
+
+  it('should compute encodedSize', () => {
+    expect(VByte.encodedSize(0)).toBe(1)
+    expect(VByte.encodedSize(127)).toBe(1)
+    expect(VByte.encodedSize(128)).toBe(2)
+    expect(VByte.encodedSize(16383)).toBe(2)
+  })
+
+  it('should encode and decode delta', () => {
+    const values = [10, 20, 25, 30]
+    const encoded = VByte.encodeDelta(values)
+    const { values: decoded } = VByte.decodeDelta(encoded)
+    expect(decoded).toEqual(values)
+  })
+
+  it('should throw for negative values', () => {
+    expect(() => VByte.encode(-1)).toThrow()
+  })
 })

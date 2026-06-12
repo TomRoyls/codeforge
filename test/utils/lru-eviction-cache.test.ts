@@ -360,4 +360,36 @@ describe('LRUEvictionCache - equals', () => {
     const cache2 = new LRUEvictionCache<string, number>(5)
     expect(cache1.equals(cache2)).toBe(true)
   })
+
+  it('keys returns all keys', () => {
+    const cache = new LRUEvictionCache<string, number>(5)
+    cache.set('a', 1); cache.set('b', 2); cache.set('c', 3)
+    const keys = [...cache.keys()]
+    expect(keys.sort()).toEqual(['a', 'b', 'c'])
+  })
+
+  it('values returns all values', () => {
+    const cache = new LRUEvictionCache<string, number>(5)
+    cache.set('a', 1); cache.set('b', 2)
+    const vals = [...cache.values()]
+    expect(vals.sort()).toEqual([1, 2])
+  })
+
+  it('delete non-existent key returns false', () => {
+    const cache = new LRUEvictionCache<string, number>(5)
+    expect(cache.delete('missing')).toBe(false)
+  })
+
+  it('clear resets size to zero', () => {
+    const cache = new LRUEvictionCache<string, number>(5)
+    cache.set('a', 1); cache.set('b', 2)
+    cache.clear()
+    expect(cache.size).toBe(0)
+  })
+
+  it('toString returns string', () => {
+    const cache = new LRUEvictionCache<string, number>(5)
+    cache.set('x', 10)
+    expect(typeof cache.toString()).toBe('string')
+  })
 })

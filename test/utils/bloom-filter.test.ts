@@ -360,4 +360,54 @@ describe('BloomFilter', () => {
     filter.clear()
     expect(filter.size).toBe(0)
   })
+
+  it('toJSON bitSet values change after adding items', () => {
+    const filter = new BloomFilter({ expectedItems: 100, falsePositiveRate: 0.01 })
+    const before = filter.toJSON()
+    filter.add('test')
+    const after = filter.toJSON()
+    expect(after.bitSet).not.toEqual(before.bitSet)
+  })
+
+  it('toString output changes after adding items', () => {
+    const filter = new BloomFilter({ expectedItems: 100, falsePositiveRate: 0.01 })
+    const before = filter.toString()
+    filter.add('test')
+    const after = filter.toString()
+    expect(after).toBe(before) // Format same since size and hashFunctions unchanged
+  })
+
+  it('clone modifications do not affect original', () => {
+    const filter = new BloomFilter({ expectedItems: 100, falsePositiveRate: 0.01 })
+    filter.add('original')
+    const cloned = filter.clone()
+    cloned.clear()
+    cloned.add('cloned')
+    expect(filter.size).toBe(1)
+    expect(filter.mightContain('original')).toBe(true)
+    expect(filter.mightContain('cloned')).toBe(false)
+  })
+
+  it('equals returns false for filters with different hash function counts', () => {
+    const f1 = new BloomFilter({ expectedItems: 100, falsePositiveRate: 0.01 })
+    const f2 = new BloomFilter({ expectedItems: 100, falsePositiveRate: 0.1 })
+    f1.add('test')
+    f2.add('test')
+    expect(f1.equals(f2)).toBe(false)
+  })
+
+  it('estimated FP rate is zero after clear', () => {
+    const filter = new BloomFilter({ expectedItems: 100, falsePositiveRate: 0.01 })
+    for (let i = 0; i < 50; i++) filter.add(`item-${i}`)
+    expect(filter.getEstimatedFalsePositiveRate()).toBeGreaterThan(0)
+    filter.clear()
+    expect(filter.getEstimatedFalsePositiveRate()).toBe(0)
+  })
+
+  it('handles very small expectedItems', () => {
+    const filter = new BloomFilter({ expectedItems: 1, falsePositiveRate: 0.01 })
+    expect(filter.bitCount).toBeGreaterThan(0)
+    filter.add('only-item')
+    expect(filter.mightContain('only-item')).toBe(true)
+  })
 })

@@ -362,4 +362,47 @@ describe('ARCCache', () => {
     for (let i = 0; i < 1000; i++) cache.set(i, i)
     expect(cache.size).toBeLessThanOrEqual(10)
   })
+
+  it('peek returns undefined for deleted keys', () => {
+    const cache = new ARCCache<string, number>(3)
+    cache.set('a', 1)
+    cache.delete('a')
+    expect(cache.peek('a')).toBeUndefined()
+  })
+
+  it('keys include both t1 and t2 entries', () => {
+    const cache = new ARCCache<string, number>(5)
+    cache.set('a', 1); cache.set('b', 2)
+    cache.get('a')
+    cache.set('c', 3)
+    const ks = cache.keys()
+    expect(ks).toContain('a')
+    expect(ks).toContain('b')
+    expect(ks).toContain('c')
+  })
+
+  it('forEach receives key as second parameter', () => {
+    const cache = new ARCCache<string, number>(5)
+    cache.set('a', 1); cache.set('b', 2)
+    const keys: string[] = []
+    cache.forEach((_value, key) => keys.push(key))
+    expect(keys).toContain('a')
+    expect(keys).toContain('b')
+  })
+
+  it('clear resets p value', () => {
+    const cache = new ARCCache<string, number>(3)
+    for (let i = 0; i < 10; i++) cache.set(`k${i}`, i)
+    cache.clear()
+    const json = cache.toJSON() as { p: number }
+    expect(json.p).toBe(0)
+  })
+
+  it('handles capacity that equals p boundary', () => {
+    const cache = new ARCCache<string, number>(3)
+    cache.set('a', 1); cache.set('b', 2); cache.set('c', 3)
+    for (let i = 0; i < 5; i++) cache.get('a')
+    cache.set('d', 4)
+    expect(cache.has('a')).toBe(true)
+  })
 })

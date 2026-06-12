@@ -396,4 +396,49 @@ describe('FlatMap', () => {
     expect(clone.size).toBe(2)
     expect(clone.get(2)).toBeUndefined()
   })
+
+  it('should return undefined for min/max on empty map', () => {
+    const map = new FlatMap<number, string>()
+    expect(map.min).toBeUndefined()
+    expect(map.max).toBeUndefined()
+  })
+
+  it('should return min and max keys', () => {
+    const map = new FlatMap<number, string>()
+    map.set(5, 'five')
+    map.set(1, 'one')
+    map.set(10, 'ten')
+    expect(map.min).toBe(1)
+    expect(map.max).toBe(10)
+  })
+
+  it('should return entry at index', () => {
+    const map = new FlatMap<number, string>()
+    map.set(10, 'ten')
+    map.set(20, 'twenty')
+    expect(map.atIndex(0)).toEqual([10, 'ten'])
+    expect(map.atIndex(1)).toEqual([20, 'twenty'])
+    expect(map.atIndex(5)).toBeUndefined()
+  })
+
+  it('should return indexOf', () => {
+    const map = new FlatMap<number, string>()
+    map.set(5, 'five')
+    map.set(10, 'ten')
+    expect(map.indexOf(5)).toBe(0)
+    expect(map.indexOf(10)).toBe(1)
+    expect(map.indexOf(99)).toBe(-1)
+  })
+
+  it('should return range exclusive', () => {
+    const map = FlatMap.from([[1, 'a'], [2, 'b'], [3, 'c'], [4, 'd'], [5, 'e']])
+    const range = map.range(2, 5)
+    expect(range).toEqual([[2, 'b'], [3, 'c'], [4, 'd']])
+  })
+
+  it('should return rangeInclusive', () => {
+    const map = FlatMap.from([[1, 'a'], [2, 'b'], [3, 'c'], [4, 'd'], [5, 'e']])
+    const range = map.rangeInclusive(2, 4)
+    expect(range).toEqual([[2, 'b'], [3, 'c'], [4, 'd']])
+  })
 })

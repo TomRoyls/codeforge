@@ -406,4 +406,44 @@ describe('SkipListMap', () => {
     sl.delete(5)
     expect([...sl.keys()]).toEqual([1, 2, 3, 4])
   })
+
+  it('should return undefined for missing key', () => {
+    const sl = new SkipListMap<number, string>()
+    expect(sl.get(999)).toBeUndefined()
+  })
+
+  it('should check has correctly', () => {
+    const sl = new SkipListMap<number, string>()
+    sl.set(1, 'a')
+    expect(sl.has(1)).toBe(true)
+    expect(sl.has(2)).toBe(false)
+  })
+
+  it('should delete entries', () => {
+    const sl = new SkipListMap<number, string>()
+    sl.set(1, 'a')
+    sl.set(2, 'b')
+    expect(sl.delete(1)).toBe(true)
+    expect(sl.has(1)).toBe(false)
+    expect(sl.size).toBe(1)
+  })
+
+  it('should return false for deleting missing key', () => {
+    const sl = new SkipListMap<number, string>()
+    expect(sl.delete(1)).toBe(false)
+  })
+
+  it('should iterate values', () => {
+    const sl = new SkipListMap<number, string>()
+    sl.set(1, 'a')
+    sl.set(2, 'b')
+    expect([...sl.values()]).toEqual(['a', 'b'])
+  })
+
+  it('should report isEmpty correctly', () => {
+    const sl = new SkipListMap<number, string>()
+    expect(sl.isEmpty()).toBe(true)
+    sl.set(1, 'a')
+    expect(sl.isEmpty()).toBe(false)
+  })
 })

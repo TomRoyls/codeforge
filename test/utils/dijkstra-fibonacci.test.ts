@@ -482,4 +482,61 @@ describe('DijkstraFibonacci', () => {
     const dist = DijkstraFibonacci.shortestPath(edges, 0, 5)
     expect(dist[4]).toBe(10)
   })
+
+  it('finds shortest among multiple equal length paths', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 5 },
+      { from: 0, to: 2, weight: 5 },
+      { from: 1, to: 3, weight: 5 },
+      { from: 2, to: 3, weight: 5 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
+    expect(dist[3]).toBe(10)
+  })
+
+  it('handles fractional weights', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 0.5 },
+      { from: 1, to: 2, weight: 1.5 },
+      { from: 0, to: 2, weight: 3.0 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 3)
+    expect(dist[2]).toBeCloseTo(2.0, 10)
+  })
+
+  it('handles multiple equal weight alternative routes', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 2 },
+      { from: 0, to: 2, weight: 2 },
+      { from: 1, to: 3, weight: 3 },
+      { from: 2, to: 3, weight: 3 },
+      { from: 0, to: 3, weight: 6 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 4)
+    expect(dist[3]).toBe(5)
+  })
+
+  it('handles large dense graph with many edges', () => {
+    const edges: { from: number; to: number; weight: number }[] = []
+    for (let i = 0; i < 10; i++) {
+      for (let j = i + 1; j < 10; j++) {
+        edges.push({ from: i, to: j, weight: j - i })
+      }
+    }
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 10)
+    expect(dist[9]).toBe(9)
+  })
+
+  it('handles source with multiple outgoing zero weight edges', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 0 },
+      { from: 0, to: 2, weight: 0 },
+      { from: 0, to: 3, weight: 0 },
+      { from: 1, to: 4, weight: 10 },
+      { from: 2, to: 4, weight: 5 },
+      { from: 3, to: 4, weight: 7 },
+    ]
+    const dist = DijkstraFibonacci.shortestPath(edges, 0, 5)
+    expect(dist[4]).toBe(5)
+  })
 })

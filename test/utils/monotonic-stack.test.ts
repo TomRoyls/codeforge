@@ -293,4 +293,33 @@ describe('MonotonicStack', () => {
   it('previousSmallerElements with mixed values', () => {
     expect(MonotonicStack.previousSmallerElements([5, 1, 4, 2, 3])).toEqual([-1, -1, 1, 1, 2])
   })
+
+  it('constructor with custom comparator for descending', () => {
+    const ms = new MonotonicStack<number>((a, b) => a >= b)
+    ms.push(1); ms.push(2); ms.push(3)
+    expect(ms.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('pop returns top element', () => {
+    const ms = new MonotonicStack<number>()
+    ms.push(5)
+    expect(ms.pop()).toBe(5)
+    expect(ms.size).toBe(0)
+  })
+
+  it('peek does not remove element', () => {
+    const ms = new MonotonicStack<number>()
+    ms.push(10)
+    expect(ms.peek()).toBe(10)
+    expect(ms.size).toBe(1)
+  })
+
+  it('isEmpty on new stack', () => {
+    const ms = new MonotonicStack<number>()
+    expect(ms.isEmpty).toBe(true)
+  })
+
+  it('nextGreaterElements with all same returns -1', () => {
+    expect(MonotonicStack.nextGreaterElements([3, 3, 3])).toEqual([-1, -1, -1])
+  })
 })

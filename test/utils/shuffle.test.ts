@@ -276,4 +276,36 @@ describe('Shuffle', () => {
     }
     expect(same).toBeLessThan(10)
   })
+
+  it('should perform in-place shuffle', () => {
+    const arr = [1, 2, 3, 4, 5]
+    const result = Shuffle.inPlace(arr)
+    expect(result).toBe(arr)
+    expect(Shuffle.isShuffled([1, 2, 3, 4, 5], result)).toBe(true)
+  })
+
+  it('should validate isShuffled for same array', () => {
+    expect(Shuffle.isShuffled([1, 2, 3], [1, 2, 3])).toBe(true)
+  })
+
+  it('should reject isShuffled for different lengths', () => {
+    expect(Shuffle.isShuffled([1, 2], [1, 2, 3])).toBe(false)
+  })
+
+  it('should reject isShuffled for different elements', () => {
+    expect(Shuffle.isShuffled([1, 2, 3], [1, 2, 4])).toBe(false)
+  })
+
+  it('should perform weighted sample', () => {
+    const items = ['a', 'b', 'c']
+    const weights = [1, 1, 1]
+    const result = Shuffle.weightedSample(items, weights, 2)
+    expect(result).toHaveLength(2)
+    expect(items).toContain(result[0])
+    expect(items).toContain(result[1])
+  })
+
+  it('should throw for weighted sample exceeding length', () => {
+    expect(() => Shuffle.weightedSample([1, 2], [1, 1], 3)).toThrow()
+  })
 })

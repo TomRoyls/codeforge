@@ -257,4 +257,38 @@ describe('StringHash', () => {
     expect(typeof h).toBe('bigint')
     expect(h > 0n).toBe(true)
   })
+
+  it('should return 0n for empty string', () => {
+    const sh = new StringHash('')
+    expect(sh.hash(0, 0)).toBe(0n)
+  })
+
+  it('should compute hash for single character', () => {
+    const sh = new StringHash('a')
+    const h = sh.hash(0, 0)
+    expect(typeof h).toBe('bigint')
+    expect(h).toBe(BigInt('a'.charCodeAt(0)))
+  })
+
+  it('should return consistent hashes', () => {
+    const sh = new StringHash('hello')
+    const h1 = sh.hash(0, 4)
+    const h2 = sh.hash(0, 4)
+    expect(h1).toBe(h2)
+  })
+
+  it('should detect equal substrings', () => {
+    const sh = new StringHash('abcabc')
+    expect(sh.equals(0, 2, 3, 5)).toBe(true)
+  })
+
+  it('should detect unequal substrings of same length', () => {
+    const sh = new StringHash('abcdef')
+    expect(sh.equals(0, 2, 3, 5)).toBe(false)
+  })
+
+  it('should return false for substrings of different length', () => {
+    const sh = new StringHash('abcdef')
+    expect(sh.equals(0, 2, 3, 4)).toBe(false)
+  })
 })
