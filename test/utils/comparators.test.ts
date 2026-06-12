@@ -316,4 +316,21 @@ describe('Comparators', () => {
     expect(cmp(true, false)).toBeLessThan(0)
     expect(cmp(false, true)).toBeGreaterThan(0)
   })
+
+  it('nullish handles all null values', () => {
+    const cmp = Comparators.nullish(Comparators.natural())
+    expect(cmp(null, null)).toBe(0)
+    expect(cmp(undefined, undefined)).toBe(0)
+  })
+
+  it('derived with math round', () => {
+    const cmp = Comparators.derived((x: number) => Math.round(x), Comparators.natural())
+    expect(cmp(1.1, 1.4)).toBe(0)
+    expect(cmp(1.4, 2.3)).toBeLessThan(0)
+  })
+
+  it('byStringLength is consistent with sort', () => {
+    const arr = ['ccc', 'a', 'bb']
+    expect([...arr].sort(Comparators.byStringLength)).toEqual(['a', 'bb', 'ccc'])
+  })
 })

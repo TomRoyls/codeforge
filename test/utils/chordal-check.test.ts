@@ -443,4 +443,27 @@ describe('ChordalCheck', () => {
     cc.addEdge(0, 2)
     expect(cc.isChordal()).toBe(true)
   })
+
+  it('triangle graph is chordal', () => {
+    const cc = new ChordalCheck(3)
+    cc.addEdge(0, 1)
+    cc.addEdge(1, 2)
+    cc.addEdge(0, 2)
+    expect(cc.isChordal()).toBe(true)
+  })
+
+  it('square without diagonal is not chordal', () => {
+    const cc = new ChordalCheck(4)
+    cc.addEdge(0, 1)
+    cc.addEdge(1, 2)
+    cc.addEdge(2, 3)
+    cc.addEdge(3, 0)
+    expect(cc.isChordal()).toBe(false)
+  })
+
+  it('single edge is chordal', () => {
+    const cc = new ChordalCheck(2)
+    cc.addEdge(0, 1)
+    expect(cc.isChordal()).toBe(true)
+  })
 })

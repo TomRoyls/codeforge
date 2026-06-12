@@ -413,4 +413,27 @@ describe('Centroid2D', () => {
     expect(c.x).toBeCloseTo(1)
     expect(c.y).toBeCloseTo(1)
   })
+
+  it('compute handles many points forming uniform grid', () => {
+    const points = [
+      { x: 0, y: 0 }, { x: 2, y: 0 },
+      { x: 0, y: 2 }, { x: 2, y: 2 },
+    ]
+    const c = Centroid2D.compute(points)
+    expect(c.x).toBeCloseTo(1)
+    expect(c.y).toBeCloseTo(1)
+  })
+
+  it('weightedCentroid returns origin for single zero-weight point', () => {
+    const c = Centroid2D.weightedCentroid([{ x: 100, y: 200, weight: 0 }])
+    expect(c.x).toBe(0)
+    expect(c.y).toBe(0)
+  })
+
+  it('polygonCentroid handles rhombus correctly', () => {
+    const vertices = [{ x: 0, y: 2 }, { x: 2, y: 0 }, { x: 4, y: 2 }, { x: 2, y: 4 }]
+    const c = Centroid2D.polygonCentroid(vertices)
+    expect(c.x).toBeCloseTo(2)
+    expect(c.y).toBeCloseTo(2)
+  })
 })

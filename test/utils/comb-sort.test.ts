@@ -259,4 +259,17 @@ describe('CombSort', () => {
     CombSort.sortInPlace(arr)
     expect(arr).toEqual([-Infinity, 1, 3, Infinity])
   })
+
+  it('sorts with custom comparator descending', () => {
+    const result = CombSort.sortWithComparator([3, 1, 2], (a, b) => b - a)
+    expect(result).toEqual([3, 2, 1])
+  })
+
+  it('handles empty array', () => {
+    expect(CombSort.sort([])).toEqual([])
+  })
+
+  it('handles single element', () => {
+    expect(CombSort.sort([42])).toEqual([42])
+  })
 })

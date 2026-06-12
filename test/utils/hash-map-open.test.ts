@@ -428,4 +428,24 @@ describe('HashMapOpen', () => {
     expect(map.delete(1)).toBe(true)
     expect(map.get(1)).toBeUndefined()
   })
+
+  it('has returns true for existing key', () => {
+    const map = new HashMapOpen<string, number>()
+    map.set('key', 42)
+    expect(map.has('key')).toBe(true)
+    expect(map.has('missing')).toBe(false)
+  })
+
+  it('set overwrites existing value', () => {
+    const map = new HashMapOpen<number, string>()
+    map.set(1, 'a')
+    map.set(1, 'b')
+    expect(map.get(1)).toBe('b')
+  })
+
+  it('handles many insertions', () => {
+    const map = new HashMapOpen<number, number>()
+    for (let i = 0; i < 100; i++) map.set(i, i * 2)
+    expect(map.get(50)).toBe(100)
+  })
 })

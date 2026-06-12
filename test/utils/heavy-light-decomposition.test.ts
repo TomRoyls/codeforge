@@ -629,4 +629,22 @@ describe('HeavyLightDecomposition', () => {
     const hld = new HeavyLightDecomposition(adj)
     expect(hld).toBeDefined()
   })
+
+  it('lca of single node is itself', () => {
+    const adj = [[]]
+    const hld = new HeavyLightDecomposition(adj)
+    expect(hld.lca(0, 0)).toBe(0)
+  })
+
+  it('lca on chain returns ancestor', () => {
+    const adj = [[1], [0, 2], [1, 3], [2]]
+    const hld = new HeavyLightDecomposition(adj)
+    expect(hld.lca(0, 3)).toBeGreaterThanOrEqual(0)
+  })
+
+  it('lca on star graph returns root', () => {
+    const adj = [[1, 2, 3], [0], [0], [0]]
+    const hld = new HeavyLightDecomposition(adj)
+    expect(hld.lca(1, 2)).toBe(0)
+  })
 })

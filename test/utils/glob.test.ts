@@ -307,4 +307,20 @@ describe('matchAnyGlob advanced', () => {
     expect(matchGlob('file*.ts', 'file\\*.ts')).toBe(true)
     expect(matchGlob('fileX.ts', 'file\\*.ts')).toBe(false)
   })
+
+  it('matchAnyGlob matches any pattern', () => {
+    expect(matchAnyGlob('test.ts', ['*.js', '*.ts'])).toBe(true)
+    expect(matchAnyGlob('test.js', ['*.js', '*.ts'])).toBe(true)
+    expect(matchAnyGlob('test.css', ['*.js', '*.ts'])).toBe(false)
+  })
+
+  it('globToRegex returns RegExp', () => {
+    const regex = globToRegex('*.ts')
+    expect(regex).toBeInstanceOf(RegExp)
+    expect(regex.test('file.ts')).toBe(true)
+  })
+
+  it('double star matches directories', () => {
+    expect(matchGlob('src/utils/test.ts', 'src/**/*.ts')).toBe(true)
+  })
 })

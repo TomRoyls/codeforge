@@ -481,4 +481,31 @@ describe('ConvexHull3D', () => {
     expect(bb.min).toEqual([-1000, -1000, -1000])
     expect(bb.max).toEqual([1000, 1000, 1000])
   })
+
+  it('centroid returns center of mass', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(0, 0, 0)
+    ch.addPoint(2, 0, 0)
+    ch.addPoint(0, 2, 0)
+    ch.addPoint(0, 0, 2)
+    const c = ch.centroid()
+    expect(c[0]).toBeCloseTo(0.5, 5)
+  })
+
+  it('convexHullVolume for tetrahedron', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(0, 0, 0)
+    ch.addPoint(1, 0, 0)
+    ch.addPoint(0, 1, 0)
+    ch.addPoint(0, 0, 1)
+    expect(ch.convexHullVolume()).toBeCloseTo(1 / 6, 5)
+  })
+
+  it('fewer than 4 points gives zero volume', () => {
+    const ch = new ConvexHull3D()
+    ch.addPoint(0, 0, 0)
+    ch.addPoint(1, 0, 0)
+    ch.addPoint(0, 1, 0)
+    expect(ch.convexHullVolume()).toBe(0)
+  })
 })

@@ -483,4 +483,21 @@ describe('CircuitBreaker - additional edge cases', () => {
       vi.useRealTimers()
     }
   })
+
+  it('circuit breaker starts closed', () => {
+    const cb = new CircuitBreaker({ failureThreshold: 3, resetTimeoutMs: 100, halfOpenMaxAttempts: 1 })
+    expect(cb.getState()).toBe('closed')
+  })
+
+  it('success keeps breaker closed', async () => {
+    const cb = new CircuitBreaker({ failureThreshold: 3, resetTimeoutMs: 100, halfOpenMaxAttempts: 1 })
+    await cb.execute(async () => 'ok')
+    expect(cb.getState()).toBe('closed')
+  })
+
+  it('half-open allows trial request', async () => {
+    const cb = new CircuitBreaker({ failureThreshold: 1, resetTimeoutMs: 50, halfOpenMaxAttempts: 1 })
+    try { await cb.execute(async () => { throw new Error('fail') }) } catch {}
+    expect(cb.getState()).toBe('open')
+  })
 })

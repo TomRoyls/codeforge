@@ -365,4 +365,19 @@ describe('ClosestPair', () => {
     const bruteResult = ClosestPair.bruteForce(points)!
     expect(findResult.distance).toBeCloseTo(bruteResult.distance, 6)
   })
+
+  it('handles duplicate points with zero distance', () => {
+    const result = ClosestPair.find([{ x: 1, y: 1 }, { x: 1, y: 1 }])
+    expect(result).not.toBeNull()
+    expect(result!.distance).toBe(0)
+  })
+
+  it('handles three points on line', () => {
+    const result = ClosestPair.find([{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 5, y: 0 }])
+    expect(result!.distance).toBe(1)
+  })
+
+  it('minDistance returns Infinity for empty array', () => {
+    expect(ClosestPair.minDistance([])).toBe(Infinity)
+  })
 })

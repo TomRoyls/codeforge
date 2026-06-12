@@ -242,4 +242,16 @@ describe('Collatz', () => {
     const seq = Collatz.sequence(27)
     expect(seq[seq.length - 1]).toBe(1)
   })
+
+  it('sequence for 1 is just [1]', () => {
+    expect(Collatz.sequence(1)).toEqual([1])
+  })
+
+  it('sequence for 2 is [2, 1]', () => {
+    expect(Collatz.sequence(2)).toEqual([2, 1])
+  })
+
+  it('maxValue returns highest value in sequence', () => {
+    expect(Collatz.maxValue(7)).toBeGreaterThanOrEqual(7)
+  })
 })

@@ -256,4 +256,16 @@ describe('padLeft', () => {
   it('pads empty string', () => {
     expect(padLeft('', 4)).toBe('    ')
   })
+
+  it('padRight pads with spaces', () => {
+    expect(padRight('hi', 5)).toBe('hi   ')
+  })
+
+  it('formatBytesCompact for small values', () => {
+    expect(formatBytesCompact(500)).toBe('500B')
+  })
+
+  it('formatDuration for milliseconds', () => {
+    expect(typeof formatDuration(1500)).toBe('string')
+  })
 })

@@ -432,4 +432,29 @@ describe('writeToFileAtomic', () => {
     expect(fs.readFileSync(fp, 'utf8').length).toBe(100000)
     fs.rmSync(dir, { recursive: true })
   })
+
+  it('writeToFileAtomic writes content', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'atomic.txt')
+    writeToFileAtomic(fp, 'safe')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('safe')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('writeToFile handles concurrent path separators', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'a', 'b', 'c', 'deep.txt')
+    writeToFile(fp, 'deep')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('deep')
+    fs.rmSync(dir, { recursive: true })
+  })
+
+  it('writeToFileAtomic overwrites existing', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fw-'))
+    const fp = path.join(dir, 'ow.txt')
+    writeToFileAtomic(fp, 'first')
+    writeToFileAtomic(fp, 'second')
+    expect(fs.readFileSync(fp, 'utf8')).toBe('second')
+    fs.rmSync(dir, { recursive: true })
+  })
 })

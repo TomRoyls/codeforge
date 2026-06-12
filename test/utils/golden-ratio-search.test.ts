@@ -271,4 +271,20 @@ describe('GoldenRatioSearch maximize', () => {
     const x = GoldenRatioSearch.minimize((x) => (x - 7) ** 2, 0, 20, 0.1)
     expect(x).toBeCloseTo(7, 0)
   })
+
+  it('finds minimum of x^2', () => {
+    const x = GoldenRatioSearch.minimize((x: number) => x * x, -10, 10)
+    expect(x).toBeCloseTo(0, 2)
+  })
+
+  it('respects tolerance', () => {
+    const x1 = GoldenRatioSearch.minimize((x: number) => x, 0, 1, 1e-10)
+    const x2 = GoldenRatioSearch.minimize((x: number) => x, 0, 1, 0.1)
+    expect(Math.abs(x1 - x2)).toBeLessThan(1)
+  })
+
+  it('finds minimum of parabola', () => {
+    const x = GoldenRatioSearch.minimize((x: number) => (x - 3) ** 2, -5, 5)
+    expect(x).toBeCloseTo(3, 2)
+  })
 })

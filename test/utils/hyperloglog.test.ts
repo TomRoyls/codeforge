@@ -426,4 +426,25 @@ describe('HyperLogLog', () => {
     const estimate = hll.count()
     expect(estimate).toBeGreaterThan(1000)
   })
+
+  it('merge combines two sketches', () => {
+    const a = new HyperLogLog(12)
+    a.add('x')
+    a.add('y')
+    const b = new HyperLogLog(12)
+    b.add('z')
+    a.merge(b)
+    expect(a.count()).toBeGreaterThanOrEqual(2)
+  })
+
+  it('new instance has zero count', () => {
+    const hll = new HyperLogLog(12)
+    expect(hll.count()).toBe(0)
+  })
+
+  it('single item estimate is approximately 1', () => {
+    const hll = new HyperLogLog(10)
+    hll.add('unique')
+    expect(hll.count()).toBeGreaterThanOrEqual(1)
+  })
 })

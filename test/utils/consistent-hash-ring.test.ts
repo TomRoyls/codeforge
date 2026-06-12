@@ -371,4 +371,24 @@ describe('ConsistentHashRing', () => {
     const ring = new ConsistentHashRing(['a', 'b', 'c'])
     expect(ring.nodeCount).toBe(3)
   })
+
+  it('removeNode decreases node count', () => {
+    const ring = new ConsistentHashRing(['a', 'b', 'c'])
+    ring.removeNode('b')
+    expect(ring.nodeCount).toBe(2)
+  })
+
+  it('getNodes returns multiple distinct nodes', () => {
+    const ring = new ConsistentHashRing(['a', 'b', 'c', 'd'])
+    const nodes = ring.getNodes('key1', 2)
+    expect(nodes.length).toBe(2)
+    expect(new Set(nodes).size).toBe(2)
+  })
+
+  it('getNode always returns a node', () => {
+    const ring = new ConsistentHashRing(['x'])
+    for (let i = 0; i < 10; i++) {
+      expect(ring.getNode(`key-${i}`)).toBe('x')
+    }
+  })
 })

@@ -562,4 +562,20 @@ describe('listFiles - additional', () => {
     expect(content).toBe('hello')
     rmSync(dir, { recursive: true, force: true })
   })
+
+  it('clearCache resets cache stats', () => {
+    clearCache()
+    const stats = getCacheStats()
+    expect(stats.size).toBe(0)
+  })
+
+  it('directoryExists returns false for non-existent', async () => {
+    const result = await directoryExists('/nonexistent/path/xyz')
+    expect(result).toBe(false)
+  })
+
+  it('fileExists returns false for non-existent', async () => {
+    const result = await fileExists('/nonexistent/file.txt')
+    expect(result).toBe(false)
+  })
 })

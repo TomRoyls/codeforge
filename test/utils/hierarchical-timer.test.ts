@@ -486,4 +486,26 @@ describe('HierarchicalTimer', () => {
     timer.end('b')
     expect(timer).toBeDefined()
   })
+
+  it('format returns string', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('x')
+    timer.end('x')
+    expect(typeof timer.format()).toBe('string')
+  })
+
+  it('clear resets timer', () => {
+    const timer = new HierarchicalTimer()
+    timer.start('y')
+    timer.end('y')
+    timer.clear()
+    expect(timer.format()).toBe('')
+  })
+
+  it('disabled timer ignores start/end', () => {
+    const timer = new HierarchicalTimer({ enabled: false })
+    timer.start('z')
+    timer.end('z')
+    expect(timer.format()).toBe('')
+  })
 })

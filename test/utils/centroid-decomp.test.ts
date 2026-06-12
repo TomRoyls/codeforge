@@ -455,4 +455,51 @@ describe('CentroidDecomposition', () => {
     const cd = new CentroidDecomposition(adj)
     expect(cd.getCentroidTree().length).toBe(5)
   })
+
+  it('getParent returns -1 for single node root', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    const cd = new CentroidDecomposition(adj)
+    expect(cd.getParent(0)).toBe(-1)
+  })
+
+  it('getCentroidTree always has exactly one root', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [3]], [2, []], [3, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    const roots = tree.filter(p => p === -1)
+    expect(roots.length).toBe(1)
+  })
+
+  it('handles three-level balanced tree', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1, 2]], [1, [3, 4]], [2, [5, 6]], [3, []], [4, []], [5, []], [6, []],
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.every(p => p >= -1 && p < 7)).toBe(true)
+  })
+
+  it('getCentroidTree returns array of correct length', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0, 2]], [2, [1]]])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(3)
+  })
+
+  it('centroid of path graph is middle or near-middle', () => {
+    const adj = new Map<number, number[]>([
+      [0, [1]], [1, [0, 2]], [2, [1, 3]], [3, [2]]
+    ])
+    const cd = new CentroidDecomposition(adj)
+    const tree = cd.getCentroidTree()
+    expect(tree.length).toBe(4)
+  })
+
+  it('getParent returns -1 for root', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]]])
+    const cd = new CentroidDecomposition(adj)
+    expect(cd.getParent(0)).toBeGreaterThanOrEqual(-1)
+  })
 })

@@ -461,4 +461,24 @@ describe('greedyIntervalSchedule', () => {
     expect(totalWeight).toBe(7)
     expect(selected.length).toBe(2)
   })
+
+  it('greedyIntervalSchedule picks earliest finish', () => {
+    const intervals = [
+      { start: 0, end: 3 },
+      { start: 2, end: 5 },
+      { start: 4, end: 7 },
+    ]
+    const result = greedyIntervalSchedule(intervals)
+    expect(result.length).toBe(2)
+  })
+
+  it('greedyIntervalSchedule empty input', () => {
+    expect(greedyIntervalSchedule([])).toEqual([])
+  })
+
+  it('weighted empty intervals', () => {
+    const { totalWeight, selected } = weightedIntervalSchedule([])
+    expect(totalWeight).toBe(0)
+    expect(selected).toEqual([])
+  })
 })

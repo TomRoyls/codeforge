@@ -340,5 +340,21 @@ describe('hash64 - additional', () => {
         expect(typeof fnv1a(char, 0)).toBe('number')
       }
     })
+
+    it('hash64 is deterministic', () => {
+      const a = hash64('hello', 42)
+      const b = hash64('hello', 42)
+      expect(a).toBe(b)
+    })
+
+    it('different seeds produce different hashes', () => {
+      const a = hash64('test', 0)
+      const b = hash64('test', 999)
+      expect(a).not.toBe(b)
+    })
+
+    it('fnv1a empty string returns number', () => {
+      expect(typeof fnv1a('', 0)).toBe('number')
+    })
   })
 })

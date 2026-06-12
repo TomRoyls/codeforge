@@ -466,4 +466,27 @@ describe('CircularDeque', () => {
     expect(arr2).toEqual([1, 2])
     expect(deque.size).toBe(2)
   })
+
+  it('toArray returns elements in order', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushBack(1)
+    deque.pushBack(2)
+    deque.pushBack(3)
+    expect(deque.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('popBack removes last element', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushBack(10)
+    deque.pushBack(20)
+    expect(deque.popBack()).toBe(20)
+    expect(deque.size).toBe(1)
+  })
+
+  it('front returns first element', () => {
+    const deque = new CircularDeque<number>()
+    deque.pushBack(5)
+    deque.pushBack(10)
+    expect(deque.front()).toBe(5)
+  })
 })

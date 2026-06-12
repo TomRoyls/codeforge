@@ -454,4 +454,26 @@ describe('HopscotchHashTable', () => {
     expect(table.values().length).toBe(3)
     expect(table.entries().length).toBe(3)
   })
+
+  it('isEmpty returns true for new table', () => {
+    const table = new HopscotchHashTable<string, number>()
+    expect(table.isEmpty()).toBe(true)
+    table.set('a', 1)
+    expect(table.isEmpty()).toBe(false)
+  })
+
+  it('loadFactor increases with entries', () => {
+    const table = new HopscotchHashTable<number, number>({ capacity: 10 })
+    expect(table.loadFactor()).toBe(0)
+    table.set(1, 10)
+    expect(table.loadFactor()).toBeGreaterThan(0)
+  })
+
+  it('clear removes all entries', () => {
+    const table = new HopscotchHashTable<string, number>()
+    table.set('x', 1)
+    table.set('y', 2)
+    table.clear()
+    expect(table.isEmpty()).toBe(true)
+  })
 })

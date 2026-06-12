@@ -272,4 +272,16 @@ describe('GnomeSort', () => {
   it('should handle already sorted', () => {
     expect(GnomeSort.sort([1, 2, 3])).toEqual([1, 2, 3])
   })
+
+  it('sorts descending array', () => {
+    expect(GnomeSort.sort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('handles empty array', () => {
+    expect(GnomeSort.sort([])).toEqual([])
+  })
+
+  it('handles single element', () => {
+    expect(GnomeSort.sort([7])).toEqual([7])
+  })
 })

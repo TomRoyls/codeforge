@@ -375,4 +375,27 @@ describe('GraphEntropy', () => {
     ge.addEdge(0, 2)
     expect(ge.degreeEntropy()).toBeGreaterThanOrEqual(0)
   })
+
+  it('edgeEntropy returns non-negative', () => {
+    const ge = new GraphEntropy(4)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    expect(ge.edgeEntropy()).toBeGreaterThanOrEqual(0)
+  })
+
+  it('single node has zero entropy', () => {
+    const ge = new GraphEntropy(1)
+    expect(ge.degreeEntropy()).toBe(0)
+  })
+
+  it('clusteringCoefficient is between 0 and 1', () => {
+    const ge = new GraphEntropy(4)
+    ge.addEdge(0, 1)
+    ge.addEdge(1, 2)
+    ge.addEdge(2, 3)
+    ge.addEdge(3, 0)
+    const cc = ge.clusteringCoefficient()
+    expect(cc).toBeGreaterThanOrEqual(0)
+    expect(cc).toBeLessThanOrEqual(1)
+  })
 })

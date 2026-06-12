@@ -593,4 +593,28 @@ describe('CentroidDecomposition', () => {
       expect(depth[i]).toBeGreaterThanOrEqual(0)
     }
   })
+
+  it('single node depth is 0', () => {
+    const cd = new CentroidDecomposition(1)
+    const { depth, parent } = cd.decompose()
+    expect(depth[0]).toBe(0)
+    expect(parent[0]).toBe(0)
+  })
+
+  it('decompose result arrays are independent copies', () => {
+    const cd = new CentroidDecomposition(3)
+    cd.addEdge(0, 1); cd.addEdge(1, 2)
+    const { parent } = cd.decompose()
+    parent[0] = -999
+    expect(parent[0]).toBe(-999)
+  })
+
+  it('handles T-shaped tree', () => {
+    const cd = new CentroidDecomposition(7)
+    cd.addEdge(0, 1); cd.addEdge(1, 2); cd.addEdge(2, 3)
+    cd.addEdge(2, 4); cd.addEdge(4, 5); cd.addEdge(4, 6)
+    const { parent, depth } = cd.decompose()
+    expect(parent.length).toBe(7)
+    expect(depth.length).toBe(7)
+  })
 })

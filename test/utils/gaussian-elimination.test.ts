@@ -440,4 +440,21 @@ describe('GaussianElimination', () => {
     expect(solution).not.toBeNull()
     expect(solution![0]).toBeCloseTo(2)
   })
+
+  it('singular matrix returns null', () => {
+    const result = GaussianElimination.solve([[1, 2, 3], [2, 4, 6]])
+    expect(result).toBeNull()
+  })
+
+  it('3x3 identity matrix', () => {
+    const sol = GaussianElimination.solve([[1, 0, 0, 1], [0, 1, 0, 2], [0, 0, 1, 3]])
+    expect(sol).not.toBeNull()
+    expect(sol![0]).toBeCloseTo(1, 5)
+    expect(sol![1]).toBeCloseTo(2, 5)
+    expect(sol![2]).toBeCloseTo(3, 5)
+  })
+
+  it('1x1 system', () => {
+    expect(GaussianElimination.solve([[5, 10]])![0]).toBeCloseTo(2, 5)
+  })
 })

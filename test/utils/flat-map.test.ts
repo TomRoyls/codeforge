@@ -441,4 +441,26 @@ describe('FlatMap', () => {
     const range = map.rangeInclusive(2, 4)
     expect(range).toEqual([[2, 'b'], [3, 'c'], [4, 'd']])
   })
+
+  it('forEach iterates all entries', () => {
+    const fm = new FlatMap<number, string>()
+    fm.set(1, 'a')
+    fm.set(2, 'b')
+    const entries: string[] = []
+    fm.forEach((v) => entries.push(v))
+    expect(entries).toEqual(['a', 'b'])
+  })
+
+  it('delete returns false for missing key', () => {
+    const fm = new FlatMap<number, string>()
+    expect(fm.delete(99)).toBe(false)
+  })
+
+  it('atIndex returns correct entry', () => {
+    const fm = new FlatMap<number, string>()
+    fm.set(10, 'x')
+    fm.set(20, 'y')
+    expect(fm.atIndex(0)).toEqual([10, 'x'])
+    expect(fm.atIndex(2)).toBeUndefined()
+  })
 })

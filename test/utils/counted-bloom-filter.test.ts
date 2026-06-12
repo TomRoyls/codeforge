@@ -414,4 +414,25 @@ describe('CountedBloomFilter', () => {
     const bf = new CountedBloomFilter(100, 0.01)
     expect(bf.count('missing')).toBe(0)
   })
+
+  it('add increases count', () => {
+    const bf = new CountedBloomFilter(50)
+    bf.add('x')
+    bf.add('x')
+    bf.add('x')
+    expect(bf.count('x')).toBeGreaterThanOrEqual(2)
+  })
+
+  it('remove then add restores count', () => {
+    const bf = new CountedBloomFilter(50)
+    bf.add('y')
+    bf.remove('y')
+    bf.add('y')
+    expect(bf.contains('y')).toBe(true)
+  })
+
+  it('remove returns false for non-contained item', () => {
+    const bf = new CountedBloomFilter(50)
+    expect(bf.remove('never-added')).toBe(false)
+  })
 })

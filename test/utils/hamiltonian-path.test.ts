@@ -388,4 +388,24 @@ describe('HamiltonianPath', () => {
     expect(hp1.existsPath()).toBe(true)
     expect(hp2.existsPath()).toBe(false)
   })
+
+  it('existsCycle on chain returns false', () => {
+    const hp = new HamiltonianPath(3)
+    hp.addEdge(0, 1)
+    hp.addEdge(1, 2)
+    expect(hp.existsCycle()).toBe(false)
+  })
+
+  it('complete graph always has path', () => {
+    const hp = new HamiltonianPath(4)
+    for (let i = 0; i < 4; i++)
+      for (let j = i + 1; j < 4; j++)
+        hp.addEdge(i, j)
+    expect(hp.existsPath()).toBe(true)
+  })
+
+  it('single node has trivial path', () => {
+    const hp = new HamiltonianPath(1)
+    expect(hp.existsPath()).toBe(true)
+  })
 })

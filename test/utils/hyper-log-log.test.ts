@@ -395,4 +395,29 @@ describe('HyperLogLog - edge cases', () => {
     hll.reset()
     expect(hll.count()).toBe(0)
   })
+
+  it('merge combines cardinalities', () => {
+    const hll1 = new HyperLogLog(12)
+    hll1.add('a')
+    hll1.add('b')
+    const hll2 = new HyperLogLog(12)
+    hll2.add('c')
+    hll2.add('d')
+    const merged = hll1.merge(hll2)
+    expect(merged.count()).toBeGreaterThanOrEqual(3)
+  })
+
+  it('clone produces independent copy', () => {
+    const hll = new HyperLogLog(10)
+    hll.add('x')
+    const c = hll.clone()
+    c.add('y')
+    expect(hll.count()).toBeLessThan(c.count())
+  })
+
+  it('equals returns false for different precision', () => {
+    const a = new HyperLogLog(10)
+    const b = new HyperLogLog(14)
+    expect(a.equals(b)).toBe(false)
+  })
 })
