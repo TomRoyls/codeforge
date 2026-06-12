@@ -463,4 +463,20 @@ describe('FlatMap', () => {
     expect(fm.atIndex(0)).toEqual([10, 'x'])
     expect(fm.atIndex(2)).toBeUndefined()
   })
+  it('get returns undefined for missing', () => {
+    const fm = new FlatMap<string, number>()
+    expect(fm.get('missing')).toBeUndefined()
+  })
+
+  it('has returns false for missing', () => {
+    const fm = new FlatMap<string, number>()
+    expect(fm.has('missing')).toBe(false)
+  })
+
+  it('size tracks count', () => {
+    const fm = new FlatMap<string, number>()
+    fm.set('a', 1)
+    fm.set('b', 2)
+    expect(fm.size).toBe(2)
+  })
 })

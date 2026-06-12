@@ -294,9 +294,9 @@ describe('Eertree', () => {
     expect(tree.nodeCount).toBe(0)
   })
 
-  it('allPalindromes returns array', () => {
+  it('getPalindromes returns array', () => {
     const tree = Eertree.build('aba')
-    const all = tree.allPalindromes()
+    const all = tree.getPalindromes()
     expect(Array.isArray(all)).toBe(true)
     expect(all.length).toBeGreaterThan(0)
   })
@@ -344,5 +344,21 @@ describe('Eertree', () => {
   it('build with empty string has 0 palindromes', () => {
     const tree = Eertree.build('')
     expect(tree.nodeCount).toBe(0)
+  })
+
+  it('build empty string', () => {
+    const et = Eertree.build('')
+    expect(et).toBeDefined()
+  })
+
+  it('build single char', () => {
+    const et = Eertree.build('a')
+    expect(et.nodeCount).toBeGreaterThan(0)
+  })
+
+  it('getPalindromes works', () => {
+    const et = Eertree.build('aba')
+    const palins = et.getPalindromes()
+    expect(Array.isArray(palins)).toBe(true)
   })
 })

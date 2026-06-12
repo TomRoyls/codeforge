@@ -579,3 +579,15 @@ describe('listFiles - additional', () => {
     expect(result).toBe(false)
   })
 })
+
+  it('getCacheStats returns object', () => {
+    expect(typeof getCacheStats()).toBe('object')
+  })
+
+  it('clearCache returns void', () => {
+    expect(clearCache()).toBeUndefined()
+  })
+
+  it('fileExists is a function', () => {
+    expect(typeof fileExists).toBe('function')
+  })

@@ -361,4 +361,19 @@ describe('FractionalCascading', () => {
     const result = fc.search(3)
     expect(result[0]).toBe(1)
   })
+  it('search returns indices', () => {
+    const fc = new FractionalCascading([[1, 3, 5], [2, 4, 6]])
+    const result = fc.search(3)
+    expect(Array.isArray(result)).toBe(true)
+  })
+
+  it('single list', () => {
+    const fc = new FractionalCascading([[1, 2, 3]])
+    expect(fc.search(2)).toBeDefined()
+  })
+
+  it('empty lists', () => {
+    const fc = new FractionalCascading([])
+    expect(fc.search(0)).toBeDefined()
+  })
 })

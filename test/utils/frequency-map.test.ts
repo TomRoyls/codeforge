@@ -485,3 +485,22 @@ describe('FrequencyMap - edge cases', () => {
     expect(stats.totalObservations).toBe(8)
   })
 })
+
+  it('get returns 0 for missing', () => {
+    const fm = new FrequencyMap<string>()
+    expect(fm.get('missing')).toBe(0)
+  })
+
+  it('add adds count', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a')
+    fm.add('a')
+    expect(fm.get('a')).toBe(2)
+  })
+
+  it('size tracks unique keys', () => {
+    const fm = new FrequencyMap<string>()
+    fm.add('a')
+    fm.add('b')
+    expect(fm.size).toBe(2)
+  })

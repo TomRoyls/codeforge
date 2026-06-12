@@ -486,4 +486,17 @@ describe('FlowPushRelabel', () => {
     ]
     expect(FlowPushRelabel.maxFlow(edges, 0, 1, 2)).toBe(7)
   })
+
+  it('no edges max flow is 0', () => {
+    expect(FlowPushRelabel.maxFlow([], 0, 1, 2)).toBe(0)
+  })
+
+  it('single edge flow', () => {
+    expect(FlowPushRelabel.maxFlow([{ from: 0, to: 1, capacity: 10 }], 0, 1, 2)).toBe(10)
+  })
+
+  it('bottleneck flow', () => {
+    const edges = [{ from: 0, to: 1, capacity: 10 }, { from: 1, to: 2, capacity: 5 }]
+    expect(FlowPushRelabel.maxFlow(edges, 0, 2, 3)).toBe(5)
+  })
 })

@@ -396,3 +396,21 @@ describe('FenwickTree - large updates', () => {
     expect(arr.length).toBe(3)
   })
 })
+
+  it('query on empty returns 0', () => {
+    const ft = new FenwickTree(5)
+    expect(ft.query(3)).toBe(0)
+  })
+
+  it('range query', () => {
+    const ft = new FenwickTree(5)
+    ft.update(0, 1)
+    ft.update(1, 2)
+    ft.update(2, 3)
+    expect(ft.rangeQuery(0, 2)).toBe(6)
+  })
+
+  it('size returns n', () => {
+    const ft = new FenwickTree(10)
+    expect(ft.size).toBe(10)
+  })

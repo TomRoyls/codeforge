@@ -251,4 +251,16 @@ describe('EditDistance', () => {
   it('normalizedLevenshtein for empty strings is 1', () => {
     expect(EditDistance.normalizedLevenshtein('', '')).toBe(1)
   })
+
+  it('levenshtein same string is 0', () => {
+    expect(EditDistance.levenshtein('abc', 'abc')).toBe(0)
+  })
+
+  it('levenshtein empty strings', () => {
+    expect(EditDistance.levenshtein('', '')).toBe(0)
+  })
+
+  it('levenshtein single char diff', () => {
+    expect(EditDistance.levenshtein('a', 'b')).toBe(1)
+  })
 })

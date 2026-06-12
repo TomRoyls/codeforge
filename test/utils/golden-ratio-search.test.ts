@@ -288,3 +288,20 @@ describe('GoldenRatioSearch maximize', () => {
     expect(x).toBeCloseTo(3, 2)
   })
 })
+
+  it('minimize finds minimum', () => {
+    const f = (x: number) => (x - 3) ** 2
+    const result = GoldenRatioSearch.minimize(f, 0, 10)
+    expect(Math.abs(result - 3)).toBeLessThan(0.01)
+  })
+
+  it('maximize finds maximum', () => {
+    const f = (x: number) => -(x - 2) ** 2
+    const result = GoldenRatioSearch.maximize(f, 0, 10)
+    expect(Math.abs(result - 2)).toBeLessThan(0.01)
+  })
+
+  it('minimize on flat function', () => {
+    const result = GoldenRatioSearch.minimize(() => 5, 0, 10)
+    expect(typeof result).toBe('number')
+  })

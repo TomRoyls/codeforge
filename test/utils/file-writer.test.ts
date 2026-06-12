@@ -458,3 +458,14 @@ describe('writeToFileAtomic', () => {
     fs.rmSync(dir, { recursive: true })
   })
 })
+  it('writeToFile is defined', () => {
+    expect(writeToFile).toBeDefined()
+  })
+
+  it('writeToFileAtomic is defined', () => {
+    expect(writeToFileAtomic).toBeDefined()
+  })
+
+  it('writeToFile is a function', () => {
+    expect(typeof writeToFile).toBe('function')
+  })

@@ -453,3 +453,16 @@ describe('EdmondsKarp minCut', () => {
     expect(EdmondsKarp.maxFlow(edges, 0, 1, 2)).toBe(10)
   })
 })
+
+  it('no edges max flow is 0', () => {
+    expect(EdmondsKarp.maxFlow([], 0, 1, 2)).toBe(0)
+  })
+
+  it('single edge flow', () => {
+    expect(EdmondsKarp.maxFlow([{ from: 0, to: 1, capacity: 10 }], 0, 1, 2)).toBe(10)
+  })
+
+  it('two path flow', () => {
+    const edges = [{ from: 0, to: 1, capacity: 5 }, { from: 0, to: 2, capacity: 3 }, { from: 1, to: 3, capacity: 5 }, { from: 2, to: 3, capacity: 3 }]
+    expect(EdmondsKarp.maxFlow(edges, 0, 3, 4)).toBe(8)
+  })

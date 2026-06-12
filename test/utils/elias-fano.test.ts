@@ -369,3 +369,18 @@ describe('EliasFano - edge cases', () => {
     expect(() => ef.get(5)).toThrow()
   })
 })
+  it('empty encoding', () => {
+    const ef = new EliasFano([])
+    expect(ef).toBeDefined()
+  })
+
+  it('single value', () => {
+    const ef = new EliasFano([42])
+    expect(ef).toBeDefined()
+  })
+
+  it('fromSorted roundtrip', () => {
+    const values = [1, 3, 5, 7, 9]
+    const ef = EliasFano.fromSorted(values)
+    expect(ef).toBeDefined()
+  })

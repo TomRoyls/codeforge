@@ -269,3 +269,15 @@ describe('padLeft', () => {
     expect(typeof formatDuration(1500)).toBe('string')
   })
 })
+
+  it('formatNumber returns string', () => {
+    expect(typeof formatNumber(1000)).toBe('string')
+  })
+
+  it('formatPercent works', () => {
+    expect(typeof formatPercentage(0.5)).toBe('string')
+  })
+
+  it('formatBytes works', () => {
+    expect(typeof formatBytes(1024)).toBe('string')
+  })

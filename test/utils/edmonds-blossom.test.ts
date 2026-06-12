@@ -414,4 +414,23 @@ describe('EdmondsBlossom', () => {
     const eb = new EdmondsBlossom(4)
     expect(eb.maxMatchingSize()).toBe(0)
   })
+
+  it('no edges returns 0 matches', () => {
+    const eb = new EdmondsBlossom(3)
+    expect(eb.maxMatchingSize()).toBe(0)
+  })
+
+  it('single edge matches', () => {
+    const eb = new EdmondsBlossom(2)
+    eb.addEdge(0, 1)
+    expect(eb.maxMatchingSize()).toBe(1)
+  })
+
+  it('triangle matches at least 1', () => {
+    const eb = new EdmondsBlossom(3)
+    eb.addEdge(0, 1)
+    eb.addEdge(1, 2)
+    eb.addEdge(2, 0)
+    expect(eb.maxMatchingSize()).toBeGreaterThanOrEqual(1)
+  })
 })

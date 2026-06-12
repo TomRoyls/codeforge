@@ -324,3 +324,15 @@ describe('matchAnyGlob advanced', () => {
     expect(matchGlob('src/utils/test.ts', 'src/**/*.ts')).toBe(true)
   })
 })
+
+  it('matchGlob returns boolean', () => {
+    expect(typeof matchGlob('hello', 'hello')).toBe('boolean')
+  })
+
+  it('exact match', () => {
+    expect(matchGlob('test.txt', 'test.txt')).toBe(true)
+  })
+
+  it('wildcard match', () => {
+    expect(matchGlob('hello.txt', '*.txt')).toBe(true)
+  })

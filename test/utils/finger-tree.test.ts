@@ -335,3 +335,18 @@ describe('FingerTree with strings', () => {
     expect(ft.popBack().size).toBe(0)
   })
 })
+
+  it('empty tree size is 0', () => {
+    const ft = FingerTree.empty<number>()
+    expect(ft.size).toBe(0)
+  })
+
+  it('pushBack adds element', () => {
+    const ft = FingerTree.empty<number>().pushBack(1)
+    expect(ft.size).toBe(1)
+  })
+
+  it('peekBack returns last', () => {
+    const ft = FingerTree.empty<number>().pushBack(1).pushBack(2)
+    expect(ft.peekBack()).toBe(2)
+  })
