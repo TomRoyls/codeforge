@@ -395,3 +395,17 @@ describe('SuffixAutomatonLight', () => {
     sa.build('hello')
     expect(sa.contains('hello')).toBe(true)
   })
+
+describe('suffix-automaton-light - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

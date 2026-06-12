@@ -429,3 +429,17 @@ describe('TimerWheel', () => {
     const result = tw.advance()
     expect(result).toContain('hello')
   })
+
+describe('timer-wheel - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

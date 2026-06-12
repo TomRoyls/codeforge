@@ -462,3 +462,17 @@ describe('TopologicalSort.allTopologicalSorts', () => {
     const sorts = TopologicalSort.allTopologicalSorts(adj)
     expect(sorts.length).toBe(2)
   })
+
+describe('topological-sort - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

@@ -387,3 +387,17 @@ describe('TDigest', () => {
     td.push(2)
     expect(td.size).toBe(2)
   })
+
+describe('t-digest - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

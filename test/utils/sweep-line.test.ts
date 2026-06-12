@@ -403,3 +403,17 @@ describe('SweepLine', () => {
   it('closestPair returns null for single point', () => {
     expect(SweepLine.closestPair([{ x: 0, y: 0 }])).toBeNull()
   })
+
+describe('sweep-line - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

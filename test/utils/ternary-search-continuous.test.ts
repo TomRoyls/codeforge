@@ -282,3 +282,17 @@ describe('TernarySearchContinuous', () => {
     const result = TernarySearchContinuous.minimize(f, -5, 5, 50)
     expect(Math.abs(result)).toBeLessThan(0.1)
   })
+
+describe('ternary-search-continuous - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

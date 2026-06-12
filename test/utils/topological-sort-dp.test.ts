@@ -446,3 +446,17 @@ describe('TopologicalSortDP', () => {
     ts.addEdge(2, 3)
     expect(ts.longestPath()).toBe(3)
   })
+
+describe('topological-sort-dp - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

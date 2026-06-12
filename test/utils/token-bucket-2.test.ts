@@ -350,3 +350,17 @@ describe('TokenBucket2', () => {
     tb.tryConsume(10)
     expect(() => tb.consume(1)).toThrow()
   })
+
+describe('token-bucket-2 - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

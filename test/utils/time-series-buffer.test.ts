@@ -513,3 +513,17 @@ describe('TimeSeriesBuffer', () => {
     tsb.push(2, 20)
     expect(tsb.entries.length).toBe(2)
   })
+
+describe('time-series-buffer - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

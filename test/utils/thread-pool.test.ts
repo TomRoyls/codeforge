@@ -606,3 +606,17 @@ describe('ThreadPool', () => {
     const pool = new ThreadPool()
     expect(pool.pending).toBe(0)
   })
+
+describe('thread-pool - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

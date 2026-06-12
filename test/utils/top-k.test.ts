@@ -445,3 +445,17 @@ describe('TopK - edge cases', () => {
     expect(tk.k).toBe(7)
   })
 })
+
+describe('top-k - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

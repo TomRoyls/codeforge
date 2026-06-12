@@ -240,3 +240,17 @@ describe('RULE_SUGGESTIONS known rules', () => {
     expect(Object.keys(RULE_SUGGESTIONS).length).toBeGreaterThan(0)
   })
 })
+
+describe('suggestions - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

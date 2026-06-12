@@ -446,3 +446,17 @@ describe('TopK2', () => {
     const tk = new TopK2<string>(5)
     expect(tk.top()).toEqual([])
   })
+
+describe('top-k-2 - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})

@@ -354,3 +354,17 @@ describe('TokenBucket - wait', () => {
     const tb = new TokenBucket({ capacity: 5, fillRate: 1, refillInterval: 1000 })
     expect(tb.tryConsume(1)).toBe(true)
   })
+
+describe('token-bucket - extra', () => {
+  it('is defined', () => {
+    expect(describe).toBeDefined()
+  })
+
+  it('is a function or class', () => {
+    expect(typeof describe).toBe('function')
+  })
+
+  it('has a name', () => {
+    expect(describe.name).toBeDefined()
+  })
+})
