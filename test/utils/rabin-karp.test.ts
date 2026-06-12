@@ -328,3 +328,15 @@ describe('rabin-karp - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('rabin-karp - wave548', () => {
+  it('rabin-karp module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rabin-karp module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

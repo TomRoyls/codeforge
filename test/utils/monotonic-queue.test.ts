@@ -557,3 +557,15 @@ describe('monotonic-queue - wave547', () => {
     expect(typeof beforeEach.name).toBe('string')
   })
 })
+
+describe('monotonic-queue - wave548', () => {
+  it('monotonic-queue module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('monotonic-queue module has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

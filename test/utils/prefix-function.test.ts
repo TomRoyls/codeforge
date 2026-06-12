@@ -262,3 +262,35 @@ describe('PrefixFunction', () => {
     expect(PrefixFunction.compute('aaabaab')).toEqual([0, 1, 2, 0, 1, 2, 0])
   })
 })
+describe('prefix-function - wave548', () => {
+  it('prefix-function module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('prefix-function module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+})

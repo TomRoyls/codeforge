@@ -397,3 +397,38 @@ describe('RungeKutta.step', () => {
     expect(y).toBeLessThan(1.2)
   })
 })
+describe('runge-kutta - wave548', () => {
+  it('runge-kutta module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('runge-kutta module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+})

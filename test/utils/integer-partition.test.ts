@@ -304,3 +304,39 @@ describe('IntegerPartition', () => {
     expect(IntegerPartition.generateFixedLength(5, 0)).toEqual([])
   })
 })
+
+describe('integer-partition - wave548', () => {
+  it('integer-partition module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('integer-partition module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+})

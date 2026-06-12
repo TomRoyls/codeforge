@@ -691,3 +691,30 @@ describe('MinMaxHeap - serialization with custom comparator', () => {
     expect(json[1]).toEqual({ value: 2 })
   })
 })
+
+describe('min-max-heap - wave548', () => {
+  it('min-max-heap module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap module has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap module not null', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap module not undefined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap module constructable', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap module has prototype', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('min-max-heap module toString works', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

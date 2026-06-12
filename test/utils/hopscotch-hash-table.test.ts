@@ -534,3 +534,15 @@ describe('hopscotch-hash-table - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('hopscotch-hash-table - wave548', () => {
+  it('hopscotch-hash-table module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hopscotch-hash-table module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

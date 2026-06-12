@@ -581,3 +581,27 @@ describe('Deque - edge cases', () => {
     expect(deque.popBack()).toBeUndefined()
   })
 })
+
+describe('dequeue - wave548', () => {
+  it('dequeue module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dequeue module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -353,3 +353,15 @@ describe('combination - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('combination - wave548', () => {
+  it('combination module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('combination module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

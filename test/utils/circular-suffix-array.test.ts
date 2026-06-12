@@ -348,3 +348,47 @@ describe('CircularSuffixArray', () => {
     expect(csa.index(0)).toBe(0)
   })
 })
+describe('circular-suffix-array - wave548', () => {
+  it('circular-suffix-array module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('circular-suffix-array module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

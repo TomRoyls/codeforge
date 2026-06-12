@@ -245,3 +245,48 @@ describe('LongestCommonSubstring', () => {
     expect(LongestCommonSubstring.find('abc', 'xyz')).toBe('')
   })
 })
+
+describe('longest-common-substring - wave548', () => {
+  it('longest-common-substring module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-common-substring module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

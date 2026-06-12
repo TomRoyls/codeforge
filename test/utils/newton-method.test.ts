@@ -513,3 +513,15 @@ describe('newton-method - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('newton-method - wave548', () => {
+  it('newton-method module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('newton-method module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

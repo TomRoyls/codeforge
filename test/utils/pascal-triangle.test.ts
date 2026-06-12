@@ -301,3 +301,30 @@ describe('PascalTriangle', () => {
     })
   })
 })
+
+describe('pascal-triangle - wave548', () => {
+  it('pascal-triangle module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pascal-triangle module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+})

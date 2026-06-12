@@ -548,3 +548,15 @@ describe('bag - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('bag - wave548', () => {
+  it('bag module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bag module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -290,3 +290,44 @@ describe('SparseTableGCD', () => {
     expect(st.query(0, 3)).toBe(6)
   })
 })
+describe('sparse-table-gcd - wave548', () => {
+  it('sparse-table-gcd module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-table-gcd module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

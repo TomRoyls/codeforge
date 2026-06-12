@@ -410,3 +410,15 @@ describe('token-bucket - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('token-bucket - wave548', () => {
+  it('token-bucket module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('token-bucket module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

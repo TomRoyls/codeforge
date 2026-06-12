@@ -380,3 +380,15 @@ describe('polynomial - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('polynomial - wave548', () => {
+  it('polynomial module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('polynomial module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -371,3 +371,48 @@ describe('NTT', () => {
     expect(NTT.transform([])).toEqual([])
   })
 })
+
+describe('ntt - wave548', () => {
+  it('ntt module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ntt module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

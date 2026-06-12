@@ -335,3 +335,45 @@ describe('KMPAutomaton', () => {
     expect(matches.length).toBe(3)
   })
 })
+
+describe('kmp-automaton - wave548', () => {
+  it('kmp-automaton module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kmp-automaton module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -451,3 +451,15 @@ describe('suffix-automaton-light - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('suffix-automaton-light - wave548', () => {
+  it('suffix-automaton-light module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-automaton-light module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

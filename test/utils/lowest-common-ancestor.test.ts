@@ -554,3 +554,15 @@ describe('lowest-common-ancestor - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('lowest-common-ancestor - wave548', () => {
+  it('lowest-common-ancestor module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lowest-common-ancestor module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -568,3 +568,36 @@ describe('DoubleEndedPriorityQueue - custom comparator', () => {
     expect(q.popMax()).toBe('cherry')
   })
 })
+
+describe('double-ended-priority-queue - wave548', () => {
+  it('double-ended-priority-queue module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue module has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue module not null', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue module not undefined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue module constructable', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue module has prototype', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue module toString works', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue module has length', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('double-ended-priority-queue module type is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

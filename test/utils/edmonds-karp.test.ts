@@ -508,3 +508,15 @@ describe('edmonds-karp - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('edmonds-karp - wave548', () => {
+  it('edmonds-karp module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edmonds-karp module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

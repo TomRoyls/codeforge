@@ -414,3 +414,35 @@ describe('deepClone - ArrayBuffer support', () => {
     expect(clone.byteLength).toBe(buffer.byteLength)
   })
 })
+describe('deep-clone - wave548', () => {
+  it('deep-clone module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-clone module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+})

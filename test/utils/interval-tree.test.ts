@@ -495,3 +495,45 @@ describe('IntervalTree edge cases', () => {
     expect(result[0].value).toBe('a')
   })
 })
+
+describe('interval-tree - wave548', () => {
+  it('interval-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-tree module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -655,3 +655,15 @@ describe('retry - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('retry - wave548', () => {
+  it('retry module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('retry module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

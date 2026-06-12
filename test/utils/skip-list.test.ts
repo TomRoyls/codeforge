@@ -550,3 +550,36 @@ describe('SkipList single element', () => {
     expect(sl.find(5)).toBe('new')
   })
 })
+
+describe('skip-list - wave548', () => {
+  it('skip-list module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('skip-list module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+})

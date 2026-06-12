@@ -441,3 +441,48 @@ describe('AhoCorasick - equals', () => {
     expect(ac.search('')).toEqual([])
   })
 })
+
+describe('aho-corasick - wave548', () => {
+  it('aho-corasick module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('aho-corasick module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

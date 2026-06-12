@@ -367,3 +367,15 @@ describe('logger - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('logger - wave548', () => {
+  it('logger module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('logger module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

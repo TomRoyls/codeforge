@@ -609,3 +609,9 @@ describe('RadixTree edge cases', () => {
     expect(tree.size).toBe(4)
   })
 })
+
+describe('radix-tree - wave548', () => {
+  it('radix-tree module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

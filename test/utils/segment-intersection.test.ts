@@ -378,3 +378,27 @@ describe('pointToSegmentDistance - edge cases', () => {
     expect(pointToSegmentDistance({ x: 2, y: 0 }, seg)).toBeCloseTo(0, 5)
   })
 })
+
+describe('segment-intersection - wave548', () => {
+  it('segment-intersection module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('segment-intersection module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+})

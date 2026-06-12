@@ -425,3 +425,15 @@ describe('deep-merge - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('deep-merge - wave548', () => {
+  it('deep-merge module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('deep-merge module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

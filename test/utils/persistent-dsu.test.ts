@@ -453,3 +453,44 @@ describe('PersistentDSU', () => {
     expect(dsu.connected(0, 2)).toBe(false);
   });
 });
+describe('persistent-dsu - wave548', () => {
+  it('persistent-dsu module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-dsu module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

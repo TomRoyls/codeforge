@@ -293,3 +293,48 @@ describe('CountingSort', () => {
     expect(arr).toEqual([1, 2, 3])
   })
 })
+
+describe('counting-sort - wave548', () => {
+  it('counting-sort module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('counting-sort module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

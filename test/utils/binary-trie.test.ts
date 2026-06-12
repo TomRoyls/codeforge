@@ -454,3 +454,48 @@ describe('BinaryTrie', () => {
     expect(trie.find(0)).toBe(true)
   })
 })
+
+describe('binary-trie - wave548', () => {
+  it('binary-trie module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-trie module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

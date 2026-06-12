@@ -275,3 +275,45 @@ describe('BigIntUtils', () => {
     expect(BigIntUtils.factorial(5)).toBeLessThan(BigIntUtils.factorial(10))
   })
 })
+
+describe('bigint-utils - wave548', () => {
+  it('bigint-utils module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bigint-utils module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

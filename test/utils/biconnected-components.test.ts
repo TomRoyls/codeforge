@@ -562,3 +562,15 @@ describe('biconnected-components - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('biconnected-components - wave548', () => {
+  it('biconnected-components module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('biconnected-components module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

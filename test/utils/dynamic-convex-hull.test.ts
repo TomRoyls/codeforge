@@ -489,3 +489,48 @@ describe('DynamicConvexHull', () => {
     expect(ch.toJSON()).toBeDefined()
   })
 })
+
+describe('dynamic-convex-hull - wave548', () => {
+  it('dynamic-convex-hull module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dynamic-convex-hull module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

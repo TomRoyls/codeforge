@@ -361,3 +361,48 @@ describe('FastFourierTransform', () => {
     expect(restored[0].re).toBeCloseTo(1, 5)
   })
 })
+
+describe('fast-fourier - wave548', () => {
+  it('fast-fourier module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fast-fourier module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

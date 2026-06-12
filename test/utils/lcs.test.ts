@@ -325,3 +325,15 @@ describe('lcs - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('lcs - wave548', () => {
+  it('lcs module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcs module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

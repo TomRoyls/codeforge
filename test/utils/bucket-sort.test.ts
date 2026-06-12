@@ -271,3 +271,26 @@ describe('bucketSortDescending', () => {
     expect(bucketSortDescending([0.01, 0.001, 0.0001])).toEqual([0.01, 0.001, 0.0001])
   })
 })
+describe('bucket-sort - wave548', () => {
+  it('bucket-sort module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bucket-sort module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+})

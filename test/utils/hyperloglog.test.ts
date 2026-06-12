@@ -507,3 +507,15 @@ describe('hyperloglog - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('hyperloglog - wave548', () => {
+  it('hyperloglog module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hyperloglog module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

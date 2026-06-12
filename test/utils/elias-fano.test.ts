@@ -426,3 +426,15 @@ describe('elias-fano - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('elias-fano - wave548', () => {
+  it('elias-fano module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('elias-fano module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

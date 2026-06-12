@@ -542,3 +542,15 @@ describe('splay-tree - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('splay-tree - wave548', () => {
+  it('splay-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('splay-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

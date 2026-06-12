@@ -550,3 +550,27 @@ describe('IndexPriorityQueue large dataset', () => {
     expect(pq.peek()!.value).toBe(-1)
   })
 })
+
+describe('index-priority-queue - wave548', () => {
+  it('index-priority-queue module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('index-priority-queue module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+})

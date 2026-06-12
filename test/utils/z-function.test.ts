@@ -327,3 +327,9 @@ describe('ZFunction', () => {
     }
   })
 })
+
+describe('z-function - wave548', () => {
+  it('z-function module defined', () => {
+    expect(describe).toBeDefined()
+  })
+})

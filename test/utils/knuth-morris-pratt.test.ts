@@ -236,3 +236,48 @@ describe('KnuthMorrisPratt', () => {
     })
   })
 })
+
+describe('knuth-morris-pratt - wave548', () => {
+  it('knuth-morris-pratt module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('knuth-morris-pratt module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

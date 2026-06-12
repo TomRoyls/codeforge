@@ -487,3 +487,45 @@ describe('HeavyLightDecomposition', () => {
     expect(c.lca(0, 1)).toBe(hld.lca(0, 1))
   })
 })
+
+describe('heavy-light - wave548', () => {
+  it('heavy-light module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-light module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

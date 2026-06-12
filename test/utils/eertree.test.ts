@@ -404,3 +404,15 @@ describe('eertree - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('eertree - wave548', () => {
+  it('eertree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('eertree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

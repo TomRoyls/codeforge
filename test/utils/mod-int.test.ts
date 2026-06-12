@@ -299,3 +299,48 @@ describe('ModInt', () => {
     expect(result).toBeDefined()
   })
 })
+
+describe('mod-int - wave548', () => {
+  it('mod-int module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('mod-int module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

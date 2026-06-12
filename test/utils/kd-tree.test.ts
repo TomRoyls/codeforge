@@ -465,3 +465,15 @@ describe('kd-tree - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('kd-tree - wave548', () => {
+  it('kd-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('kd-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

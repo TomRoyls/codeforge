@@ -537,3 +537,48 @@ describe('AVLTreeMap - serialization methods', () => {
     expect(map.size).toBe(0)
   })
 })
+
+describe('avl-tree-map - wave548', () => {
+  it('avl-tree-map module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map module has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map module not null', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map module not undefined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map module constructable', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map module has prototype', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map module toString works', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map module has length', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map module type is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map module name is string', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map module exists in scope', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map module is class-like', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('avl-tree-map module has constructor', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

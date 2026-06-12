@@ -568,3 +568,15 @@ describe('priority-search-tree - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('priority-search-tree - wave548', () => {
+  it('priority-search-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('priority-search-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

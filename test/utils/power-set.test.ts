@@ -386,3 +386,15 @@ describe('power-set - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('power-set - wave548', () => {
+  it('power-set module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('power-set module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

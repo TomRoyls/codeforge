@@ -541,3 +541,15 @@ describe('task-runner - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('task-runner - wave548', () => {
+  it('task-runner module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('task-runner module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

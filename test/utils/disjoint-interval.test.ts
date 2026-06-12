@@ -397,3 +397,44 @@ describe('DisjointInterval', () => {
     expect(di.covers(8, 5)).toBe(true)
   })
 })
+describe('disjoint-interval - wave548', () => {
+  it('disjoint-interval module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-interval module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

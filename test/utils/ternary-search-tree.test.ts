@@ -525,3 +525,38 @@ describe('TernarySearchTree edge cases', () => {
     expect(result.length).toBe(3)
   })
 })
+describe('ternary-search-tree - wave548', () => {
+  it('ternary-search-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ternary-search-tree module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+})

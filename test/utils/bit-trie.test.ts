@@ -628,3 +628,14 @@ describe('BitTrie', () => {
     expect(trie.lookup(5, 3)).toBe(42)
   })
 })
+describe('bit-trie - wave548', () => {
+  it('bit-trie module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-trie module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

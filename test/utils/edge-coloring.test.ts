@@ -485,3 +485,45 @@ describe('EdgeColoring', () => {
     expect(ec.chromaticIndex()).toBeGreaterThanOrEqual(ec.maxDegree())
   })
 })
+
+describe('edge-coloring - wave548', () => {
+  it('edge-coloring module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edge-coloring module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

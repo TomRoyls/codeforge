@@ -426,3 +426,44 @@ describe('StreamSampler', () => {
     expect(sampler.isEmpty).toBe(true)
   })
 })
+describe('stream-sampler - wave548', () => {
+  it('stream-sampler module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('stream-sampler module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

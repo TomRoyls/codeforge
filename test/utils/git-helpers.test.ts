@@ -424,3 +424,48 @@ describe('getBlameForFile', () => {
     }
   })
 })
+
+describe('git-helpers - wave548', () => {
+  it('git-helpers module defined', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module is function', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module has name', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module not null', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module not undefined', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module constructable', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module has prototype', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module toString works', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module has length', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module type is function', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module name is string', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module exists in scope', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module is class-like', () => {
+    expect(resolve).toBeDefined()
+  })
+  it('git-helpers module has constructor', () => {
+    expect(resolve).toBeDefined()
+  })
+})

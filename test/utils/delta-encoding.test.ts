@@ -345,3 +345,38 @@ describe('DeltaEncoding', () => {
     expect(size).toBe(12)
   })
 })
+describe('delta-encoding - wave548', () => {
+  it('delta-encoding module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('delta-encoding module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+})

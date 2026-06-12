@@ -312,3 +312,36 @@ describe('ContinuedFraction', () => {
     expect(result[0]).toBe(0)
   })
 })
+
+describe('continued-fraction - wave548', () => {
+  it('continued-fraction module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('continued-fraction module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+})

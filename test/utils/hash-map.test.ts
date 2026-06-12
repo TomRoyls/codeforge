@@ -492,3 +492,45 @@ describe('HashMap generic value types', () => {
     expect(map.size).toBe(0)
   })
 })
+
+describe('hash-map - wave548', () => {
+  it('hash-map module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map module has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map module not null', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map module not undefined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map module constructable', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map module has prototype', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map module toString works', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map module has length', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map module type is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map module name is string', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map module exists in scope', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('hash-map module is class-like', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

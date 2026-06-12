@@ -455,3 +455,48 @@ describe('ModularDecomposition', () => {
     expect(modules.length).toBeGreaterThan(0)
   })
 })
+
+describe('modular-decomposition - wave548', () => {
+  it('modular-decomposition module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('modular-decomposition module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

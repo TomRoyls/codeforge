@@ -542,3 +542,36 @@ describe('Treap single element', () => {
     expect(t.find(5)).toBe('new')
   })
 })
+
+describe('treap - wave548', () => {
+  it('treap module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('treap module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+})

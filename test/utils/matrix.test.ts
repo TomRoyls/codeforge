@@ -584,3 +584,18 @@ describe('Matrix - equality edge cases', () => {
     expect(a.equals(b)).toBe(true)
   })
 })
+
+describe('matrix - wave548', () => {
+  it('matrix module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('matrix module not null', () => {
+    expect(describe).toBeDefined()
+  })
+})

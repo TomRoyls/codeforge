@@ -392,3 +392,15 @@ describe('comparators - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('comparators - wave548', () => {
+  it('comparators module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('comparators module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

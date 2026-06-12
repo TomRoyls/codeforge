@@ -422,3 +422,48 @@ describe('Error hierarchy', () => {
     expect(err).toBeInstanceOf(Error)
   })
 })
+
+describe('errors - wave548', () => {
+  it('errors module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('errors module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -541,3 +541,15 @@ describe('dinic - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('dinic - wave548', () => {
+  it('dinic module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('dinic module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

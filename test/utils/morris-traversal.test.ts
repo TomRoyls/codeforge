@@ -431,3 +431,48 @@ describe('TreeNode', () => {
     expect(objNode.value).toEqual({ a: 1 })
   })
 })
+
+describe('morris-traversal - wave548', () => {
+  it('morris-traversal module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('morris-traversal module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

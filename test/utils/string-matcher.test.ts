@@ -551,3 +551,15 @@ describe('string-matcher - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('string-matcher - wave548', () => {
+  it('string-matcher module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('string-matcher module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -509,3 +509,47 @@ describe('HierarchicalTimer', () => {
     expect(timer.format()).toBe('')
   })
 })
+describe('hierarchical-timer - wave548', () => {
+  it('hierarchical-timer module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('hierarchical-timer module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

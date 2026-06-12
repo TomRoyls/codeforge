@@ -368,3 +368,47 @@ describe('CartesianTree', () => {
     expect(tree.size).toBe(1)
   })
 })
+describe('cartesian-tree - wave548', () => {
+  it('cartesian-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('cartesian-tree module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

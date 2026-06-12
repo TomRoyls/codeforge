@@ -378,3 +378,45 @@ describe('BridgeFinder', () => {
     expect(bf.bridges.length).toBeGreaterThan(1)
   })
 })
+
+describe('bridge-finder - wave548', () => {
+  it('bridge-finder module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bridge-finder module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

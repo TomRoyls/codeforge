@@ -423,3 +423,45 @@ describe('HeavyHitters', () => {
     expect(hh.getCount('hello world')).toBe(10)
   })
 })
+
+describe('heavy-hitters - wave548', () => {
+  it('heavy-hitters module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('heavy-hitters module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

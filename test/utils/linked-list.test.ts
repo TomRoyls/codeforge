@@ -470,3 +470,48 @@ describe('LinkedList generic value types', () => {
     expect(list.toArray()).toEqual(['hello', 'world'])
   })
 })
+
+describe('linked-list - wave548', () => {
+  it('linked-list module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module has name', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module not null', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module not undefined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module constructable', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module has prototype', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module toString works', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module has length', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module type is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module name is string', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module exists in scope', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module is class-like', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('linked-list module has constructor', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

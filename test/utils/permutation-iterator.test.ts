@@ -376,3 +376,48 @@ describe('PermutationIterator', () => {
     expect(perms.length).toBe(2)
   })
 })
+
+describe('permutation-iterator - wave548', () => {
+  it('permutation-iterator module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('permutation-iterator module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

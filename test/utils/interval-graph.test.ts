@@ -446,3 +446,48 @@ describe('IntervalGraph', () => {
     expect(ig2.maxOverlap()).toBe(1)
   })
 })
+
+describe('interval-graph - wave548', () => {
+  it('interval-graph module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-graph module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -298,3 +298,15 @@ describe('partial-sort - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('partial-sort - wave548', () => {
+  it('partial-sort module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('partial-sort module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

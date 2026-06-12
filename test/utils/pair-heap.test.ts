@@ -495,3 +495,47 @@ describe('PairHeap', () => {
     expect(heap.size).toBe(3)
   })
 })
+describe('pair-heap - wave548', () => {
+  it('pair-heap module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('pair-heap module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

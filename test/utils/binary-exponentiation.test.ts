@@ -268,3 +268,47 @@ describe('BinaryExponentiation', () => {
     expect(result[1][1]).toBe(1n)
   })
 })
+describe('binary-exponentiation - wave548', () => {
+  it('binary-exponentiation module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-exponentiation module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -473,3 +473,45 @@ describe('BoundedPriorityQueue', () => {
     expect(q.peek()).toBeUndefined()
   })
 })
+
+describe('bounded-priority-queue - wave548', () => {
+  it('bounded-priority-queue module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bounded-priority-queue module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

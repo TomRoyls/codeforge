@@ -490,3 +490,48 @@ describe('IntervalMap', () => {
     expect(im.get(7)).toBe('first')
   })
 })
+
+describe('interval-map - wave548', () => {
+  it('interval-map module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interval-map module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

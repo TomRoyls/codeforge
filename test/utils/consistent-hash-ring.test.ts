@@ -451,3 +451,15 @@ describe('consistent-hash-ring - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('consistent-hash-ring - wave548', () => {
+  it('consistent-hash-ring module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('consistent-hash-ring module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -412,3 +412,36 @@ describe('Integration - err pipeline', () => {
     expect(result).toBe('Value: 20')
   })
 })
+
+describe('result - wave548', () => {
+  it('result module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('result module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+})

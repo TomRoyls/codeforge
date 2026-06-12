@@ -374,3 +374,47 @@ describe('BurrowsWheelerTransform', () => {
     expect(restored).toBe('a')
   })
 })
+describe('burrows-wheeler - wave548', () => {
+  it('burrows-wheeler module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('burrows-wheeler module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

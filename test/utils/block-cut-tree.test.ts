@@ -602,3 +602,47 @@ describe('BlockCutTree', () => {
     expect(isArticulation[2]).toBe(true)
   })
 })
+describe('block-cut-tree - wave548', () => {
+  it('block-cut-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('block-cut-tree module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

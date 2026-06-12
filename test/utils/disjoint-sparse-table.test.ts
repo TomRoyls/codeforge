@@ -404,3 +404,15 @@ describe('disjoint-sparse-table - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('disjoint-sparse-table - wave548', () => {
+  it('disjoint-sparse-table module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-sparse-table module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

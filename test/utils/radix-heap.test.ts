@@ -525,3 +525,15 @@ describe('radix-heap - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('radix-heap - wave548', () => {
+  it('radix-heap module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('radix-heap module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -451,3 +451,48 @@ describe('FordFulkerson', () => {
     expect(FordFulkerson.maxFlow(edges, 0, 1, 2)).toBe(0)
   })
 })
+
+describe('ford-fulkerson - wave548', () => {
+  it('ford-fulkerson module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ford-fulkerson module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

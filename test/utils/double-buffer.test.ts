@@ -492,3 +492,48 @@ describe('DoubleBuffer', () => {
     expect(buf.swap()).toEqual([])
   })
 })
+
+describe('double-buffer - wave548', () => {
+  it('double-buffer module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('double-buffer module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

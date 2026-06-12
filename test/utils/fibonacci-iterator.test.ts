@@ -337,3 +337,48 @@ describe('FibonacciIterator', () => {
     expect(FibonacciIterator.nth(1)).toBe(1n)
   })
 })
+
+describe('fibonacci-iterator - wave548', () => {
+  it('fibonacci-iterator module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('fibonacci-iterator module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

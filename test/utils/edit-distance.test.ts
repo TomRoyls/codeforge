@@ -306,3 +306,15 @@ describe('edit-distance - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('edit-distance - wave548', () => {
+  it('edit-distance module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('edit-distance module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

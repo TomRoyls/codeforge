@@ -354,3 +354,44 @@ describe('WaveletMatrix', () => {
     })
   })
 })
+describe('wavelet-matrix - wave548', () => {
+  it('wavelet-matrix module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-matrix module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

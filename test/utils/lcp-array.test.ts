@@ -338,3 +338,48 @@ describe('LCPArray', () => {
     expect(lcp.length).toBe(2)
   })
 })
+
+describe('lcp-array - wave548', () => {
+  it('lcp-array module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lcp-array module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

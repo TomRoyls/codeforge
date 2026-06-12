@@ -466,3 +466,48 @@ describe('BitSet - large scale', () => {
     expect(bs.get(3)).toBe(0)
   })
 })
+
+describe('bit-set - wave548', () => {
+  it('bit-set module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bit-set module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

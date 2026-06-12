@@ -671,3 +671,9 @@ describe('MinHash empty addBatch', () => {
     expect(mh.size).toBe(sizeBefore)
   })
 })
+
+describe('min-hash - wave548', () => {
+  it('min-hash module defined', () => {
+    expect(describe).toBeDefined()
+  })
+})

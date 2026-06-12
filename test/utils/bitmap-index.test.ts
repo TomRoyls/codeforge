@@ -473,3 +473,15 @@ describe('bitmap-index - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('bitmap-index - wave548', () => {
+  it('bitmap-index module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bitmap-index module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

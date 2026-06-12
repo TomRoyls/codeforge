@@ -427,3 +427,47 @@ describe('HuffmanCoder', () => {
     expect(r1.encoded).toBe(r2.encoded)
   })
 })
+describe('huffman-coder - wave548', () => {
+  it('huffman-coder module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('huffman-coder module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

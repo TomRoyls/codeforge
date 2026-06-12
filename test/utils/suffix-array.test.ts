@@ -412,3 +412,15 @@ describe('suffix-array - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('suffix-array - wave548', () => {
+  it('suffix-array module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('suffix-array module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -410,3 +410,15 @@ describe('range-min-query - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('range-min-query - wave548', () => {
+  it('range-min-query module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('range-min-query module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

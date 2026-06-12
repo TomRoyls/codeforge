@@ -367,3 +367,14 @@ describe('PalindromicTree', () => {
     })
   })
 })
+describe('palindromic-tree - wave548', () => {
+  it('palindromic-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindromic-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindromic-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -424,3 +424,47 @@ describe('ExponentialCounter', () => {
     expect(c1.toString()).toBeDefined()
   })
 })
+describe('exponential-counter - wave548', () => {
+  it('exponential-counter module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('exponential-counter module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

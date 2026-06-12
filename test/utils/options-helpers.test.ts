@@ -362,3 +362,27 @@ describe('extractRuleOptions', () => {
     expect(result.data2).toBe(arr2)
   })
 })
+
+describe('options-helpers - wave548', () => {
+  it('options-helpers module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('options-helpers module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+})

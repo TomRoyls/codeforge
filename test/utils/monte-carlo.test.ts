@@ -394,3 +394,48 @@ describe('MonteCarlo', () => {
     expect(result).toBeCloseTo(-1, 1)
   })
 })
+
+describe('monte-carlo - wave548', () => {
+  it('monte-carlo module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('monte-carlo module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

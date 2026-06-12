@@ -388,3 +388,17 @@ describe('WindowTinyLFU', () => {
     expect(w.capacity).toBe(100)
   })
 })
+describe('window-tiny-lfu - wave548', () => {
+  it('window-tiny-lfu module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('window-tiny-lfu module not null', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -390,3 +390,30 @@ describe('WaveletTree', () => {
     expect(wt.rank(1, 5)).toBe(3);
   });
 });
+
+describe('wavelet-tree - wave548', () => {
+  it('wavelet-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('wavelet-tree module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+})

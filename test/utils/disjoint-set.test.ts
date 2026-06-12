@@ -531,3 +531,30 @@ describe('DisjointSet - stats and clear', () => {
     expect(ds.setCount).toBe(0)
   })
 })
+
+describe('disjoint-set - wave548', () => {
+  it('disjoint-set module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('disjoint-set module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+})

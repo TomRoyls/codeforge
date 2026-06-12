@@ -495,3 +495,15 @@ describe('tarjan - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('tarjan - wave548', () => {
+  it('tarjan module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('tarjan module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

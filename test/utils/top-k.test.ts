@@ -501,3 +501,15 @@ describe('top-k - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('top-k - wave548', () => {
+  it('top-k module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('top-k module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

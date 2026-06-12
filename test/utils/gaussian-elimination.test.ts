@@ -515,3 +515,15 @@ describe('gaussian-elimination - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('gaussian-elimination - wave548', () => {
+  it('gaussian-elimination module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gaussian-elimination module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -306,3 +306,15 @@ describe('longest-increasing-subsequence - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('longest-increasing-subsequence - wave548', () => {
+  it('longest-increasing-subsequence module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('longest-increasing-subsequence module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

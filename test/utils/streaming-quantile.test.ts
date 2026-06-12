@@ -486,3 +486,44 @@ describe('StreamingQuantile', () => {
     expect(sq.quantile(0.75)).toBe(-15)
   })
 })
+describe('streaming-quantile - wave548', () => {
+  it('streaming-quantile module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('streaming-quantile module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

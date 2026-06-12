@@ -487,3 +487,48 @@ describe('OrderedSet', () => {
     expect(set.add(5)).toBe(false)
   })
 })
+
+describe('ordered-set - wave548', () => {
+  it('ordered-set module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('ordered-set module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

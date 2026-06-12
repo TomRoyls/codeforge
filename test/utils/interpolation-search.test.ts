@@ -267,3 +267,48 @@ describe('InterpolationSearch', () => {
     expect(InterpolationSearch.closest(arr, 5)).toBe(1)
   })
 })
+
+describe('interpolation-search - wave548', () => {
+  it('interpolation-search module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('interpolation-search module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

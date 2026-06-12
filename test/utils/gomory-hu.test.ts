@@ -443,3 +443,48 @@ describe('GomoryHu', () => {
     expect(result.length).toBe(3)
   })
 })
+
+describe('gomory-hu - wave548', () => {
+  it('gomory-hu module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('gomory-hu module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

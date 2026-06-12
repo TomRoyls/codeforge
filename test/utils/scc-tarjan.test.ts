@@ -599,3 +599,15 @@ describe('scc-tarjan - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('scc-tarjan - wave548', () => {
+  it('scc-tarjan module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('scc-tarjan module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

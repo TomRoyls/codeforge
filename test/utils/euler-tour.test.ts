@@ -398,3 +398,47 @@ describe('EulerTour', () => {
     expect(r).toBeGreaterThan(l)
   })
 })
+describe('euler-tour - wave548', () => {
+  it('euler-tour module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('euler-tour module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

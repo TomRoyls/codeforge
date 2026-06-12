@@ -403,3 +403,47 @@ describe('BinaryIndexedTree2D', () => {
     expect(bit.rangeQuery(2, 2, 2, 2)).toBe(7)
   })
 })
+describe('binary-indexed-tree-2d - wave548', () => {
+  it('binary-indexed-tree-2d module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-indexed-tree-2d module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

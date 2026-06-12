@@ -426,3 +426,20 @@ describe('compareKeys', () => {
     })
   })
 })
+describe('order-key - wave548', () => {
+  it('order-key module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('order-key module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('order-key module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('order-key module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('order-key module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+})

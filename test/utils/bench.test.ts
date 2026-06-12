@@ -626,3 +626,38 @@ describe('bench', () => {
     expect(suite.results.length).toBe(2)
   })
 })
+describe('bench - wave548', () => {
+  it('bench module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bench module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+})

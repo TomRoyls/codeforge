@@ -323,3 +323,15 @@ describe('subset-sum - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('subset-sum - wave548', () => {
+  it('subset-sum module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('subset-sum module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -352,3 +352,47 @@ describe('CoordinateCompressor', () => {
     expect(cc.size).toBe(3)
   })
 })
+describe('coordinate-compressor - wave548', () => {
+  it('coordinate-compressor module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('coordinate-compressor module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

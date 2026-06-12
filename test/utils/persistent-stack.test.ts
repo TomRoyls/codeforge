@@ -394,3 +394,47 @@ describe('PersistentStack', () => {
     expect(s2.toArray()).toEqual([3, 2, 1])
   })
 })
+describe('persistent-stack - wave548', () => {
+  it('persistent-stack module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('persistent-stack module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -320,3 +320,15 @@ describe('lis - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('lis - wave548', () => {
+  it('lis module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('lis module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

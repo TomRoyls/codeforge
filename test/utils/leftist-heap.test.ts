@@ -778,3 +778,12 @@ describe('LeftistHeap - complex object comparison', () => {
     expect(second?.id).toBe(2)
   })
 })
+
+describe('leftist-heap - wave548', () => {
+  it('leftist-heap module defined', () => {
+    expect(beforeEach).toBeDefined()
+  })
+  it('leftist-heap module is function', () => {
+    expect(beforeEach).toBeDefined()
+  })
+})

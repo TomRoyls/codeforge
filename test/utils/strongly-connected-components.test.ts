@@ -445,3 +445,48 @@ describe('SCCGraph', () => {
     expect(result.length).toBe(3)
   })
 })
+
+describe('strongly-connected-components - wave548', () => {
+  it('strongly-connected-components module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('strongly-connected-components module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

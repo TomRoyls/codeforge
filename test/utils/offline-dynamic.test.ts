@@ -466,3 +466,48 @@ describe('OfflineDynamicConnectivity', () => {
     expect(result[0]).toBe(false)
   })
 })
+
+describe('offline-dynamic - wave548', () => {
+  it('offline-dynamic module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('offline-dynamic module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

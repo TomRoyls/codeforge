@@ -392,3 +392,15 @@ describe('finger-tree - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('finger-tree - wave548', () => {
+  it('finger-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('finger-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('finger-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

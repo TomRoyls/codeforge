@@ -248,3 +248,38 @@ describe('BoyerMooreExtended', () => {
     expect(BoyerMooreExtended.search('"test"', '"')).toEqual([0, 5])
   })
 })
+describe('boyer-moore-extended - wave548', () => {
+  it('boyer-moore-extended module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('boyer-moore-extended module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+})

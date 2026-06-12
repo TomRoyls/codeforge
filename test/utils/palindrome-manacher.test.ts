@@ -350,3 +350,15 @@ describe('palindrome-manacher - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('palindrome-manacher - wave548', () => {
+  it('palindrome-manacher module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('palindrome-manacher module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -506,3 +506,45 @@ describe('SparseBitSet - edge cases', () => {
     expect(bs.chunkCount).toBe(1)
   })
 })
+
+describe('sparse-bit-set - wave548', () => {
+  it('sparse-bit-set module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-bit-set module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

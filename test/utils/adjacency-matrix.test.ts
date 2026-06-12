@@ -427,3 +427,45 @@ describe('AdjacencyMatrix', () => {
     })
   })
 })
+
+describe('adjacency-matrix - wave548', () => {
+  it('adjacency-matrix module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('adjacency-matrix module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+})

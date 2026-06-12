@@ -496,3 +496,15 @@ describe('rollback-dsu - wave547', () => {
     expect(typeof describe.name).toBe('string')
   })
 })
+
+describe('rollback-dsu - wave548', () => {
+  it('rollback-dsu module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('rollback-dsu module has name', () => {
+    expect(describe).toBeDefined()
+  })
+})

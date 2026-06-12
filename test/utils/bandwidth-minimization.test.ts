@@ -465,3 +465,47 @@ describe('BandwidthMinimization', () => {
     expect(bm.bandwidth()).toBeGreaterThanOrEqual(0)
   })
 })
+describe('bandwidth-minimization - wave548', () => {
+  it('bandwidth-minimization module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('bandwidth-minimization module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

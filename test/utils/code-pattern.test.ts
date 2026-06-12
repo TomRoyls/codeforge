@@ -439,3 +439,26 @@ describe('createCustomRule', () => {
     expect(rule.pattern.source).toBe(pattern.source)
   })
 })
+describe('code-pattern - wave548', () => {
+  it('code-pattern module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('code-pattern module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+})

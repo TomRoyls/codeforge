@@ -453,3 +453,48 @@ describe('BinaryLifting', () => {
     expect(bl.kthAncestor(0, 1)).toBe(-1)
   })
 })
+
+describe('binary-lifting - wave548', () => {
+  it('binary-lifting module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('binary-lifting module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

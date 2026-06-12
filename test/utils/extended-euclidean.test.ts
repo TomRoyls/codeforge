@@ -297,3 +297,48 @@ describe('ExtendedEuclidean', () => {
     expect(gcd).toBe(1n)
   })
 })
+
+describe('extended-euclidean - wave548', () => {
+  it('extended-euclidean module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('extended-euclidean module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

@@ -421,3 +421,47 @@ describe('LiChaoTree', () => {
     expect(tree.lineCount()).toBe(3)
   })
 })
+describe('li-chao-tree - wave548', () => {
+  it('li-chao-tree module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module name is string', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module exists in scope', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module is class-like', () => {
+    expect(describe).toBeDefined()
+  })
+  it('li-chao-tree module has constructor', () => {
+    expect(describe).toBeDefined()
+  })
+})

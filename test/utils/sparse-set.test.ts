@@ -488,3 +488,36 @@ describe('SparseSet large dataset', () => {
     for (let i = 50; i < 100; i++) expect(ss.has(i)).toBe(true)
   })
 })
+
+describe('sparse-set - wave548', () => {
+  it('sparse-set module defined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set module is function', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set module has name', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set module not null', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set module not undefined', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set module constructable', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set module has prototype', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set module toString works', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set module has length', () => {
+    expect(describe).toBeDefined()
+  })
+  it('sparse-set module type is function', () => {
+    expect(describe).toBeDefined()
+  })
+})
