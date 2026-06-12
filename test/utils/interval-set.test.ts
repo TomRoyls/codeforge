@@ -435,4 +435,20 @@ describe('IntervalSet', () => {
     const c = s.complement(0, 10)
     expect(c).toBeDefined()
   })
+
+  it('getIntervals returns added intervals', () => {
+    const is = new IntervalSet()
+    is.add(ci(1, 5))
+    expect(is.getIntervals().length).toBeGreaterThan(0)
+  })
+
+  it('contains returns false for empty set', () => {
+    const is = new IntervalSet()
+    expect(is.contains(5)).toBe(false)
+  })
+
+  it('getTotalSpan returns 0 for empty', () => {
+    const is = new IntervalSet()
+    expect(is.getTotalSpan()).toBe(0)
+  })
 })

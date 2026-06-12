@@ -421,4 +421,25 @@ describe('GomoryHu', () => {
     gh2.addEdge(0, 1, 2)
     expect(gh1.equals(gh2)).toBe(false)
   })
+
+  it('minCut on disconnected graph returns 0', () => {
+    const gh = new GomoryHu(4)
+    gh.addEdge(0, 1, 5)
+    gh.addEdge(2, 3, 5)
+    expect(gh.minCut(0, 2)).toBe(0)
+  })
+
+  it('single edge minCut', () => {
+    const gh = new GomoryHu(2)
+    gh.addEdge(0, 1, 10)
+    expect(gh.minCut(0, 1)).toBe(10)
+  })
+
+  it('allPairsMinCut returns matrix', () => {
+    const gh = new GomoryHu(3)
+    gh.addEdge(0, 1, 5)
+    gh.addEdge(1, 2, 3)
+    const result = gh.allPairsMinCut()
+    expect(result.length).toBe(3)
+  })
 })

@@ -413,4 +413,23 @@ describe('KahnAlgorithm', () => {
     expect(sorted![0]).toBe(0)
     expect(sorted![3]).toBe(3)
   })
+
+  it('cycle returns null', () => {
+    const ka = new KahnAlgorithm(3)
+    ka.addEdge(0, 1)
+    ka.addEdge(1, 2)
+    ka.addEdge(2, 0)
+    expect(ka.sort()).toBeNull()
+  })
+
+  it('single node sort', () => {
+    const ka = new KahnAlgorithm(1)
+    expect(ka.sort()).toEqual([0])
+  })
+
+  it('disconnected nodes all sorted', () => {
+    const ka = new KahnAlgorithm(3)
+    const sorted = ka.sort()
+    expect(sorted!.length).toBe(3)
+  })
 })

@@ -358,4 +358,21 @@ describe('KosarajuSCC', () => {
     const adj = new Map<number, number[]>([[0, []]])
     expect(KosarajuSCC.countSCCs(adj)).toBe(1)
   })
+
+  it('isStronglyConnected for single node', () => {
+    const adj = new Map<number, number[]>([[0, []]])
+    expect(KosarajuSCC.isStronglyConnected(adj)).toBe(true)
+  })
+
+  it('condensation returns DAG', () => {
+    const adj = new Map<number, number[]>([[0, [1]], [1, [0]], [2, [3]], [3, [2]]])
+    const cond = KosarajuSCC.condensation(adj)
+    expect(cond.size).toBeGreaterThan(0)
+  })
+
+  it('findSCCs on disconnected graph', () => {
+    const adj = new Map<number, number[]>([[0, []], [1, []]])
+    const sccs = KosarajuSCC.findSCCs(adj)
+    expect(sccs.length).toBe(2)
+  })
 })

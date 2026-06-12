@@ -366,5 +366,23 @@ describe('FenwickTree2D', () => {
       tree.update(1, 1, 0);
       expect(tree.rangeQuery(0, 0, 2, 2)).toBe(0);
     });
+
+    it('get returns value at position', () => {
+      const tree = new FenwickTree2D(3, 3)
+      tree.update(1, 1, 42)
+      expect(tree.get(1, 1)).toBe(42)
+    })
+
+    it('query on empty tree returns 0', () => {
+      const tree = new FenwickTree2D(5, 5)
+      expect(tree.query(3, 3)).toBe(0)
+    })
+
+    it('multiple updates accumulate', () => {
+      const tree = new FenwickTree2D(3, 3)
+      tree.update(1, 1, 10)
+      tree.update(1, 1, 5)
+      expect(tree.get(1, 1)).toBe(15)
+    })
   });
 });

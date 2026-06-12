@@ -230,4 +230,19 @@ describe('LevenshteinDistance', () => {
     expect(ops.length).toBeGreaterThan(0)
     expect(ops.some(o => o.type === 'replace')).toBe(true)
   })
+
+  it('distanceOptimized matches distance', () => {
+    expect(LevenshteinDistance.distanceOptimized('kitten', 'sitting'))
+      .toBe(LevenshteinDistance.distance('kitten', 'sitting'))
+  })
+
+  it('similarity for identical strings is 1', () => {
+    expect(LevenshteinDistance.similarity('abc', 'abc')).toBe(1)
+  })
+
+  it('normalizedDistance between 0 and 1', () => {
+    const d = LevenshteinDistance.normalizedDistance('abc', 'xyz')
+    expect(d).toBeGreaterThanOrEqual(0)
+    expect(d).toBeLessThanOrEqual(1)
+  })
 })

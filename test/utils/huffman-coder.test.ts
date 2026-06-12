@@ -406,4 +406,24 @@ describe('HuffmanCoder', () => {
     const result2 = coder2.encode(text)
     expect(result1.encoded).toBe(result2.encoded)
   })
+
+  it('encode empty string', () => {
+    const coder = new HuffmanCoder()
+    const result = coder.encode('')
+    expect(result.encoded).toBe('')
+  })
+
+  it('encode single character', () => {
+    const coder = new HuffmanCoder()
+    const result = coder.encode('a')
+    expect(result.encoded).toBeDefined()
+  })
+
+  it('clone produces same results', () => {
+    const coder = new HuffmanCoder()
+    const r1 = coder.encode('test')
+    const c = coder.clone()
+    const r2 = c.encode('test')
+    expect(r1.encoded).toBe(r2.encoded)
+  })
 })

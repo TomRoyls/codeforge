@@ -453,4 +453,25 @@ describe('LFUCache', () => {
     cache.set('a', 10)
     expect(cache.get('a')).toBe(10)
   })
+
+  it('has returns true for existing key', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('x', 42)
+    expect(cache.has('x')).toBe(true)
+    expect(cache.has('missing')).toBe(false)
+  })
+
+  it('delete removes entry', () => {
+    const cache = new LFUCache<string, number>(3)
+    cache.set('a', 1)
+    cache.delete('a')
+    expect(cache.get('a')).toBeUndefined()
+  })
+
+  it('size tracks entries', () => {
+    const cache = new LFUCache<string, number>(5)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    expect(cache.size).toBe(2)
+  })
 })

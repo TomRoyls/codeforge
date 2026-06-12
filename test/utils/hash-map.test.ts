@@ -469,4 +469,26 @@ describe('HashMap generic value types', () => {
     map.set('list', [1, 2, 3])
     expect(map.get('list')).toEqual([1, 2, 3])
   })
+
+  it('size tracks entries', () => {
+    const map = new HashMap<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    expect(map.size).toBe(2)
+  })
+
+  it('delete removes entry', () => {
+    const map = new HashMap<string, number>()
+    map.set('x', 42)
+    expect(map.delete('x')).toBe(true)
+    expect(map.get('x')).toBeUndefined()
+  })
+
+  it('clear removes all entries', () => {
+    const map = new HashMap<string, number>()
+    map.set('a', 1)
+    map.set('b', 2)
+    map.clear()
+    expect(map.size).toBe(0)
+  })
 })

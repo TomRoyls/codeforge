@@ -329,5 +329,19 @@ describe('Josephus', () => {
         }
       }
     })
+
+    it('generalSurvivor with startIndex', () => {
+      expect(Josephus.generalSurvivor(5, 2, 0)).toBeGreaterThanOrEqual(0)
+      expect(Josephus.generalSurvivor(5, 2, 2)).toBeGreaterThanOrEqual(0)
+    })
+
+    it('order returns all indices', () => {
+      const result = Josephus.order(5, 2)
+      expect(result.length).toBe(5)
+    })
+
+    it('order n=1 returns [0]', () => {
+      expect(Josephus.order(1, 1)).toEqual([0])
+    })
   })
 })

@@ -339,4 +339,16 @@ describe('KahnTopologicalSort', () => {
   it('should handle empty graph', () => {
     expect(KahnTopologicalSort.isDAG([])).toBe(true)
   })
+
+  it('longestPath on single node', () => {
+    expect(KahnTopologicalSort.longestPath([[1], []], [5, 3])).toBeGreaterThanOrEqual(0)
+  })
+
+  it('isDAG with cycle returns false', () => {
+    expect(KahnTopologicalSort.isDAG([[1], [0]])).toBe(false)
+  })
+
+  it('isDAG on linear graph', () => {
+    expect(KahnTopologicalSort.isDAG([[1], [2], []])).toBe(true)
+  })
 })

@@ -452,4 +452,23 @@ describe('KruskalMST', () => {
     expect(result.edges).toHaveLength(1)
     expect(result.totalWeight).toBe(2)
   })
+
+  it('isConnected for disconnected graph', () => {
+    const edges = [{ from: 0, to: 1, weight: 1 }]
+    expect(KruskalMST.isConnected(edges, 3)).toBe(false)
+  })
+
+  it('isConnected for connected graph', () => {
+    const edges = [
+      { from: 0, to: 1, weight: 1 },
+      { from: 1, to: 2, weight: 2 },
+    ]
+    expect(KruskalMST.isConnected(edges, 3)).toBe(true)
+  })
+
+  it('single edge MST', () => {
+    const edges = [{ from: 0, to: 1, weight: 5 }]
+    const result = KruskalMST.findMST(edges, 2)
+    expect(result.totalWeight).toBe(5)
+  })
 })

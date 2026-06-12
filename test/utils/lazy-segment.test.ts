@@ -373,4 +373,30 @@ describe('LazySegmentTree', () => {
     expect(st.getPoint(6)).toBe(7)
     expect(st.getPoint(8)).toBe(5)
   })
+
+  it('queryRange returns sum', () => {
+    const st = new LazySegmentTree(5)
+    st.setPoint(0, 1)
+    st.setPoint(1, 2)
+    st.setPoint(2, 3)
+    st.setPoint(3, 4)
+    st.setPoint(4, 5)
+    expect(st.queryRange(0, 4)).toBe(15)
+  })
+
+  it('setPoint changes value', () => {
+    const st = new LazySegmentTree(3)
+    st.setPoint(1, 10)
+    expect(st.getPoint(1)).toBe(10)
+  })
+
+  it('updateRange adds to range', () => {
+    const st = new LazySegmentTree(4)
+    st.setPoint(0, 1)
+    st.setPoint(1, 1)
+    st.setPoint(2, 1)
+    st.setPoint(3, 1)
+    st.updateRange(0, 3, 5)
+    expect(st.getPoint(0)).toBe(6)
+  })
 })

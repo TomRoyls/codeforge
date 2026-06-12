@@ -47,9 +47,18 @@ describe('FibonacciSearch search', () => {
     expect(result).toBe(2)
   })
 
-  it('returns -1 for empty array', () => {
+  it('search returns -1 for empty array', () => {
     expect(FibonacciSearch.search([], 5)).toBe(-1)
   })
+
+  it('search single element found', () => {
+    expect(FibonacciSearch.search([42], 42)).toBe(0)
+  })
+
+  it('search single element not found', () => {
+    expect(FibonacciSearch.search([42], 99)).toBe(-1)
+  })
+})
 
   it('finds first element', () => {
     expect(FibonacciSearch.search([10, 20, 30, 40], 10)).toBe(0)

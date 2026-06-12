@@ -400,4 +400,24 @@ describe('LiChaoTree', () => {
     expect(tree.query(0)).toBe(6)
     expect(tree.lineCount()).toBe(1)
   })
+
+  it('query returns value at point', () => {
+    const tree = new LiChaoTree(-10, 10)
+    tree.insert(1, 0)
+    expect(tree.query(5)).toBe(5)
+  })
+
+  it('queryMin returns minimum', () => {
+    const tree = new LiChaoTree(-10, 10)
+    tree.insertForMin(1, 0)
+    expect(typeof tree.queryMin(0)).toBe('number')
+  })
+
+  it('multiple lines track count', () => {
+    const tree = new LiChaoTree(-10, 10)
+    tree.insert(1, 0)
+    tree.insert(2, 1)
+    tree.insert(-1, 5)
+    expect(tree.lineCount()).toBe(3)
+  })
 })

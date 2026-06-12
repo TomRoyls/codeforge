@@ -317,4 +317,21 @@ describe('KMPAutomaton', () => {
     const kmp = new KMPAutomaton('ab')
     expect(typeof kmp.toString()).toBe('string')
   })
+
+  it('getFailure returns array', () => {
+    const kmp = new KMPAutomaton('abcabc')
+    const fail = kmp.getFailure()
+    expect(fail.length).toBe(7)
+  })
+
+  it('search no match returns empty', () => {
+    const kmp = new KMPAutomaton('xyz')
+    expect(kmp.search('abcdef')).toEqual([])
+  })
+
+  it('search finds multiple matches', () => {
+    const kmp = new KMPAutomaton('ab')
+    const matches = kmp.search('ababab')
+    expect(matches.length).toBe(3)
+  })
 })

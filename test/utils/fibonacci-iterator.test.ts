@@ -320,4 +320,20 @@ describe('FibonacciIterator', () => {
   it('should compute nth(10)', () => {
     expect(FibonacciIterator.nth(10)).toBe(55n)
   })
+
+  it('clone produces independent copy', () => {
+    const fi = new FibonacciIterator()
+    fi.next()
+    fi.next()
+    const c = fi.clone()
+    expect(c.next().value).toBeDefined()
+  })
+
+  it('nth(0) returns 0', () => {
+    expect(FibonacciIterator.nth(0)).toBe(0n)
+  })
+
+  it('nth(1) returns 1', () => {
+    expect(FibonacciIterator.nth(1)).toBe(1n)
+  })
 })

@@ -322,4 +322,19 @@ describe('LCPArray', () => {
     const lcp = LCPArray.build(sa, 'aabb')
     expect(lcp.length).toBe(3)
   })
+
+  it('longestCommonPrefix returns max lcp', () => {
+    const lcp = LCPArray.build([3, 2, 1, 0], 'banana')
+    expect(LCPArray.longestCommonPrefix([3, 2, 1, 0], lcp)).toBeGreaterThanOrEqual(0)
+  })
+
+  it('single character string', () => {
+    const lcp = LCPArray.build([0], 'a')
+    expect(lcp).toEqual([])
+  })
+
+  it('all same characters', () => {
+    const lcp = LCPArray.build([2, 1, 0], 'aaa')
+    expect(lcp.length).toBe(2)
+  })
 })

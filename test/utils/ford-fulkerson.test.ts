@@ -432,4 +432,22 @@ describe('FordFulkerson', () => {
     ]
     expect(FordFulkerson.maxFlow(edges, 0, 1, 2)).toBe(10)
   })
+
+  it('no path returns 0', () => {
+    const edges = [
+      { from: 0, to: 1, capacity: 5 },
+      { from: 2, to: 3, capacity: 5 },
+    ]
+    expect(FordFulkerson.maxFlow(edges, 0, 3, 4)).toBe(0)
+  })
+
+  it('single edge flow', () => {
+    const edges = [{ from: 0, to: 1, capacity: 7 }]
+    expect(FordFulkerson.maxFlow(edges, 0, 1, 2)).toBe(7)
+  })
+
+  it('zero capacity edge', () => {
+    const edges = [{ from: 0, to: 1, capacity: 0 }]
+    expect(FordFulkerson.maxFlow(edges, 0, 1, 2)).toBe(0)
+  })
 })
