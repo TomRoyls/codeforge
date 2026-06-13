@@ -1,121 +1,75 @@
 export class CircularDeque<T> {
   private buffer: (T | undefined)[]
-  private head: number = 0
-  private tail: number = 0
-  private _size: number = 0
+  private head = 0
+  private tail = 0
+  private count = 0
 
-  constructor(capacity: number = 16) {
-    if (capacity < 0) {
-      throw new RangeError(`Capacity must be >= 0, got ${capacity}`)
-    }
-    const clamped = Math.max(1, capacity)
-    this.buffer = new Array(clamped).fill(undefined)
+  constructor(capacity: number) {
+    this.buffer = new Array(capacity).fill(undefined)
   }
 
-  pushFront(val: T): void {
-    if (this._size === this.buffer.length) {
-      this.grow()
-    }
+  pushFront(item: T): boolean {
+    if (this.count === this.buffer.length) return false
     this.head = (this.head - 1 + this.buffer.length) % this.buffer.length
-    this.buffer[this.head] = val
-    this._size++
+    this.buffer[this.head] = item
+    this.count++
+    return true
   }
 
-  pushBack(val: T): void {
-    if (this._size === this.buffer.length) {
-      this.grow()
-    }
-    this.buffer[this.tail] = val
+  pushBack(item: T): boolean {
+    if (this.count === this.buffer.length) return false
+    this.buffer[this.tail] = item
     this.tail = (this.tail + 1) % this.buffer.length
-    this._size++
+    this.count++
+    return true
   }
 
   popFront(): T | undefined {
-    if (this._size === 0) return undefined
+    if (this.count === 0) return undefined
     const item = this.buffer[this.head]
     this.buffer[this.head] = undefined
     this.head = (this.head + 1) % this.buffer.length
-    this._size--
+    this.count--
     return item
   }
 
   popBack(): T | undefined {
-    if (this._size === 0) return undefined
+    if (this.count === 0) return undefined
     this.tail = (this.tail - 1 + this.buffer.length) % this.buffer.length
     const item = this.buffer[this.tail]
     this.buffer[this.tail] = undefined
-    this._size--
+    this.count--
     return item
   }
 
-  front(): T | undefined {
-    if (this._size === 0) return undefined
-    return this.buffer[this.head]
-  }
+  peekFront(): T | undefined { return this.count === 0 ? undefined : this.buffer[this.head] }
+  peekBack(): T | undefined { return this.count === 0 ? undefined : this.buffer[(this.tail - 1 + this.buffer.length) % this.buffer.length] }
 
-  back(): T | undefined {
-    if (this._size === 0) return undefined
-    const idx = (this.tail - 1 + this.buffer.length) % this.buffer.length
-    return this.buffer[idx]
-  }
+  get size(): number { return this.count }
+  get capacity(): number { return this.buffer.length }
+  get isEmpty(): boolean { return this.count === 0 }
+  get isFull(): boolean { return this.count === this.buffer.length }
 
-  get(index: number): T | undefined {
-    if (index < 0 || index >= this._size) return undefined
-    const idx = (this.head + index) % this.buffer.length
-    return this.buffer[idx]
-  }
-
-  get size(): number {
-    return this._size
-  }
-
-  get capacity(): number {
-    return this.buffer.length
-  }
-
-  isEmpty(): boolean {
-    return this._size === 0
-  }
-
-  clear(): void {
-    this.buffer.fill(undefined)
-    this.head = 0
-    this.tail = 0
-    this._size = 0
-  }
+  clear(): void { this.buffer.fill(undefined); this.head = 0; this.tail = 0; this.count = 0 }
 
   toArray(): T[] {
     const result: T[] = []
-    for (let i = 0; i < this._size; i++) {
-      const idx = (this.head + i) % this.buffer.length
-      const item = this.buffer[idx]
-      if (item !== undefined) result.push(item)
-    }
+    for (let i = 0; i < this.count; i++) result.push(this.buffer[(this.head + i) % this.buffer.length]!)
     return result
   }
 
-  [Symbol.iterator](): Iterator<T> {
-    let index = 0
-    return {
-      next: (): IteratorResult<T> => {
-        if (index < this._size) {
-          const idx = (this.head + index) % this.buffer.length
-          const item = this.buffer[idx]
-          index++
-          return { done: false, value: item as T }
-        }
-        return { done: true, value: undefined as T }
-      }
-    }
+  toString(): string { return JSON.stringify({ size: this.count, capacity: this.buffer.length }) }
+  toJSON(): Record<string, number> { return { size: this.count, capacity: this.buffer.length } }
+
+  clone(): CircularDeque<T> {
+    const c = new CircularDeque<T>(this.buffer.length)
+    c.buffer = [...this.buffer]
+    c.head = this.head; c.tail = this.tail; c.count = this.count
+    return c
   }
 
-  private grow(): void {
-    const newBuffer = new Array(this.buffer.length * 2).fill(undefined)
-    for (let i = 0; i < this._size; i++) {
-      newBuffer[i] = this.buffer[(this.head + i) % this.buffer.length]
-    }
-    this.buffer = newBuffer
-    this.head = 0
-    this.tail = this._size
+  equals(other: unknown): boolean {
+    if (!(other instanceof CircularDeque)) return false
+    return this.count === other.count && this.capacity === other.capacity
   }
 }
