@@ -1,145 +1,118 @@
-export class TrieMap<T> {
-  private root: TrieNode<T>
-  private _size: number
+export class TrieMap<V> {
+  private children = new Map<string, TrieMap<V>>()
+  private value: V | undefined
+  private hasVal = false
 
-  constructor() {
-    this.root = { children: new Map(), value: undefined, hasValue: false }
-    this._size = 0
-  }
-
-  set(key: string, value: T): void {
-    let node = this.root
-    for (let i = 0; i < key.length; i++) {
-      const ch = key[i]!
+  set(key: string, value: V): void {
+    let node: TrieMap<V> = this
+    for (const ch of key) {
       let child = node.children.get(ch)
       if (!child) {
-        child = { children: new Map(), value: undefined, hasValue: false }
+        child = new TrieMap<V>()
         node.children.set(ch, child)
       }
       node = child
     }
-    if (!node.hasValue) this._size++
     node.value = value
-    node.hasValue = true
+    node.hasVal = true
   }
 
-  get(key: string): T | undefined {
-    const node = this.findNode(key)
-    return node?.hasValue ? node.value : undefined
+  get(key: string): V | undefined {
+    let node: TrieMap<V> | undefined = this
+    for (const ch of key) {
+      node = node.children.get(ch)
+      if (!node) return undefined
+    }
+    return node.hasVal ? node.value : undefined
   }
 
   has(key: string): boolean {
-    const node = this.findNode(key)
-    return node !== undefined && node.hasValue
+    return this.get(key) !== undefined
   }
 
   delete(key: string): boolean {
-    return this.deleteRecursive(this.root, key, 0)
+    return this.deleteRecursive(key, 0)
   }
 
-  hasPrefix(prefix: string): boolean {
-    return this.findNode(prefix) !== undefined
+  private deleteRecursive(key: string, depth: number): boolean {
+    if (depth === key.length) {
+      if (!this.hasVal) return false
+      this.value = undefined
+      this.hasVal = false
+      return true
+    }
+    const child = this.children.get(key[depth]!)
+    if (!child) return false
+    const result = child.deleteRecursive(key, depth + 1)
+    if (result && child.children.size === 0 && !child.hasVal) {
+      this.children.delete(key[depth]!)
+    }
+    return result
   }
 
   keysWithPrefix(prefix: string): string[] {
-    const node = this.findNode(prefix)
-    if (!node) return []
-    const results: string[] = []
-    this.collectKeys(node, prefix, results)
-    return results
-  }
-
-  valuesWithPrefix(prefix: string): T[] {
-    const node = this.findNode(prefix)
-    if (!node) return []
-    const results: T[] = []
-    this.collectValues(node, results)
-    return results
-  }
-
-  entriesWithPrefix(prefix: string): Array<[string, T]> {
-    const node = this.findNode(prefix)
-    if (!node) return []
-    const results: Array<[string, T]> = []
-    this.collectEntries(node, prefix, results)
-    return results
-  }
-
-  longestPrefixOf(query: string): string {
-    let node = this.root
-    let longest = ''
-    let current = ''
-    for (let i = 0; i < query.length; i++) {
-      const child = node.children.get(query[i]!)
-      if (!child) break
-      current += query[i]
-      if (child.hasValue) longest = current
-      node = child
+    let node: TrieMap<V> | undefined = this
+    for (const ch of prefix) {
+      node = node.children.get(ch)
+      if (!node) return []
     }
-    return longest
+    const results: string[] = []
+    node.collectKeys(prefix, results)
+    return results
   }
 
-  clear(): void {
-    this.root = { children: new Map(), value: undefined, hasValue: false }
-    this._size = 0
+  private collectKeys(path: string, results: string[]): void {
+    if (this.hasVal) results.push(path)
+    for (const [ch, child] of this.children) {
+      child.collectKeys(path + ch, results)
+    }
   }
 
   get size(): number {
-    return this._size
+    let count = this.hasVal ? 1 : 0
+    for (const child of this.children.values()) count += child.size
+    return count
   }
 
-  private findNode(key: string): TrieNode<T> | undefined {
-    let node = this.root
-    for (let i = 0; i < key.length; i++) {
-      const child = node.children.get(key[i]!)
-      if (!child) return undefined
-      node = child
-    }
-    return node
+  get isEmpty(): boolean {
+    return this.size === 0
   }
 
-  private deleteRecursive(node: TrieNode<T>, key: string, depth: number): boolean {
-    if (depth === key.length) {
-      if (!node.hasValue) return false
-      node.hasValue = false
-      node.value = undefined
-      this._size--
-      return true
-    }
-    const ch = key[depth]!
-    const child = node.children.get(ch)
-    if (!child) return false
-    const deleted = this.deleteRecursive(child, key, depth + 1)
-    if (deleted && child.children.size === 0 && !child.hasValue) {
-      node.children.delete(ch)
-    }
-    return deleted
+  clear(): void {
+    this.children.clear()
+    this.value = undefined
+    this.hasVal = false
   }
 
-  private collectKeys(node: TrieNode<T>, prefix: string, results: string[]): void {
-    if (node.hasValue) results.push(prefix)
-    for (const [ch, child] of node.children) {
-      this.collectKeys(child, prefix + ch, results)
+  toArray(): Array<[string, V]> {
+    const results: Array<[string, V]> = []
+    this.collectEntries('', results)
+    return results
+  }
+
+  private collectEntries(path: string, results: Array<[string, V]>): void {
+    if (this.hasVal) results.push([path, this.value!])
+    for (const [ch, child] of this.children) {
+      child.collectEntries(path + ch, results)
     }
   }
 
-  private collectValues(node: TrieNode<T>, results: T[]): void {
-    if (node.hasValue) results.push(node.value!)
-    for (const child of node.children.values()) {
-      this.collectValues(child, results)
-    }
+  toString(): string {
+    return JSON.stringify(this.toArray().map(([k]) => k))
   }
 
-  private collectEntries(node: TrieNode<T>, prefix: string, results: Array<[string, T]>): void {
-    if (node.hasValue) results.push([prefix, node.value!])
-    for (const [ch, child] of node.children) {
-      this.collectEntries(child, prefix + ch, results)
-    }
+  toJSON(): Array<[string, V]> {
+    return this.toArray()
   }
-}
 
-interface TrieNode<T> {
-  children: Map<string, TrieNode<T>>
-  value: T | undefined
-  hasValue: boolean
+  clone(): TrieMap<V> {
+    const copy = new TrieMap<V>()
+    for (const [k, v] of this.toArray()) copy.set(k, v)
+    return copy
+  }
+
+  equals(other: unknown): boolean {
+    if (!(other instanceof TrieMap)) return false
+    return this.size === other.size
+  }
 }
