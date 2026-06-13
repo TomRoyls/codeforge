@@ -1,188 +1,115 @@
-export class BinomialHeap<T> {
-  private head: BinNode<T> | null = null
-  private _size: number = 0
+export class BinomialHeap {
+  private roots: BHNode[] = []
+  private _size = 0
 
-  insert(value: T, priority: number): void {
-    const node: BinNode<T> = { value, priority, degree: 0, child: null, sibling: null, parent: null }
-    const heap = new BinomialHeap<T>()
-    heap.head = node
-    heap._size = 1
-    this.merge(heap)
+  insert(value: number): void {
+    const node: BHNode = { value, degree: 0, child: null, sibling: null }
+    this.roots = this.mergeRoots(this.roots, [node])
+    this._size++
   }
 
-  extractMin(): { value: T; priority: number } | undefined {
-    if (!this.head) return undefined
-    let prev: BinNode<T> | null = null
-    let minPrev: BinNode<T> | null = null
-    let minNode = this.head
-    let current: BinNode<T> | null = this.head
-    while (current) {
-      if (current.priority < minNode.priority) {
-        minNode = current
-        minPrev = prev
-      }
-      prev = current
-      current = current.sibling
+  findMin(): number | undefined {
+    if (this.roots.length === 0) return undefined
+    return Math.min(...this.roots.map((r) => r.value))
+  }
+
+  extractMin(): number | undefined {
+    if (this.roots.length === 0) return undefined
+    let minIdx = 0
+    for (let i = 1; i < this.roots.length; i++) {
+      if (this.roots[i]!.value < this.roots[minIdx]!.value) minIdx = i
     }
-    if (minPrev) {
-      minPrev.sibling = minNode.sibling
-    } else {
-      this.head = minNode.sibling
-    }
-    const childHeap = new BinomialHeap<T>()
-    let child = minNode.child
-    const children: BinNode<T>[] = []
-    while (child) {
-      children.push(child)
-      child = child.sibling
-    }
-    children.reverse()
-    let childPrev: BinNode<T> | null = null
-    for (const c of children) {
-      c.parent = null
-      c.sibling = null
-      if (childPrev) {
-        childPrev.sibling = c
-      } else {
-        childHeap.head = c
-      }
-      childPrev = c
-    }
-    childHeap._size = (1 << children.length) - 1
-    this.merge(childHeap)
+    const minNode = this.roots[minIdx]!
+    this.roots.splice(minIdx, 1)
+    const children = this.getChildren(minNode)
+    this.roots = this.mergeRoots(this.roots, children.reverse())
     this._size--
-    return { value: minNode.value, priority: minNode.priority }
+    return minNode.value
   }
 
-  peek(): { value: T; priority: number } | undefined {
-    if (!this.head) return undefined
-    let minNode = this.head
-    let current = this.head.sibling
-    while (current) {
-      if (current.priority < minNode.priority) minNode = current
-      current = current.sibling
+  private getChildren(node: BHNode): BHNode[] {
+    const result: BHNode[] = []
+    let child = node.child
+    while (child) { result.push(child); child = child.sibling }
+    return result
+  }
+
+  private mergeRoots(a: BHNode[], b: BHNode[]): BHNode[] {
+    const result: BHNode[] = []
+    let i = 0, j = 0
+    while (i < a.length && j < b.length) {
+      if (a[i]!.degree <= b[j]!.degree) result.push(a[i++]!)
+      else result.push(b[j++]!)
     }
-    return { value: minNode.value, priority: minNode.priority }
+    while (i < a.length) result.push(a[i++]!)
+    while (j < b.length) result.push(b[j++]!)
+    return this.consolidate(result)
   }
 
-  merge(other: BinomialHeap<T>): void {
-    this.head = this.mergeRoots(this.head, other.head)
-    this._size += other._size
-    other.head = null
-    other._size = 0
-    if (!this.head) return
-    let prev: BinNode<T> | null = null
-    let current = this.head
-    let next = current.sibling
-    while (next) {
-      const mergeCases = current.degree !== next.degree
-        || (next.sibling && next.sibling.degree === current.degree)
-      if (mergeCases) {
-        prev = current
-        current = next
-      } else if (current.priority <= next.priority) {
-        current.sibling = next.sibling
-        this.linkTrees(next, current)
+  private consolidate(roots: BHNode[]): BHNode[] {
+    if (roots.length <= 1) return roots
+    const result: BHNode[] = []
+    let i = 0
+    while (i < roots.length) {
+      if (i + 1 >= roots.length) { result.push(roots[i++]!); continue }
+      const curr = roots[i]!, next = roots[i + 1]!
+      if (curr.degree === next.degree) {
+        const smaller = curr.value <= next.value ? curr : next
+        const larger = curr.value <= next.value ? next : curr
+        larger.sibling = smaller.child
+        smaller.child = larger
+        smaller.degree++
+        roots[i + 1] = smaller
+        i++
       } else {
-        if (!prev) {
-          this.head = next
-        } else {
-          prev.sibling = next
+        result.push(roots[i++]!)
+      }
+    }
+    return result
+  }
+
+  get size(): number { return this._size }
+  get isEmpty(): boolean { return this._size === 0 }
+
+  clear(): void { this.roots = []; this._size = 0 }
+
+  toArray(): number[] {
+    const result: number[] = []
+    const heap = this.clone()
+    while (!heap.isEmpty) result.push(heap.extractMin()!)
+    return result
+  }
+
+  toString(): string { return JSON.stringify({ size: this._size }) }
+  toJSON(): Record<string, number> { return { size: this._size } }
+
+  clone(): BinomialHeap {
+    const c = new BinomialHeap()
+    for (const v of this.originalValues()) c.insert(v)
+    return c
+  }
+
+  private originalValues(): number[] {
+    const result: number[] = []
+    const collect = (nodes: BHNode[]) => {
+      for (const n of nodes) {
+        result.push(n.value)
+        if (n.child) {
+          const children: BHNode[] = []
+          let ch = n.child
+          while (ch) { children.push(ch); ch = ch.sibling }
+          collect(children)
         }
-        this.linkTrees(current, next)
-        current = next
       }
-      next = current.sibling
     }
-  }
-
-  get size(): number {
-    return this._size
-  }
-
-  isEmpty(): boolean {
-    return this._size === 0
-  }
-
-  private linkTrees(child: BinNode<T>, parent: BinNode<T>): void {
-    child.parent = parent
-    child.sibling = parent.child
-    parent.child = child
-    parent.degree++
-  }
-
-  private mergeRoots(a: BinNode<T> | null, b: BinNode<T> | null): BinNode<T> | null {
-    if (!a) return b
-    if (!b) return a
-    let result: BinNode<T>
-    let tail: BinNode<T>
-    if (a.degree <= b.degree) {
-      result = a
-      a = a.sibling
-    } else {
-      result = b
-      b = b.sibling
-    }
-    tail = result
-    tail.sibling = null
-    while (a && b) {
-      if (a.degree <= b.degree) {
-        tail.sibling = a
-        a = a.sibling
-      } else {
-        tail.sibling = b
-        b = b.sibling
-      }
-      tail = tail.sibling
-      tail.sibling = null
-    }
-    tail.sibling = a ?? b
+    collect(this.roots)
     return result
-  }
-
-  toString(): string {
-    return `BinomialHeap(size=${this._size})`
-  }
-
-  toJSON(): Array<{ value: T; priority: number }> {
-    const result: Array<{ value: T; priority: number }> = []
-    const collect = (node: BinNode<T> | null): void => {
-      while (node) {
-        result.push({ value: node.value, priority: node.priority })
-        collect(node.child)
-        node = node.sibling
-      }
-    }
-    collect(this.head)
-    return result
-  }
-
-  clone(): this {
-    const c = new BinomialHeap<T>()
-    for (const { value, priority } of this.toJSON()) {
-      c.insert(value, priority)
-    }
-    return c as this
   }
 
   equals(other: unknown): boolean {
     if (!(other instanceof BinomialHeap)) return false
-    if (this._size !== other._size) return false
-    const a = this.toJSON().sort((x, y) => x.priority - y.priority)
-    const b = other.toJSON().sort((x, y) => x.priority - y.priority)
-    for (let i = 0; i < a.length; i++) {
-      if (a[i]!.priority !== b[i]!.priority) return false
-      if (!Object.is(a[i]!.value, b[i]!.value)) return false
-    }
-    return true
+    return this._size === other._size
   }
 }
 
-interface BinNode<T> {
-  value: T
-  priority: number
-  degree: number
-  child: BinNode<T> | null
-  sibling: BinNode<T> | null
-  parent: BinNode<T> | null
-}
+interface BHNode { value: number; degree: number; child: BHNode | null; sibling: BHNode | null }
