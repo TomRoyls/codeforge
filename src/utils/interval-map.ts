@@ -1,85 +1,24 @@
-export interface Interval<T> {
-  start: number
-  end: number
-  value: T
-}
+export class IntervalMap<V> {
+  private intervals: Array<{ low: number; high: number; value: V }> = []
 
-export class IntervalMap<T> {
-  private intervals: Interval<T>[] = []
-
-  constructor() {}
-
-  set(start: number, end: number, value: T): void {
-    if (start > end) {
-      throw new RangeError(`start (${start}) must be <= end (${end})`)
-    }
-    const entry: Interval<T> = { start, end, value }
-    let i = 0
-    while (i < this.intervals.length && this.intervals[i]!.start <= start) {
-      i++
-    }
-    this.intervals.splice(i, 0, entry)
+  add(low: number, high: number, value: V): void {
+    if (low > high) [low, high] = [high, low]
+    this.intervals.push({ low, high, value })
   }
 
-  get(point: number): T | undefined {
-    for (const iv of this.intervals) {
-      if (point >= iv.start && point <= iv.end) return iv.value
-    }
-    return undefined
+  get(point: number): V[] {
+    return this.intervals.filter((iv) => point >= iv.low && point <= iv.high).map((iv) => iv.value)
   }
 
-  has(point: number): boolean {
-    return this.get(point) !== undefined
+  getOverlapping(low: number, high: number): V[] {
+    return this.intervals.filter((iv) => iv.low <= high && iv.high >= low).map((iv) => iv.value)
   }
 
-  getInterval(start: number, end: number): Interval<T>[] {
-    const result: Interval<T>[] = []
-    for (const iv of this.intervals) {
-      if (iv.end >= start && iv.start <= end) {
-        result.push(iv)
-      }
-    }
-    return result
+  getEnclosing(low: number, high: number): V[] {
+    return this.intervals.filter((iv) => iv.low <= low && iv.high >= high).map((iv) => iv.value)
   }
 
-  getRange(start: number, end: number): T[] {
-    return this.getInterval(start, end).map((iv) => iv.value)
-  }
-
-  getAll(): Interval<T>[] {
-    return this.intervals.map((iv) => ({ start: iv.start, end: iv.end, value: iv.value }))
-  }
-
-  getAllIntervals(): Interval<T>[] {
-    return this.getAll()
-  }
-
-  remove(start: number, end: number): void {
-    this.intervals = this.intervals.filter((iv) => iv.end < start || iv.start > end)
-  }
-
-  delete(point: number): boolean {
-    for (let i = 0; i < this.intervals.length; i++) {
-      const iv = this.intervals[i]!
-      if (point >= iv.start && point <= iv.end) {
-        this.intervals.splice(i, 1)
-        return true
-      }
-    }
-    return false
-  }
-
-  deleteRange(start: number, end: number): number {
-    const before = this.intervals.length
-    this.intervals = this.intervals.filter((iv) => iv.end < start || iv.start > end)
-    return before - this.intervals.length
-  }
-
-  clear(): void {
-    this.intervals = []
-  }
-
-  get size(): number {
+  get count(): number {
     return this.intervals.length
   }
 
@@ -87,68 +26,40 @@ export class IntervalMap<T> {
     return this.intervals.length === 0
   }
 
-  getMinStart(): number | undefined {
-    return this.intervals[0]?.start
+  compact(): void {
+    this.intervals.sort((a, b) => a.low - b.low || a.high - b.high)
   }
 
-  getMaxEnd(): number | undefined {
-    let max: number | undefined
-    for (const iv of this.intervals) {
-      if (max === undefined || iv.end > max) max = iv.end
-    }
-    return max
+  remove(index: number): boolean {
+    if (index < 0 || index >= this.intervals.length) return false
+    this.intervals.splice(index, 1)
+    return true
   }
 
-  forEach(callback: (entry: Interval<T>, index: number) => void): void {
-    for (let i = 0; i < this.intervals.length; i++) {
-      const iv = this.intervals[i]!
-      callback({ start: iv.start, end: iv.end, value: iv.value }, i)
-    }
+  clear(): void {
+    this.intervals = []
   }
 
-  overlaps(start: number, end: number): boolean {
-    for (const iv of this.intervals) {
-      if (iv.end >= start && iv.start <= end) return true
-    }
-    return false
-  }
-
-  clone(): IntervalMap<T> {
-    const copy = new IntervalMap<T>()
-    copy.intervals = this.intervals.map((iv) => ({ start: iv.start, end: iv.end, value: iv.value }))
-    return copy
+  toArray(): Array<{ low: number; high: number; value: V }> {
+    return this.intervals.map((iv) => ({ ...iv }))
   }
 
   toString(): string {
-    return `IntervalMap(${this.intervals.length})`
+    return JSON.stringify(this.intervals.map((iv) => [iv.low, iv.high]))
   }
 
-  toJSON(): unknown {
-    return this.intervals.map((iv) => ({ start: iv.start, end: iv.end, value: iv.value }))
+  toJSON(): Array<{ low: number; high: number; value: V }> {
+    return this.toArray()
+  }
+
+  clone(): IntervalMap<V> {
+    const copy = new IntervalMap<V>()
+    copy.intervals = this.intervals.map((iv) => ({ ...iv }))
+    return copy
   }
 
   equals(other: unknown): boolean {
     if (!(other instanceof IntervalMap)) return false
-    if (this.intervals.length !== other.intervals.length) return false
-    for (let i = 0; i < this.intervals.length; i++) {
-      const a = this.intervals[i]!
-      const b = other.intervals[i]!
-      if (a.start !== b.start || a.end !== b.end) return false
-      if (!Object.is(a.value, b.value)) return false
-    }
-    return true
-  }
-
-  [Symbol.iterator](): Iterator<Interval<T>> {
-    let i = 0
-    const intervals = this.intervals
-    return {
-      next(): IteratorResult<Interval<T>> {
-        if (i >= intervals.length) return { done: true, value: undefined as unknown as Interval<T> }
-        const iv = intervals[i]!
-        i++
-        return { done: false, value: { start: iv.start, end: iv.end, value: iv.value } }
-      },
-    }
+    return this.count === other.count
   }
 }
