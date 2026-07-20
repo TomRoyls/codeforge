@@ -16,7 +16,7 @@
     "fast-glob": "^3.3.3",
     "ora": "^9.4.0",
     "p-limit": "^7.3.0",
-    "picomatch": "^4.0.4",
+    "picomatch": "^4.0.5",
     "ts-morph": "^25.0.1"
   },
   "devDependencies": {
