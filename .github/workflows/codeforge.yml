@@ -31,7 +31,7 @@ jobs:
         run: npx codeforge analyze --format sarif --output results.sarif
 
       - name: Upload SARIF to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4.37.3
         if: always()
         with:
           sarif_file: results.sarif
